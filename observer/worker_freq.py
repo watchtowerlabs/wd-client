@@ -2,7 +2,7 @@
 """ Class to facilitate frequency shifting loop.
 """
 
-import trackersocket
+import commsocket
 import orbital
 import time
 import threading
@@ -79,7 +79,7 @@ class WorkerFreq():
         if self._debugmode:
             print(('alive:', self._stay_alive))
         else:
-            sock = trackersocket.trackersocket()
+            sock = commsocket.commsocket()
             sock.connect(self._IP, self._PORT)  # change to correct address
 
         # track satellite

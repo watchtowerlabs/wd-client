@@ -1,4 +1,6 @@
 # -*- coding: utf-8 -*-
+import worker_track
+import worker_freq
 
 
 class observer:
@@ -102,14 +104,25 @@ class observer:
         """
         # check for end timestamp
 
+        # initialise the rtl_fm stack
+        self.init_rtlfm_stack()
+
         # start thread for rotctl
         self.run_rot()
 
         # start thread for rigctl
         self.run_rig()
 
-    def run_rot(self):
+    def init_rtlfm_stack():
+        #TODO: init rtl_fm stack
         pass
 
+    def run_rot(self):
+        self.tracker_rot = worker_track.WorkerTrack(time_to_stop=self._observation_end)
+        self.tracker_rot.trackobject(self._location, self._tle)
+        self.tracker_rot.trackstart()
+
     def run_rig(self):
-        pass
+        self.tracker_freq = worker_freq.WorkerFreq(frequency=self._frequency, time_to_stop=self._observation_end)
+        self.tracker_freq.trackobject(self._location, self._tle)
+        self.tracker_freq.trackstart()
