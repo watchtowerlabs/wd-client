@@ -1,5 +1,10 @@
 # -*- coding: utf-8 -*-
-import subprocess
+import os
+
+from datetime import datetime
+from subprocess import Popen
+
+from satnogsclient import settings
 
 
 class SignalSerializer():
@@ -34,5 +39,30 @@ class SignalSerializer():
         self.frequency = frequency
         self.decoding = decoding
 
+    def get_decoding_cmd(self):
+        raise NotImplementedError()
+
+    def get_demodulation_cmd(self):
+        raise NotImplementedError()
+
+    def get_output_path(self):
+        timestamp = datetime.now().isoformat()
+        filename = '{0}_{1}.out'.format(self.observation_id, timestamp)
+        return os.path.join(settings.OUTPUT_PATH, filename)
+
     def run(self):
-        raise NotImplementedError
+        self.pipe = os.pipe()
+        self.output = open(self.get_output_path(), 'w')
+
+        self.consumer = Popen(self.get_decoding_cmd(), stdin=self.pipe[0])
+        self.producer = Popen(self.get_demodulation_cmd(), stdout=self.pipe[1])
+
+        self.consumer.wait()
+        self.producer.wait()
+
+    def stop(self):
+        self.consumer.kill()
+        self.producer.kill()
+        self.output.close()
+        self.pipe[0].close()
+        self.pipe[1].close()
