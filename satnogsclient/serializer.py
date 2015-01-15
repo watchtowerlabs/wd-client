@@ -50,7 +50,7 @@ class SignalSerializer():
             '-a': self.demodulator,
         }
 
-        args = ['{0} {1}'.format(key, params[key]) for key in params]
+        args = ['{0}{1}'.format(key, params[key]) for key in params]
 
         if self.aprs:
             args.append('-A')
