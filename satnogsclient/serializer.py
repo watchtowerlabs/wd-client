@@ -57,7 +57,7 @@ class SignalSerializer():
 
         args.append('-')
 
-        return [self.DECODING_COMMAND] + args
+        return [settings.DECODING_COMMAND] + args
 
     def get_demodulation_cmd(self):
         params = {
