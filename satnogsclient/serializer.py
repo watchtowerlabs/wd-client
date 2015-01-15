@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from subprocess import Popen
 
-from satnogsclient import settings
+import settings
 
 
 class SignalSerializer():
@@ -32,7 +32,7 @@ class SignalSerializer():
         if not frequency:
             raise LookupError('arg not found: frequency')
 
-        if decoding not in self._decoding_values or decoding is not None:
+        if decoding not in self._decoding_values and decoding not None:
             raise LookupError('arg not found: decoding')
 
         self.observation_id = observation_id
