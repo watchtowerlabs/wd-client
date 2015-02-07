@@ -95,7 +95,7 @@ class WorkerFreq():
                 p = orbital.pinpoint(self.observer_dict, self.satellite_dict)
                 if p['ok']:
                     shift = self.calculate_frequency_shift(self._frequency, p['rng'], p['rng_vlct'])
-                    s = str(shift) #TODO: FORMAT THIS AS REQUIRED
+                    s = str(shift)  # TODO: FORMAT THIS AS REQUIRED
                     sock.send(s + str('\n'))
                     time.sleep(self.SLEEP_TIME)
             # exiting
@@ -113,7 +113,7 @@ class WorkerFreq():
         self._stay_alive = False
 
     def check_observation_end_reached(self):
-        #TODO: keep this, but incorporate it in a mechanism that:
+        # TODO: keep this, but incorporate it in a mechanism that:
         # a) calculates sleep time multiples
         # b) subtracts every time thread sleeps
         # c) is recalculated every time the sleep time interval is changed
