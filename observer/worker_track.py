@@ -2,8 +2,8 @@
 """ Class to facilitate tracking loop.
 """
 
-import commsocket
-import orbital
+from . import commsocket
+from . import orbital
 import time
 import threading
 import json
