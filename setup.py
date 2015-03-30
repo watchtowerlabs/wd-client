@@ -14,6 +14,7 @@ setup(name='satnogsclient',
                         'validators',
                         'python-dateutil',
                         'pyephem',
+                        'python-decouple',
                         'pytz'],
       scripts=['satnogsclient/bin/satnogs-poller',
                'satnogsclient/bin/satnogs-task'])

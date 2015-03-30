@@ -8,3 +8,4 @@ env.sh
 *.pickle
 _build/
 .idea/
+/satnogsclient/settings.ini
