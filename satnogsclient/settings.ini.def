@@ -1,0 +1,15 @@
+[settings]
+STATION_ID=0
+#Latitude and Longitude in float representation
+STATION_LAT=0.0
+STATION_LON=0.0
+#Altitude in [m]
+STATION_ELEV=0
+NETWORK_API_KEY =
+
+RTL_TCP_IP=127.0.0.1
+RTL_TCP_PORT=4532
+RIGCTL_IP =127.0.0.1
+RIGCTL_PORT=4533
+
+

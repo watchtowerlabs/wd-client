@@ -1,9 +1,7 @@
 # -*- coding: utf-8 -*-
+import os
 from os import environ, path
-
-PWD = path.dirname(path.realpath(__file__))
-DEFAULT_SQLITE_PATH = path.join(PWD, 'jobs.sqlite')
-
+from decouple import config
 
 def _cast_or_none(func, value):
     try:
@@ -11,21 +9,46 @@ def _cast_or_none(func, value):
     except:
         return None
 
-GROUND_STATION_ID = _cast_or_none(int, environ.get('SATNOGS_STATION_ID', None))
-GROUND_STATION_LAT = _cast_or_none(float, environ.get('SATNOGS_STATION_LAT', None))
-GROUND_STATION_LON = _cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
-GROUND_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
 
+# Read from settings.ini using python-decouple
+GROUND_STATION_ID = config('STATION_ID', cast=int, default=0)
+GROUND_STATION_LAT = config('STATION_LAT', cast=float, default=0)
+GROUND_STATION_LON = config('STATION_LON', cast=float, default=0)
+GROUND_STATION_ELEV = config('STATION_ELEV', cast=float, default=0)
+
+ROT_IP = config('ROT_IP', default='127.0.0.1')
+ROT_PORT = config('ROT_PORT', cast=int, default=4532)
+RIG_IP =  config('RTL_TCP_IP', default='127.0.0.1')
+RIG_PORT = config('RTL_TCP_PORT', cast=int, default=4532)
+
+NETWORK_API_URL = config('NETWORK_API_URL', default='https://dev.satnogs.org/api/')
+NETWORK_API_KEY = config('NETWORK_API_KEY', default='')
+NETWORK_API_QUERY_INTERVAL = config('NETWORK_API_QUERY_INTERVAL', cast=int, default=5)
+# minutes
+SCHEDULER_SLEEP_TIME = config('SCHEDULER_SLEEP_TIME', cast=int, default=5)
+# seconds
+CA_CERT = config('CA_CERT', default='')
+
+
+WORKINGDIR = config('WORKINGDIR', '/tmp/.satnogs')
+
+DEMODULATION_COMMAND = config('DEMODULATION_COMMAND', default='rtl_fm')
+ENCODING_COMMAND = config('ENCODING_COMMAND', default='oggenc')
+DECODING_COMMAND = config('DECODING_COMMAND', default='multimon-ng')
+
+
+# Setup
+
+#PWD = path.dirname(path.realpath(__file__))
+
+if not os.path.exists(WORKINGDIR ):
+        os.makedirs(WORKINGDIR )
+
+DEFAULT_SQLITE_PATH = path.join(WORKINGDIR, 'jobs.sqlite')
 SQLITE_URL = environ.get('SATNOGS_SQLITE_URL', 'sqlite:///' + DEFAULT_SQLITE_PATH)
-DEMODULATION_COMMAND = environ.get('SATNOGS_DEMODULATION_COMMAND', 'rtl_fm')
-ENCODING_COMMAND = environ.get('SATNOGS_ENCODING_COMMAND', 'oggenc')
-DECODING_COMMAND = environ.get('SATNOGS_DECODING_COMMAND', 'multimon-ng')
-OUTPUT_PATH = environ.get('SATNOGS_OUTPUT_PATH', '/tmp')
-NETWORK_API_URL = environ.get('SATNOGS_API_URL', 'https://dev.satnogs.org/api/')
-NETWORK_API_QUERY_INTERVAL = 5  # In minutes
-SCHEDULER_SLEEP_TIME = 10  # In seconds
 
-ROT_IP = environ.get('SATNOGS_ROT_IP', '127.0.0.1')
-ROT_PORT = int(environ.get('SATNOGS_ROT_PORT', 4533))
-RIG_IP = environ.get('SATNOGS_RIG_IP', '127.0.0.1')
-RIG_PORT = int(environ.get('SATNOGS_RIG_PORT', 4532))
+if GROUND_STATION_ID==0:
+    raise ValueError('Invalid setting for Station. Have you set up your settings.ini file?')
+
+
+
