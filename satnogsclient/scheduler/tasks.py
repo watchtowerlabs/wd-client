@@ -37,7 +37,7 @@ def get_jobs():
     params = {'ground_station': settings.GROUND_STATION_ID}
     try:
         response = requests.get(url, params=params, verify=settings.CA_CERT)
-    except:
+    except requests.exceptions.SSLError:
         print 'HTTPs certificate verification failed..(ignore for now)'
         response = requests.get(url, params=params, verify=False)
 
