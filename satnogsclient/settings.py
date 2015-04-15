@@ -16,12 +16,12 @@ GROUND_STATION_LAT = _cast_or_none(float, environ.get('SATNOGS_STATION_LAT', Non
 GROUND_STATION_LON = _cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
 GROUND_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
 
-# PWD = path.dirname(path.realpath(__file__))
+PWD = path.dirname(path.realpath(__file__))
 OUTPUT_PATH = environ.get('SATNOGS_OUTPUT_PATH', '/tmp/.satnogs')
 if not os.path.exists(OUTPUT_PATH ):
     os.makedirs(OUTPUT_PATH )
 
-
+CA_CERT =path.join(PWD, 'sub.class1.server.ca.pem')
 DEFAULT_SQLITE_PATH = path.join(OUTPUT_PATH, 'jobs.sqlite')
 SQLITE_URL = environ.get('SATNOGS_SQLITE_URL', 'sqlite:///' + DEFAULT_SQLITE_PATH)
 DEMODULATION_COMMAND = environ.get('SATNOGS_DEMODULATION_COMMAND', 'rtl_fm')
