@@ -19,7 +19,7 @@ GROUND_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', N
 # PWD = path.dirname(path.realpath(__file__))
 OUTPUT_PATH = environ.get('SATNOGS_OUTPUT_PATH', '/tmp/.satnogs')
 if not os.path.exists(OUTPUT_PATH ):
-        os.makedirs(OUTPUT_PATH )
+    os.makedirs(OUTPUT_PATH )
 
 
 DEFAULT_SQLITE_PATH = path.join(OUTPUT_PATH, 'jobs.sqlite')
