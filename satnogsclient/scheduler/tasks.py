@@ -30,9 +30,19 @@ def spawn_observation(*args, **kwargs):
 
 def get_jobs():
     """Query SatNOGS Network API to GET jobs."""
+
+    print 'Try getting Jobs from Network ..'
+
     url = urljoin(settings.NETWORK_API_URL, 'jobs')
     params = {'ground_station': settings.GROUND_STATION_ID}
-    response = requests.get(url, params=params)
+    try:
+        response = requests.get(url, params=params, verify=settings.CA_CERT)
+    except requests.exceptions.SSLError:
+        print 'HTTPs certificate verification failed..(ignore for now)'
+        response = requests.get(url, params=params, verify=False)
+
+
+    print response
 
     if not response.status_code == 200:
         raise Exception('Status code: {0} on request: {1}'.format(response.status_code, url))
