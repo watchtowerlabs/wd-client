@@ -29,9 +29,9 @@ def spawn_observer(*args, **kwargs):
 
     observer = Observer()
     observer.location = {
-        'lon': settings.GROUND_STATION_LON,
-        'lat': settings.GROUND_STATION_LAT,
-        'elev': settings.GROUND_STATION_ELEV
+        'lon': settings.SATNOGS_STATION_LON,
+        'lat': settings.SATNOGS_STATION_LAT,
+        'elev': settings.SATNOGS_STATION_ELEV
     }
 
     setup_kwargs = {
@@ -102,7 +102,7 @@ def post_data():
 def get_jobs():
     """Query SatNOGS Network API to GET jobs."""
     url = urljoin(settings.NETWORK_API_URL, 'jobs/')
-    params = {'ground_station': settings.GROUND_STATION_ID}
+    params = {'ground_station': settings.SATNOGS_STATION_ID}
     headers = {'Authorization': 'Token {0}'.format(settings.API_TOKEN)}
     logger.debug('URL: {0}'.format(url))
     logger.debug('Params: {0}'.format(params))

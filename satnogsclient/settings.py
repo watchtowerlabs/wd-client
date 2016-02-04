@@ -12,10 +12,10 @@ def _cast_or_none(func, value):
 
 # Ground station information
 API_TOKEN = environ.get('SATNOGS_API_TOKEN', None)
-GROUND_STATION_ID = _cast_or_none(int, environ.get('SATNOGS_STATION_ID', None))
-GROUND_STATION_LAT = _cast_or_none(float, environ.get('SATNOGS_STATION_LAT', None))
-GROUND_STATION_LON = _cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
-GROUND_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
+SATNOGS_STATION_ID = _cast_or_none(int, environ.get('SATNOGS_STATION_ID', None))
+SATNOGS_STATION_LAT = _cast_or_none(float, environ.get('SATNOGS_STATION_LAT', None))
+SATNOGS_STATION_LON = _cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
+SATNOGS_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
 
 # Output paths
 APP_PATH = environ.get('SATNOGS_APP_PATH', '/tmp/.satnogs')
