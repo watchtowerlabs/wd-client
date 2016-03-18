@@ -4,6 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>SatNOGS Client{% block title %}{% endblock %}</title>
+    <link rel="icon" type="image/ico" href="{{ url_for('static', filename='favicon.ico') }}">
 
     <!-- CSS -->
     <link href="{{ url_for('static', filename='css/bootstrap.min.css') }}" rel="stylesheet">
@@ -42,6 +43,16 @@
                 %}><a href="{{ href|e }}">{{ caption|e }}</a>
                 </li>
               {% endfor %}
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+              <div id="network-switch" class="btn-group">
+                <button type="button" class="btn btn-success dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Network mode <span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu">
+                  <li><a href="#">Switch to Stand-alone mode</a></li>
+                </ul>
+              </div>
             </ul>
           </div><!-- /.navbar-collapse -->
         </div><!-- /.container-fluid -->

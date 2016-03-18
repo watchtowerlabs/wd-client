@@ -1,6 +1,10 @@
 body {
-    padding-top: 50px;
+    padding-top: 20px;
 }
 .settings {
     padding: 40px 15px;
+}
+
+#network-switch {
+    margin-top: 8px;
 }
