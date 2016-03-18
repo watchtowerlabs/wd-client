@@ -6,9 +6,21 @@ from satnogsclient import settings as client_settings
 app = Flask(__name__)
 
 
-@app.route("/")
-def index():
-    """View list of satnogs-client settings."""
+@app.route('/')
+def status():
+    '''View status satnogs-client.'''
+    return render_template('status.j2')
+
+
+@app.route('/control/')
+def control():
+    '''Control satnogs-client.'''
+    return render_template('control.j2')
+
+
+@app.route('/configuration/')
+def configuration():
+    '''View list of satnogs-client settings.'''
     filters = [
         lambda x: not x.startswith('_'),
         lambda x: x.isupper()
@@ -21,4 +33,4 @@ def index():
         'settings': sorted(settings, key=lambda x: x[0])
     }
 
-    return render_template('index.j2', **ctx)
+    return render_template('configuration.j2', **ctx)
