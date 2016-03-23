@@ -34,6 +34,9 @@ class Worker:
     observer_dict = {}
     satellite_dict = {}
 
+    observer=None
+    satellite=None
+
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
         self._IP = ip
@@ -57,9 +60,34 @@ class Worker:
         """
         Sets tracking object.
         Can also be called while tracking to manipulate observation.
+        Returns whether or not setting tracking information succeeded
         """
-        self.observer_dict = observer_dict
-        self.satellite_dict = satellite_dict
+        # observer object
+        if all(map(lambda x: x in observer_dict, ['lat', 'lon', 'elev'])):
+            logger.debug('Observer data: {0}'.format(observer_dict))
+            self.observer = ephem.Observer()
+            self.observer.lon = str(observer_dict['lon'])
+            self.observer.lat = str(observer_dict['lat'])
+            self.observer.elevation = float(observer_dict['elev'])
+        else:
+            logger.error('Something went wrong: {0}'.format(observer_dict))
+            return False
+
+        # satellite object
+        if all(map(lambda x: x in satellite_dict, ['tle0', 'tle1', 'tle2'])):
+            logger.debug('Satellite data: {0}'.format(satellite_dict))
+            tle0 = str(satellite_dict['tle0'])
+            tle1 = str(satellite_dict['tle1'])
+            tle2 = str(satellite_dict['tle2'])
+            try:
+                self.satellite = ephem.readtle(tle0, tle1, tle2)
+            except:
+                logger.error('Something went wrong: {0}'.format(satellite_dict))
+                logger.error(sys.exc_info()[0])
+                return False
+        else:
+            return False
+        return True
 
     def trackstart(self):
         """
@@ -95,11 +123,13 @@ class Worker:
 
             # check if we need to exit
             self.check_observation_end_reached()
-
-            p = pinpoint(self.observer_dict, self.satellite_dict)
-            if p['ok']:
-                self.send_to_socket(p, sock)
-                time.sleep(self.SLEEP_TIME)
+            if (satellite is not None) and (observer is not None):
+                p = pinpoint(self.observer, self.satellite)
+                if p['ok']:
+                    self.send_to_socket(p, sock)
+                    time.sleep(self.SLEEP_TIME)
+            else:
+                logger.error('Something has gone terribly wrong, is trackstart being called without calling trackobject?')
 
         sock.disconnect()
 

@@ -131,8 +131,8 @@ class Observer:
                                        time_to_stop=self.observation_end)
         logger.debug('TLE: {0}'.format(self.tle))
         logger.debug('Observation end: {0}'.format(self.observation_end))
-        self.tracker_rot.trackobject(self.location, self.tle)
-        self.tracker_rot.trackstart()
+        if self.tracker_rot.trackobject(self.location, self.tle):
+            self.tracker_rot.trackstart()
 
     def run_rig(self):
         self.tracker_freq = WorkerFreq(ip=self.rig_ip,
@@ -141,5 +141,5 @@ class Observer:
                                        time_to_stop=self.observation_end)
         logger.debug('Frequency {0}'.format(self.frequency))
         logger.debug('Observation end: {0}'.format(self.observation_end))
-        self.tracker_freq.trackobject(self.location, self.tle)
-        self.tracker_freq.trackstart()
+        if self.tracker_freq.trackobject(self.location, self.tle):
+            self.tracker_freq.trackstart()
