@@ -11,11 +11,11 @@ def _cast_or_none(func, value):
         return None
 
 # Ground station information
-API_TOKEN = environ.get('SATNOGS_API_TOKEN', None)
-GROUND_STATION_ID = _cast_or_none(int, environ.get('SATNOGS_STATION_ID', None))
-GROUND_STATION_LAT = _cast_or_none(float, environ.get('SATNOGS_STATION_LAT', None))
-GROUND_STATION_LON = _cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
-GROUND_STATION_ELEV = _cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
+API_TOKEN = '81168742b766b4d85a3724815f30ca94023c196c' #environ.get('SATNOGS_API_TOKEN', None)
+GROUND_STATION_ID = '52' #_cast_or_none(int, environ.get('SATNOGS_STATION_ID', None))
+GROUND_STATION_LAT = '35.326' #_cast_or_none(float, environ.get('SATNOGS_STATION_LAT', None))
+GROUND_STATION_LON = '25.137' #_cast_or_none(float, environ.get('SATNOGS_STATION_LON', None))
+GROUND_STATION_ELEV = '57' #_cast_or_none(float, environ.get('SATNOGS_STATION_ELEV', None))
 
 # Output paths
 APP_PATH = environ.get('SATNOGS_APP_PATH', '/tmp/.satnogs')
@@ -34,7 +34,7 @@ DEMODULATION_COMMAND = environ.get('SATNOGS_DEMODULATION_COMMAND', 'rtl_fm')
 ENCODING_COMMAND = environ.get('SATNOGS_ENCODING_COMMAND', 'oggenc')
 DECODING_COMMAND = environ.get('SATNOGS_DECODING_COMMAND', 'multimon-ng')
 
-NETWORK_API_URL = environ.get('SATNOGS_API_URL', 'https://dev.satnogs.org/api/')
+NETWORK_API_URL = environ.get('SATNOGS_API_URL', 'https://network-dev.satnogs.org/api/')
 NETWORK_API_QUERY_INTERVAL = 5  # In minutes
 NETWORK_API_POST_INTERVAL = 15  # In minutes
 DEMODULATOR_INIT_TIME = int(environ.get('SATNOGS_DEMODULATOR_INIT_TIME', 5))  # In seconds

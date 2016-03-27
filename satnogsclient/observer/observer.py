@@ -143,3 +143,9 @@ class Observer:
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_freq.trackobject(self.location, self.tle)
         self.tracker_freq.trackstart()
+        
+    def notify_ui(self):
+        url = 'https://localhost:5000/notify'
+        payload = {'tle': self.tle}
+        headers = {'content-type': 'application/json'}
+        response = requests.post(url, data=json.dumps(payload), headers=headers)

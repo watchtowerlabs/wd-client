@@ -11,6 +11,12 @@ def status():
     '''View status satnogs-client.'''
     return render_template('status.j2')
 
+@app.route('/notify' ,  methods=['GET', 'POST'])
+def notify():
+    params = request.get_json()
+    print params[0]
+    
+
 
 @app.route('/control/')
 def control():

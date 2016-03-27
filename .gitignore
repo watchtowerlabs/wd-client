@@ -8,3 +8,6 @@ env.sh
 *.pickle
 _build/
 .idea/
+.cproject
+.project
+.pydevproject
