@@ -3,6 +3,8 @@ import logging
 import math
 import threading
 import time
+import requests
+import json
 
 from datetime import datetime
 
@@ -74,6 +76,8 @@ class Worker:
         self.t = threading.Thread(target=self._communicate_tracking_info)
         self.t.daemon = True
         self.t.start()
+        
+        self.notify_ui()
 
         return self.is_alive
 
@@ -113,6 +117,13 @@ class Worker:
     def check_observation_end_reached(self):
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
+    
+    def notify_ui(self):
+        url = 'https://localhost:5000/notify'
+        payload = {'alive': self.is_alive}
+        headers = {'content-type': 'application/json'}
+        #requests.get('https://localhost:5000/notify', verify=False)
+        response = requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
 
 
 class WorkerTrack(Worker):

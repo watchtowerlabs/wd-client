@@ -1,8 +1,11 @@
 # -*- coding: utf-8 -*-
 import logging
+import requests
+import json
 
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
+
 
 
 logger = logging.getLogger('satnogsclient')
@@ -124,6 +127,7 @@ class Observer:
         # start thread for rigctl
         logger.info('Start rigctrl thread.')
         self.run_rig()
+        self.notify_ui()
 
     def run_rot(self):
         self.tracker_rot = WorkerTrack(ip=self.rot_ip,
@@ -148,4 +152,5 @@ class Observer:
         url = 'https://localhost:5000/notify'
         payload = {'tle': self.tle}
         headers = {'content-type': 'application/json'}
-        response = requests.post(url, data=json.dumps(payload), headers=headers)
+        #requests.get('https://localhost:5000/notify', verify=False)
+        response = requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
