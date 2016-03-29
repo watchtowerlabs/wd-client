@@ -1,8 +1,6 @@
-from flask import Flask, render_template , request
+from flask import Flask, render_template
 
 from satnogsclient import settings as client_settings
-from satnogsclient.scheduler import tasks 
-
 
 
 app = Flask(__name__)
@@ -11,14 +9,7 @@ app = Flask(__name__)
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
-    #tasks.get_jobs()
     return render_template('status.j2')
-
-@app.route('/notify' ,  methods=['GET', 'POST'])
-def notify():
-    params = request.get_json()
-    print params['tle']
-    
 
 
 @app.route('/control/')
