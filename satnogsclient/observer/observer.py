@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 import logging
+import requests
+import json
 
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
+
+
 
 
 logger = logging.getLogger('satnogsclient')
@@ -112,6 +116,12 @@ class Observer:
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
+        payload = {}
+        payload = {'tle' : self.tle , 
+                   'frequency' : self.frequency ,
+                   'id' : self.observation_id,
+                   'end' : str(self.observation_end)}
+        self.notify_ui(payload)
 
         return all([self.observation_id, self.tle, self.observation_end, self.frequency])
 
@@ -143,3 +153,10 @@ class Observer:
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_freq.trackobject(self.location, self.tle)
         self.tracker_freq.trackstart()
+        
+    def notify_ui(self,payload):
+        """ Sends the client ui status tab the necessary information """
+        
+        url = 'https://localhost:5000/notify'
+        headers = {'content-type': 'application/json'}
+        response = requests.post(url, data=json.dumps(payload), headers=headers, verify=False)

@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template , request
 
 from satnogsclient import settings as client_settings
 
@@ -22,3 +22,11 @@ def index():
     }
 
     return render_template('index.j2', **ctx)
+
+
+@app.route('/notify' ,  methods=['POST'])
+def notify():
+     params = request.get_json()
+     print 'Got a new json, now i must render it'
+     
+     return 'OK'
