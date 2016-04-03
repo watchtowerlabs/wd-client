@@ -3,6 +3,8 @@ import logging
 import math
 import threading
 import time
+import requests
+import json
 
 from datetime import datetime
 
@@ -113,13 +115,13 @@ class Worker:
     def check_observation_end_reached(self):
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
-            
-    def notify_ui(self,payload):
+
+    def notify_ui(self, payload):
         """ Sends the client ui status tab the necessary information """
-        
+
         url = 'https://localhost:5000/notify'
         headers = {'content-type': 'application/json'}
-        response = requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
+        requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
 
 
 class WorkerTrack(Worker):
@@ -131,8 +133,8 @@ class WorkerTrack(Worker):
         msg = 'P {0} {1}\n'.format(az, alt)
         logger.debug('Rotctld msg: {0}'.format(msg))
         sock.send(msg)
-        payload = {'azimuth' : az,
-                   'altitude' : alt} 
+        payload = {'azimuth': az,
+                   'altitude': alt}
         self.notify_ui(payload)
 
 
