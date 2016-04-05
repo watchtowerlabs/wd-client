@@ -49,25 +49,6 @@ class Udpsocket:
     def is_connected(self):
         return self._connected
 
-    def connect(self):
-        try:
-            logger.debug('Opening TCP socket: {0}:{1}'.format(self.ip, self.port))
-            self.s.connect((self.ip, self.port))
-            self._connected = True
-        except:
-            logger.error('Cannot connect to socket {0}:{1}'.format(self.ip, self.port))
-            self._connected = False
-        return self.is_connected
-
     def send(self, message):
-        #if not self.is_connected:
-        #    self.connect()
-        logger.debug('Sending message: {0}'.format(message))
         self.s.sendto(message,(self._UDP_IP , self._UDP_PORT))
-        #response = self.s.recv(self._BUFFER_SIZE)
-        #logger.debug('Received message: {0}'.format(response))
 
-    def disconnect(self):
-        logger.info('Closing socket: {0}'.format(self.s))
-        self.s.close()
-        self._connected = False

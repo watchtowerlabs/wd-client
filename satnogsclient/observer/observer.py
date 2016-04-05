@@ -5,6 +5,8 @@ import json
 
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
+from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer.jsonhandler import Jsonhandler
 
 
 
@@ -115,6 +117,11 @@ class Observer:
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
+        sock = Udpsocket('127.0.0.1',5003)
+        handler= Jsonhandler()
+        payload={'First': '123',
+                 'Second': 123456}
+        sock.send(handler.get_json_str(payload))
 
         return all([self.observation_id, self.tle, self.observation_end, self.frequency])
 
