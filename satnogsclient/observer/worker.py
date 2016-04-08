@@ -13,6 +13,7 @@ import pytz
 
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.orbital import pinpoint
+from satnogsclient.observer.udpsocket import Udpsocket
 
 
 logger = logging.getLogger('satnogsclient')
@@ -63,7 +64,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self):
+    def trackstart(self,port):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -77,7 +78,12 @@ class Worker:
         self.t.daemon = True
         self.t.start()
         
-        self.notify_ui()
+        self.r = threading.Thread(target=self._status_interface,args=(port,))
+        self.r.daemon = True
+        self.r.start()
+        
+        
+        #self.notify_ui()
 
         return self.is_alive
 
@@ -106,6 +112,16 @@ class Worker:
                 time.sleep(self.SLEEP_TIME)
 
         sock.disconnect()
+        
+    def _status_interface(self,port):
+        sock = Udpsocket('127.0.0.1',port)
+        sock.get_sock().bind(('127.0.0.1',port))
+        while self.is_alive:
+            
+            data = sock.listen_non_block()
+            print 'Got data: '
+            print data
+            
 
     def trackstop(self):
         """

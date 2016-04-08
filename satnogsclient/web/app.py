@@ -2,6 +2,7 @@ from flask import Flask, render_template, request
 
 from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
+from satnogsclient.observer.udpsocket import Udpsocket
 
 
 app = Flask(__name__)
@@ -10,6 +11,11 @@ app = Flask(__name__)
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
+    sock1 = Udpsocket('127.0.0.1',5005)
+    sock2 = Udpsocket('127.0.0.1',5006)
+    print sock1.send("Hello there\n")
+    print sock2.send("Hello there\n")
+    
     return render_template('status.j2')
 
 
@@ -22,6 +28,7 @@ def control():
 def notify():
      params = request.get_json()
      print params['tle']
+     return 'OK'
      
      
 @app.route('/configuration/')
@@ -44,6 +51,7 @@ def configuration():
 @app.route('/config_update' , methods=['GET', 'POST'])
 def config_update():
     print "Configuration updated"
+    return 'OK'
     
     
     

@@ -20,6 +20,9 @@ class Udpsocket:
         self._UDP_IP = ip
         self._UDP_PORT = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        
+        
+       
 
     @property
     def ip(self):
@@ -48,7 +51,15 @@ class Udpsocket:
     @property
     def is_connected(self):
         return self._connected
+    
+    def get_sock(self):
+        return self.s
 
     def send(self, message):
         self.s.sendto(message,(self._UDP_IP , self._UDP_PORT))
+        
+    def listen_non_block(self):
+        
+        data, addr = self.s.recvfrom(1024)
+        return data
 
