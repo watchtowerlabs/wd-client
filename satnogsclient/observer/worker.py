@@ -13,6 +13,7 @@ import pytz
 
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.orbital import pinpoint
+from satnogsclient.observer.udpsocket import Udpsocket
 
 
 logger = logging.getLogger('satnogsclient')
@@ -35,6 +36,9 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
+    
+    _azimuth = None
+    _altitude= None
 
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
@@ -63,7 +67,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self):
+    def trackstart(self,port):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -77,7 +81,12 @@ class Worker:
         self.t.daemon = True
         self.t.start()
         
-        self.notify_ui()
+        self.r = threading.Thread(target=self._status_interface,args=(port,))
+        self.r.daemon = True
+        self.r.start()
+        
+        
+        #self.notify_ui()
 
         return self.is_alive
 
@@ -106,6 +115,24 @@ class Worker:
                 time.sleep(self.SLEEP_TIME)
 
         sock.disconnect()
+        
+    def _status_interface(self,port):
+        sock = Commsocket('127.0.0.1',port)
+        #sock.get_sock().bind(('127.0.0.1',port))
+        sock.bind()
+        while self.is_alive:
+            conn = sock.listen()
+            data = conn.recv(sock.buffer_size)
+            print 'Got data: '
+            print data
+            dict={'satelite_dict': self.satellite_dict,
+                  'azimuth': self._azimuth,
+                  'altitude': self._altitude}
+            conn.send(json.dumps(dict))
+            if conn:
+                conn.close()    
+        
+            
 
     def trackstop(self):
         """
@@ -131,6 +158,9 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
+        
+        self._azimuth = az
+        self._altitude = alt
 
         msg = 'P {0} {1}\n'.format(az, alt)
         logger.debug('Rotctld msg: {0}'.format(msg))

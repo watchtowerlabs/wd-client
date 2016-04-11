@@ -5,6 +5,8 @@ import json
 
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
+from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer.jsonhandler import Jsonhandler
 
 
 
@@ -115,6 +117,11 @@ class Observer:
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
+        sock = Udpsocket('127.0.0.1',5003)
+        handler= Jsonhandler()
+        payload={'First': '123',
+                 'Second': 123456}
+        sock.send(handler.get_json_str(payload))
 
         return all([self.observation_id, self.tle, self.observation_end, self.frequency])
 
@@ -136,7 +143,7 @@ class Observer:
         logger.debug('TLE: {0}'.format(self.tle))
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_rot.trackobject(self.location, self.tle)
-        self.tracker_rot.trackstart()
+        self.tracker_rot.trackstart(5005)
 
     def run_rig(self):
         self.tracker_freq = WorkerFreq(ip=self.rig_ip,
@@ -146,7 +153,7 @@ class Observer:
         logger.debug('Frequency {0}'.format(self.frequency))
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_freq.trackobject(self.location, self.tle)
-        self.tracker_freq.trackstart()
+        self.tracker_freq.trackstart(5006)
         
     def notify_ui(self):
         url = 'https://localhost:5000/notify'

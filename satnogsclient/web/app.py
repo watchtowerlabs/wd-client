@@ -2,6 +2,8 @@ from flask import Flask, render_template, request, json, jsonify
 
 from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
+from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer.commsocket import Commsocket
 
 
 app = Flask(__name__)
@@ -10,6 +12,14 @@ app = Flask(__name__)
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
+    sock1 = Commsocket('127.0.0.1',5005)
+    #sock2 = Udpsocket('127.0.0.1',5006)
+    b = sock1.connect()
+    if b:
+        print sock1.send("Hello there\n")    
+    else:
+        print 'No observation currently'
+
     return render_template('status.j2')
 
 
@@ -22,6 +32,7 @@ def control():
 def notify():
      params = request.get_json()
      print params['tle']
+     return 'OK'
      
      
 @app.route('/configuration/')
@@ -44,7 +55,7 @@ def configuration():
 @app.route('/config_update' , methods=['POST'])
 def config_update():
     if request.method == "POST":
-        request_json_data = request.get_json(force=True)
+    return 'OK'
         data = json.dumps(request_json_data)
         print data[1]
         return "OK"
