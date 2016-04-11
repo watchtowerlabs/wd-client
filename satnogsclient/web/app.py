@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, json, jsonify
 
 from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
@@ -41,11 +41,14 @@ def configuration():
 
     return render_template('configuration.j2', **ctx)
 
-@app.route('/config_update' , methods=['GET', 'POST'])
+@app.route('/config_update' , methods=['POST'])
 def config_update():
-    print "Configuration updated"
-    
-    
+    if request.method == "POST":
+        request_json_data = request.get_json(force=True)
+        data = json.dumps(request_json_data)
+        print data[1]
+        return "OK"
+
     
 
 
