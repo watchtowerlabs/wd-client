@@ -70,3 +70,15 @@ class Commsocket:
         logger.info('Closing socket: {0}'.format(self.s))
         self.s.close()
         self._connected = False
+
+    def receive(self):
+        resp = self.s.recv(self._BUFFER_SIZE)
+        return resp
+
+    def listen(self):
+        self.s.listen(1)
+        conn, addr = self.s.accept()
+        return conn
+
+    def bind(self):
+        self.s.bind((self._TCP_IP, self._TCP_PORT))

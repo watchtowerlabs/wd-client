@@ -1,7 +1,5 @@
 # -*- coding: utf-8 -*-
 import logging
-import requests
-import json
 
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
@@ -113,13 +111,6 @@ class Observer:
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
-        payload = {}
-        payload = {'tle': self.tle,
-                   'frequency': self.frequency,
-                   'id': self.observation_id,
-                   'end': str(self.observation_end)}
-        self.notify_ui(payload)
-
         return all([self.observation_id, self.tle, self.observation_end, self.frequency])
 
     def observe(self):
@@ -139,7 +130,7 @@ class Observer:
         logger.debug('TLE: {0}'.format(self.tle))
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_rot.trackobject(self.location, self.tle)
-        self.tracker_rot.trackstart()
+        self.tracker_rot.trackstart(5005)
 
     def run_rig(self):
         self.tracker_freq = WorkerFreq(ip=self.rig_ip,
@@ -149,11 +140,4 @@ class Observer:
         logger.debug('Frequency {0}'.format(self.frequency))
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_freq.trackobject(self.location, self.tle)
-        self.tracker_freq.trackstart()
-
-    def notify_ui(self, payload):
-        """ Sends the client ui status tab the necessary information """
-
-        url = 'https://localhost:5000/notify'
-        headers = {'content-type': 'application/json'}
-        requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
+        self.tracker_freq.trackstart(5006)

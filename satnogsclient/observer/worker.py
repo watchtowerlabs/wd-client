@@ -3,7 +3,6 @@ import logging
 import math
 import threading
 import time
-import requests
 import json
 
 from datetime import datetime
@@ -32,6 +31,9 @@ class Worker:
 
     # frequency of original signal
     _frequency = None
+
+    _azimuth = None
+    _altitude = None
 
     observer_dict = {}
     satellite_dict = {}
@@ -63,7 +65,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self):
+    def trackstart(self, port):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -76,6 +78,10 @@ class Worker:
         self.t = threading.Thread(target=self._communicate_tracking_info)
         self.t.daemon = True
         self.t.start()
+
+        self.r = threading.Thread(target=self._status_interface, args=(port,))
+        self.r.daemon = True
+        self.r.start()
 
         return self.is_alive
 
@@ -116,12 +122,21 @@ class Worker:
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
 
-    def notify_ui(self, payload):
-        """ Sends the client ui status tab the necessary information """
-
-        url = 'https://localhost:5000/notify'
-        headers = {'content-type': 'application/json'}
-        requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
+    def _status_interface(self, port):
+        sock = Commsocket('127.0.0.1', port)
+        conn = None
+        sock.bind()
+        while self.is_alive:
+            conn = sock.listen()
+            data = conn.recv(sock.buffer_size)
+            print 'Got data: '
+            print data
+            dict = {'satelite_dict': self.satellite_dict,
+                    'azimuth': self._azimuth,
+                    'altitude': self._altitude}
+            conn.send(json.dumps(dict))
+        if conn:
+            conn.close()
 
 
 class WorkerTrack(Worker):
@@ -129,13 +144,12 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
+        self._azimuth = az
+        self._altitude = alt
 
         msg = 'P {0} {1}\n'.format(az, alt)
         logger.debug('Rotctld msg: {0}'.format(msg))
         sock.send(msg)
-        payload = {'azimuth': az,
-                   'altitude': alt}
-        self.notify_ui(payload)
 
 
 class WorkerFreq(Worker):

@@ -1,5 +1,6 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template
 
+from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient import settings as client_settings
 
 
@@ -9,6 +10,13 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     """View list of satnogs-client settings."""
+    sock1 = Commsocket('127.0.0.1', 5005)
+    b = sock1.connect()
+    if b:
+        sock1.send("Request")
+    else:
+        print 'No observation currently'
+
     filters = [
         lambda x: not x.startswith('_'),
         lambda x: x.isupper()
@@ -22,10 +30,3 @@ def index():
     }
 
     return render_template('index.j2', **ctx)
-
-
-@app.route('/notify', methods=['POST'])
-def notify():
-    params = request.get_json()
-    print 'Got a new json, now i must render it'
-    return 'OK'
