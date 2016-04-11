@@ -3,6 +3,7 @@ from flask import Flask, render_template, request
 from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
 from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer.commsocket import Commsocket
 
 
 app = Flask(__name__)
@@ -11,11 +12,14 @@ app = Flask(__name__)
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
-    sock1 = Udpsocket('127.0.0.1',5005)
-    sock2 = Udpsocket('127.0.0.1',5006)
-    print sock1.send("Hello there\n")
-    print sock2.send("Hello there\n")
-    
+    sock1 = Commsocket('127.0.0.1',5005)
+    #sock2 = Udpsocket('127.0.0.1',5006)
+    b = sock1.connect()
+    if b:
+        print sock1.send("Hello there\n")    
+    else:
+        print 'No observation currently'
+
     return render_template('status.j2')
 
 

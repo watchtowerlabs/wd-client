@@ -58,8 +58,9 @@ class Udpsocket:
     def send(self, message):
         self.s.sendto(message,(self._UDP_IP , self._UDP_PORT))
         
-    def listen_non_block(self):
-        
+    def listen(self):
         data, addr = self.s.recvfrom(1024)
         return data
-
+    
+    def set_timeout(self,sec):
+        self.s.settimeout(sec)

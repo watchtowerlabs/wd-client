@@ -36,6 +36,9 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
+    
+    _azimuth = None
+    _altitude= None
 
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
@@ -114,13 +117,21 @@ class Worker:
         sock.disconnect()
         
     def _status_interface(self,port):
-        sock = Udpsocket('127.0.0.1',port)
-        sock.get_sock().bind(('127.0.0.1',port))
+        sock = Commsocket('127.0.0.1',port)
+        #sock.get_sock().bind(('127.0.0.1',port))
+        sock.bind()
         while self.is_alive:
-            
-            data = sock.listen_non_block()
+            conn = sock.listen()
+            data = conn.recv(sock.buffer_size)
             print 'Got data: '
             print data
+            dict={'satelite_dict': self.satellite_dict,
+                  'azimuth': self._azimuth,
+                  'altitude': self._altitude}
+            conn.send(json.dumps(dict))
+            if conn:
+                conn.close()    
+        
             
 
     def trackstop(self):
@@ -147,6 +158,9 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
+        
+        self._azimuth = az
+        self._altitude = alt
 
         msg = 'P {0} {1}\n'.format(az, alt)
         logger.debug('Rotctld msg: {0}'.format(msg))
