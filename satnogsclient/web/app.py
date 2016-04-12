@@ -13,9 +13,11 @@ app = Flask(__name__)
 def status():
     '''View status satnogs-client.'''
     sock1 = Commsocket('127.0.0.1',5005)
+    
     #sock2 = Udpsocket('127.0.0.1',5006)
     b = sock1.connect()
     if b:
+        
         print sock1.send("Hello there\n")    
     else:
         print 'No observation currently'
@@ -26,6 +28,13 @@ def status():
 @app.route('/control/')
 def control():
     '''Control satnogs-client.'''
+    sock = Commsocket('127.0.0.1',5011)
+    b = sock.connect()
+    if b:
+        print sock.send("Hello there\n")    
+    else:
+        print 'Task feeder thread not online'
+    
     return render_template('control.j2')
 
 @app.route('/notify' ,  methods=['GET', 'POST'])
@@ -52,13 +61,7 @@ def configuration():
 
     return render_template('configuration.j2', **ctx)
 
-@app.route('/config_update' , methods=['POST'])
-def config_update():
-    if request.method == "POST":
-    return 'OK'
-        data = json.dumps(request_json_data)
-        print data[1]
-        return "OK"
+
 
     
 

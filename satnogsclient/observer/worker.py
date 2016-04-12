@@ -67,7 +67,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self,port):
+    def trackstart(self, port, start_thread):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -81,9 +81,10 @@ class Worker:
         self.t.daemon = True
         self.t.start()
         
-        self.r = threading.Thread(target=self._status_interface,args=(port,))
-        self.r.daemon = True
-        self.r.start()
+        if start_thread:
+            self.r = threading.Thread(target=self._status_interface,args=(port,))
+            self.r.daemon = True
+            self.r.start()
         
         
         #self.notify_ui()
@@ -127,7 +128,8 @@ class Worker:
             print data
             dict={'satelite_dict': self.satellite_dict,
                   'azimuth': self._azimuth,
-                  'altitude': self._altitude}
+                  'altitude': self._altitude,
+                  'frequency': sef._frequency}
             conn.send(json.dumps(dict))
             if conn:
                 conn.close()    

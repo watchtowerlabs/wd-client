@@ -5,6 +5,8 @@ import time
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
+from multiprocessing import Process, Queue
+import json
 
 import pytz
 import requests
@@ -13,6 +15,7 @@ from satnogsclient import settings
 from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
+from satnogsclient.observer.commsocket import Commsocket
 
 
 
@@ -118,6 +121,13 @@ def get_jobs():
     for job in scheduler.get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
+            
+    sock = Commsocket('127.0.0.1',5010)
+    b = sock.connect()
+    if b:
+        sock.send2(json.dumps(response.json()))    
+    else:
+        print 'Task listener thread not online'
 
     for obj in response.json():
         start = parser.parse(obj['start'])
@@ -136,3 +146,44 @@ def get_jobs():
                           run_date=receiver_start,
                           id='receiver_{0}'.format(job_id),
                           kwargs=kwargs)
+        
+def task_feeder(port1,port2):
+    logger.info('Started task feeder')
+    print port1,' ',port2
+    sock = Commsocket('127.0.0.1',port1)
+    sock.bind()
+    q = Queue(maxsize=1)
+    p = Process(target=task_listener, args=(port2,q))
+    p.daemon = True
+    p.start()
+    while 1:
+        print 'LISTENING'
+        conn = sock.listen()
+        data = conn.recv(sock.buffer_size)
+        print 'Sending '
+        conn.send(q.get())
+    if conn:
+        conn.close()
+    p.join()    
+    
+    
+    
+def task_listener(port,queue):
+    logger.info('Started task listener')
+    print port
+    sock = Commsocket('127.0.0.1',port)
+    sock.bind()
+    while 1:
+        conn = sock.listen()
+        data = conn.recv(sock.buffer_size)
+        print 'Got data: ' 
+        print data
+        if not queue.empty():
+            queue.get()
+            queue.put(data)
+        else:
+            queue.put(data)
+    if conn:
+         conn.close()    
+    print 'Task listener ended'     
+    

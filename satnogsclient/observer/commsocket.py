@@ -19,6 +19,7 @@ class Commsocket:
         self._TCP_IP = ip
         self._TCP_PORT = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
 
     @property
     def ip(self):
@@ -65,6 +66,13 @@ class Commsocket:
         self.s.send(message)
         response = self.s.recv(self._BUFFER_SIZE)
         logger.debug('Received message: {0}'.format(response))
+        return response
+        
+    def send2(self,message):
+        if not self.is_connected:
+            self.connect()
+        logger.debug('Sending message: {0}'.format(message))
+        self.s.send(message)
 
     def disconnect(self):
         logger.info('Closing socket: {0}'.format(self.s))
