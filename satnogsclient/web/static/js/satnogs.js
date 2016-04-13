@@ -16,11 +16,14 @@ function AnimateRotate(from, to) {
 
 var counter = 45;
 setInterval(function(){
-    AnimateRotate(counter,counter+45);
+    /*AnimateRotate(counter,counter+45);
     counter = counter + 45;
     if (counter == 405) {
     	counter = 45;
-    }
+    }*/
+    
+    query_status_info({}, 'GET', '/update_status');
+   
 }, 1000);
 
 $(function(){
@@ -36,7 +39,13 @@ $(function(){
   })
 });
 
-function postJSONData(JSONData, localMode, url) {
+function update_status_ui(data) {
+        var json_data = data;
+        document.getElementById("azimuth").innerHTML = (json_data["azimuth"]);
+        document.getElementById("elevation").innerHTML = (json_data["altitude"]);
+}
+
+function query_status_info(JSONData, localMode, url) {
         var localJSONData = JSONData;
         var postMode = localMode;
 
@@ -46,9 +55,6 @@ function postJSONData(JSONData, localMode, url) {
                 contentType:"application/json; charset=utf-8",
                 dataType:"json",
                 data:  JSONData,
-                success: function(data){
-					console.log("POST success");
-                }   // Success Function
-		}); // AJAX Call
-
+                success: update_status_ui
+		});
 }

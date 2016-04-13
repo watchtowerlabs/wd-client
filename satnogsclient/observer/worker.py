@@ -127,7 +127,8 @@ class Worker:
             print data
             dict={'satelite_dict': self.satellite_dict,
                   'azimuth': self._azimuth,
-                  'altitude': self._altitude}
+                  'altitude': self._altitude,
+                  'frequency': self._frequency}
             conn.send(json.dumps(dict))
             if conn:
                 conn.close()    

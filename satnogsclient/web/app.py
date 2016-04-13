@@ -4,22 +4,36 @@ from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.observer.commsocket import Commsocket
+import logging
+from flask.json import JSONDecoder
 
-
+logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
 
 
-@app.route('/')
-def status():
-    '''View status satnogs-client.'''
+@app.route('/update_status', methods=['GET', 'POST'])
+def get_status_info():
+    json_data = {}
+    json_data['azimuth'] = 'NA'
+    json_data['altitude'] = 'NA'
     sock1 = Commsocket('127.0.0.1',5005)
-    #sock2 = Udpsocket('127.0.0.1',5006)
     b = sock1.connect()
     if b:
         print sock1.send("Hello there\n")    
+        data = sock1.receive();
+        logger.debug('Received message at app: {0}'.format(data))
+        json_data = json.loads(data)
+        #print json_data['altitude']
+        #print json_data['azimuth']
     else:
         print 'No observation currently'
-
+    
+    return jsonify(json_data);
+    
+    
+@app.route('/')
+def status():
+    '''View status satnogs-client.'''
     return render_template('status.j2')
 
 
@@ -27,12 +41,6 @@ def status():
 def control():
     '''Control satnogs-client.'''
     return render_template('control.j2')
-
-@app.route('/notify' ,  methods=['GET', 'POST'])
-def notify():
-     params = request.get_json()
-     print params['tle']
-     return 'OK'
      
      
 @app.route('/configuration/')
@@ -50,17 +58,7 @@ def configuration():
         'settings': sorted(settings, key=lambda x: x[0])
     }
 
-    return render_template('configuration.j2', **ctx)
-
-@app.route('/config_update' , methods=['POST'])
-def config_update():
-    if request.method == "POST":
-    return 'OK'
-        data = json.dumps(request_json_data)
-        print data[1]
-        return "OK"
-
-    
+    return render_template('configuration.j2', **ctx)    
 
 
 
