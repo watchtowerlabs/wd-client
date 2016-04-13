@@ -17,8 +17,10 @@ def get_status_info():
     json_data['azimuth'] = 'NA'
     json_data['altitude'] = 'NA'
     sock1 = Commsocket('127.0.0.1',5005)
+    
     b = sock1.connect()
     if b:
+        
         print sock1.send("Hello there\n")    
         data = sock1.receive();
         logger.debug('Received message at app: {0}'.format(data))
@@ -40,6 +42,13 @@ def status():
 @app.route('/control/')
 def control():
     '''Control satnogs-client.'''
+    sock = Commsocket('127.0.0.1',5011)
+    b = sock.connect()
+    if b:
+        print sock.send("Hello there\n")    
+    else:
+        print 'Task feeder thread not online'
+    
     return render_template('control.j2')
      
      
