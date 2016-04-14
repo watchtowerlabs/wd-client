@@ -2,6 +2,7 @@
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
@@ -13,6 +14,10 @@ from satnogsclient import settings
 from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
+from satnogsclient.observer.commsocket import Commsocket
+
+from multiprocessing import Process, Queue
+import json
 
 
 logger = logging.getLogger('satnogsclient')
@@ -116,8 +121,11 @@ def get_jobs():
     for job in scheduler.get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
+    sock = Commsocket('127.0.0.1', 5010)
+    tasks = []
 
     for obj in response.json():
+        tasks.append(obj)
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
@@ -134,3 +142,48 @@ def get_jobs():
                           run_date=receiver_start,
                           id='receiver_{0}'.format(job_id),
                           kwargs=kwargs)
+    tasks.reverse()
+    while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
+        tasks.pop()
+    b = sock.connect()
+    if b:
+        sock.send_not_recv(json.dumps(tasks))
+    else:
+        print 'Task listener thread not online'
+
+
+def task_feeder(task_feeder_port, task_listener_port):
+    """ The task feeder thread listens for requests from the ui for the upcoming tasks
+    and responds with the tasks that the listener provides through a Queue """
+
+    logger.info('Started task feeder')
+    sock = Commsocket('127.0.0.1', task_feeder_port)
+    sock.bind()
+    q = Queue(maxsize=1)
+    p = Process(target=task_listener, args=(task_listener_port, q))
+    p.daemon = True
+    p.start()
+    while 1:
+        conn = sock.listen()
+        conn.recv(sock.tasks_buffer_size)
+        conn.send(q.get())
+    if conn:
+        conn.close()
+    p.join()
+
+
+def task_listener(port, queue):
+    """ The task listener process listens for upcoming tasks updates from get_jobs()
+    and stores them in a queue from which the feeder will get them when requested from the ui """
+
+    logger.info('Started task listener')
+    sock = Commsocket('127.0.0.1', port)
+    sock.bind()
+    while 1:
+        conn = sock.listen()
+        data = conn.recv(sock.tasks_buffer_size)
+        if not queue.empty():
+            queue.get()
+        queue.put(data)
+    if conn:
+        conn.close()

@@ -13,6 +13,7 @@ class Commsocket:
     """
 
     _BUFFER_SIZE = 2048
+    _TASKS_BUFFER_SIZE = 10480
     _connected = False
 
     def __init__(self, ip, port):
@@ -45,6 +46,14 @@ class Commsocket:
         self._BUFFER_SIZE = new_buffer_size
 
     @property
+    def tasks_buffer_size(self):
+        return self._TASKS_BUFFER_SIZE
+
+    @tasks_buffer_size.setter
+    def tasks_buffer_size(self, new_buffer_size):
+        self._TASKS_BUFFER_SIZE = new_buffer_size
+
+    @property
     def is_connected(self):
         return self._connected
 
@@ -66,13 +75,19 @@ class Commsocket:
         response = self.s.recv(self._BUFFER_SIZE)
         logger.debug('Received message: {0}'.format(response))
 
+    def send_not_recv(self, message):
+        if not self.is_connected:
+            self.connect()
+        logger.debug('Sending message: {0}'.format(message))
+        self.s.send(message)
+
     def disconnect(self):
         logger.info('Closing socket: {0}'.format(self.s))
         self.s.close()
         self._connected = False
 
-    def receive(self):
-        resp = self.s.recv(self._BUFFER_SIZE)
+    def receive(self, size):
+        resp = self.s.recv(size)
         return resp
 
     def listen(self):

@@ -10,12 +10,22 @@ app = Flask(__name__)
 @app.route("/")
 def index():
     """View list of satnogs-client settings."""
-    sock1 = Commsocket('127.0.0.1', 5005)
-    b = sock1.connect()
+
+    """ Observation info getter """
+    sock = Commsocket('127.0.0.1', 5005)
+    b = sock.connect()
     if b:
-        sock1.send("Request")
+        sock.send("Request")
     else:
         print 'No observation currently'
+
+    """ Upcoming tasks getter """
+    sock = Commsocket('127.0.0.1', 5011)
+    b = sock.connect()
+    if b:
+        sock.send("Request\n")
+    else:
+        print 'Task feeder thread not online'
 
     filters = [
         lambda x: not x.startswith('_'),
