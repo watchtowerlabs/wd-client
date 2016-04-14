@@ -36,7 +36,7 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
-    
+
     _azimuth = None
     _altitude= None
 
@@ -80,14 +80,11 @@ class Worker:
         self.t = threading.Thread(target=self._communicate_tracking_info)
         self.t.daemon = True
         self.t.start()
-        
+
         if start_thread:
             self.r = threading.Thread(target=self._status_interface,args=(port,))
             self.r.daemon = True
             self.r.start()
-        
-        
-        #self.notify_ui()
 
         return self.is_alive
 
@@ -116,7 +113,7 @@ class Worker:
                 time.sleep(self.SLEEP_TIME)
 
         sock.disconnect()
-        
+
     def _status_interface(self,port):
         sock = Commsocket('127.0.0.1',port)
         #sock.get_sock().bind(('127.0.0.1',port))
@@ -127,14 +124,14 @@ class Worker:
             print 'Got data: '
             print data
             dict={'satelite_dict': self.satellite_dict,
-                  'azimuth': self._azimuth,
-                  'altitude': self._altitude,
+                  'azimuth': "{0:.2f}".format(self._azimuth),
+                  'altitude': "{0:.2f}".format(self._altitude),
                   'frequency': self._frequency}
             conn.send(json.dumps(dict))
             if conn:
-                conn.close()    
-        
-            
+                conn.close()
+
+
 
     def trackstop(self):
         """
@@ -146,12 +143,11 @@ class Worker:
     def check_observation_end_reached(self):
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
-    
+
     def notify_ui(self):
         url = 'https://localhost:5000/notify'
         payload = {'alive': self.is_alive}
         headers = {'content-type': 'application/json'}
-        #requests.get('https://localhost:5000/notify', verify=False)
         response = requests.post(url, data=json.dumps(payload), headers=headers, verify=False)
 
 
@@ -160,7 +156,7 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
-        
+
         self._azimuth = az
         self._altitude = alt
 

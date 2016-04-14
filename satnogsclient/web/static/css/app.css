@@ -22,13 +22,14 @@ body {
     height: 150px;
 }
 
+
 .arrow {
-    width: 125px;
+    width: 100px;
     height: 5px;
     background-color: #000;
     position: absolute;
-    top: 48%;
-    left: 7%;
+    margin-top: 48%;
+    margin-left: 15%;
     -webkit-transform: rotate(45deg);
     -moz-transform: rotate(45deg);
     -o-transform: rotate(45deg);
@@ -51,4 +52,12 @@ body {
 	width: 96%;
     margin-left: 1%;
     border-style: hidden;
+}
+
+#map-container {
+  height: 100%;
+}
+
+#map {
+  height: 100px;
 }

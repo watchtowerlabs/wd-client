@@ -16,23 +16,19 @@ def get_status_info():
     json_data = {}
     json_data['azimuth'] = 'NA'
     json_data['altitude'] = 'NA'
+    json_data['frequency'] = 'NA'
     sock1 = Commsocket('127.0.0.1',5005)
-    
+
     b = sock1.connect()
     if b:
-        
-        print sock1.send("Hello there\n")    
-        data = sock1.receive();
-        logger.debug('Received message at app: {0}'.format(data))
+        data = sock1.send("Requesting update on satnogs-client variables\n")
         json_data = json.loads(data)
-        #print json_data['altitude']
-        #print json_data['azimuth']
     else:
         print 'No observation currently'
-    
+
     return jsonify(json_data);
-    
-    
+
+
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
@@ -45,13 +41,13 @@ def control():
     sock = Commsocket('127.0.0.1',5011)
     b = sock.connect()
     if b:
-        print sock.send("Hello there\n")    
+        print sock.send("Hello there\n")
     else:
         print 'Task feeder thread not online'
-    
+
     return render_template('control.j2')
-     
-     
+
+
 @app.route('/configuration/')
 def configuration():
     '''View list of satnogs-client settings.'''
@@ -67,7 +63,4 @@ def configuration():
         'settings': sorted(settings, key=lambda x: x[0])
     }
 
-    return render_template('configuration.j2', **ctx)    
-
-
-
+    return render_template('configuration.j2', **ctx)
