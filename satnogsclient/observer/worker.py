@@ -114,7 +114,6 @@ class Worker:
             if p['ok']:
                 self.send_to_socket(p, sock)
                 time.sleep(self.SLEEP_TIME)
-
         sock.disconnect()
         
     def _status_interface(self,port):
@@ -129,7 +128,7 @@ class Worker:
             dict={'satelite_dict': self.satellite_dict,
                   'azimuth': self._azimuth,
                   'altitude': self._altitude,
-                  'frequency': sef._frequency}
+                  'frequency': self._frequency}
             conn.send(json.dumps(dict))
             if conn:
                 conn.close()    

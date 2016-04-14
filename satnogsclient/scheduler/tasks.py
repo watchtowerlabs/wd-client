@@ -2,6 +2,7 @@
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
@@ -123,13 +124,10 @@ def get_jobs():
             job.remove()
             
     sock = Commsocket('127.0.0.1',5010)
-    b = sock.connect()
-    if b:
-        sock.send2(json.dumps(response.json()))    
-    else:
-        print 'Task listener thread not online'
-
+    
+    tasks = []
     for obj in response.json():
+        tasks.append(obj)
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
@@ -146,6 +144,17 @@ def get_jobs():
                           run_date=receiver_start,
                           id='receiver_{0}'.format(job_id),
                           kwargs=kwargs)
+    tasks.reverse()
+
+    while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
+        tasks.pop()
+    
+    b = sock.connect()
+    if b:
+        sock.send2(json.dumps(tasks))    
+    else:
+        print 'Task listener thread not online'
+    
         
 def task_feeder(port1,port2):
     logger.info('Started task feeder')
@@ -159,7 +168,7 @@ def task_feeder(port1,port2):
     while 1:
         print 'LISTENING'
         conn = sock.listen()
-        data = conn.recv(sock.buffer_size)
+        data = conn.recv(sock.tasks_buffer_size)
         print 'Sending '
         conn.send(q.get())
     if conn:
@@ -175,7 +184,7 @@ def task_listener(port,queue):
     sock.bind()
     while 1:
         conn = sock.listen()
-        data = conn.recv(sock.buffer_size)
+        data = conn.recv(sock.tasks_buffer_size)
         print 'Got data: ' 
         print data
         if not queue.empty():

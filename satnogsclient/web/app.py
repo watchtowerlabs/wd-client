@@ -16,9 +16,8 @@ def status():
     
     #sock2 = Udpsocket('127.0.0.1',5006)
     b = sock1.connect()
-    if b:
-        
-        print sock1.send("Hello there\n")    
+    if b:   
+        print sock1.send("Hello there\n")     
     else:
         print 'No observation currently'
 
@@ -31,7 +30,7 @@ def control():
     sock = Commsocket('127.0.0.1',5011)
     b = sock.connect()
     if b:
-        print sock.send("Hello there\n")    
+        sock.send("Hello there\n")   
     else:
         print 'Task feeder thread not online'
     
