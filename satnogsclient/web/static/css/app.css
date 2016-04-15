@@ -58,9 +58,19 @@ body {
 }
 
 #map {
-  height: 250px;
+  height: 100px;
 }
 
 .current-obs {
   font-size: 12px;
+}
+
+.font-bold {
+  font-weight: bold;
+  margin-right: 2px;
+}
+
+.info-c {
+  display: inline-flex;
+  margin-left: 5px;
 }
