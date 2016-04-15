@@ -37,7 +37,6 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
-
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
         self._IP = ip
@@ -65,7 +64,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self, port):
+    def trackstart(self, port, start_thread):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -79,9 +78,10 @@ class Worker:
         self.t.daemon = True
         self.t.start()
 
-        self.r = threading.Thread(target=self._status_interface, args=(port,))
-        self.r.daemon = True
-        self.r.start()
+        if start_thread:
+            self.r = threading.Thread(target=self._status_interface,args=(port,))
+            self.r.daemon = True
+            self.r.start()
 
         return self.is_alive
 
@@ -111,6 +111,25 @@ class Worker:
 
         sock.disconnect()
 
+    def _status_interface(self,port):
+        sock = Commsocket('127.0.0.1',port)
+        #sock.get_sock().bind(('127.0.0.1',port))
+        sock.bind()
+        while self.is_alive:
+            conn = sock.listen()
+            data = conn.recv(sock.buffer_size)
+            dict={'azimuth': "{0:.2f}".format(self._azimuth),
+                  'altitude': "{0:.2f}".format(self._altitude),
+                  'frequency': self._frequency,
+                  'tle0': self.satellite_dict['tle0'],
+                  'tle1': self.satellite_dict['tle1'],
+                  'tle2': self.satellite_dict['tle2']}
+            conn.send(json.dumps(dict))
+            if conn:
+                conn.close()
+
+
+
     def trackstop(self):
         """
         Sets object flag to false and stops the tracking thread.
@@ -122,21 +141,6 @@ class Worker:
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
 
-    def _status_interface(self, port):
-        sock = Commsocket('127.0.0.1', port)
-        conn = None
-        sock.bind()
-        while self.is_alive:
-            conn = sock.listen()
-            data = conn.recv(sock.buffer_size)
-            print 'Got data: '
-            print data
-            dict = {'satelite_dict': self.satellite_dict,
-                    'azimuth': self._azimuth,
-                    'altitude': self._altitude}
-            conn.send(json.dumps(dict))
-        if conn:
-            conn.close()
 
 
 class WorkerTrack(Worker):
@@ -144,6 +148,7 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
+
         self._azimuth = az
         self._altitude = alt
 

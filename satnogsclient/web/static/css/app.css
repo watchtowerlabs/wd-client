@@ -1,6 +1,76 @@
 body {
-    padding-top: 50px;
+    padding-top: 20px;
 }
 .settings {
     padding: 40px 15px;
+}
+
+#network-switch {
+    margin-top: 8px;
+}
+
+.no-padding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.circle {
+	position: relative;
+    border: 3px solid #000;
+    border-radius: 50%;
+    width: 150px;
+    height: 150px;
+}
+
+.arrow {
+    width: 100px;
+    height: 5px;
+    background-color: #000;
+    position: absolute;
+    margin-top: 48%;
+    margin-left: 15%;
+    -webkit-transform: rotate(45deg);
+    -moz-transform: rotate(45deg);
+    -o-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    -moz-transition: all 1s ease;
+    -webkit-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+.system-labels {
+	font-size: 20px;
+}
+
+.pass-progress {
+	margin-top: 3%;
+}
+
+.scheduled-pass-table {
+	width: 96%;
+    margin-left: 1%;
+    border-style: hidden;
+}
+
+#map-container {
+  height: 100%;
+}
+
+#map {
+  height: 100px;
+}
+
+.current-obs {
+  font-size: 12px;
+}
+
+.font-bold {
+  font-weight: bold;
+  margin-right: 2px;
+}
+
+.info-c {
+  display: inline-flex;
+  margin-left: 5px;
 }
