@@ -36,7 +36,8 @@ function update_observations(data,param) {
   var json_data = data;
   var current_obs = json_data['observation']['current'];
   var scheduled_obs = json_data['observation']['scheduled'];
-
+  var tle1_current = current_obs["tle1"].split(' ');
+  var tle2_current = current_obs["tle2"].split(' ');
   //Update current observation
   if (current_obs["azimuth"] === "NA" && current_obs["altitude"] === "NA") {
     document.getElementById("azimuth").innerHTML = current_obs["azimuth"];
@@ -55,15 +56,26 @@ function update_observations(data,param) {
     document.getElementById("freq").innerHTML = current_obs["frequency"] + " MHz";
   }
 
+  document.getElementById("name").innerHTML = current_obs["tle0"];
+  document.getElementById("obs-id").innerHTML = tle2_current[1];
+  document.getElementById("current-tle1").innerHTML = current_obs["tle1"];
+  document.getElementById("current-tle2").innerHTML = current_obs["tle2"];
+
   //Update scheduled observations
   $('#scheduled-observation-table tr:not(:first)').remove();
   for (i=0; i< scheduled_obs.length; i++) {
-    var freq = parseFloat(scheduled_obs[i]["frequency"])/10e6;
+    var freq = parseFloat(scheduled_obs[i]["frequency"])/10e5;
+    if (isNaN(freq)) {
+      freq = 'NA'
+    }
+    else {
+      freq = freq.toFixed(2) + ' MHz';
+    }
     var tr = "<tr> \
                 <td>" + scheduled_obs[i]["tle0"] + "</td> \
                 <td>" + scheduled_obs[i]["start"] + "</td> \
                 <td>" + scheduled_obs[i]["end"] + "</td> \
-                <td>" + freq.toFixed(2) + " MHz"+"</td> \
+                <td>" + freq +"</td> \
               </tr>";
     $('#scheduled-observation-table').append(tr);
 }
@@ -89,6 +101,16 @@ $(document).ready(function(){
   document.getElementById("azimuth").innerHTML = "NA";
   document.getElementById("elevation").innerHTML = "NA";
   document.getElementById("freq").innerHTML = "NA";
+  document.getElementById("name").innerHTML = "NA";
+  document.getElementById("obs-id").innerHTML = "NA";
+  document.getElementById("rising").innerHTML = "NA";
+  document.getElementById("setting").innerHTML = "NA";
+  document.getElementById("max-alt").innerHTML = "NA";
+  document.getElementById("demod").innerHTML = "NA";
+  document.getElementById("decod").innerHTML = "NA";
+  document.getElementById("current-tle1").innerHTML = "NA";
+  document.getElementById("current-tle2").innerHTML = "NA";
+  document.getElementById("decod").innerHTML = "NA";
   map = initMap(49.496675,-102.65625);
 
   var counter = 45;

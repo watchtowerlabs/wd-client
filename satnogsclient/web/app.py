@@ -51,20 +51,7 @@ def get_status_info():
 def status():
     '''View status satnogs-client.'''
     return render_template('status.j2')
-
-
-@app.route('/control/')
-def control():
-    '''Control satnogs-client.'''
-    sock = Commsocket('127.0.0.1',5011)
-    b = sock.connect()
-    if b:
-        sock.send("Hello there\n")
-    else:
-        print 'Task feeder thread not online'
-
-    return render_template('control.j2')
-
+    
 
 @app.route('/configuration/')
 def configuration():
