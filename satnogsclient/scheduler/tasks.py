@@ -2,9 +2,12 @@
 import logging
 import os
 import time
+import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
+from multiprocessing import Process, Queue
+import json
 
 import pytz
 import requests
@@ -13,6 +16,8 @@ from satnogsclient import settings
 from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
+from satnogsclient.observer.commsocket import Commsocket
+
 
 
 logger = logging.getLogger('satnogsclient')
@@ -110,14 +115,19 @@ def get_jobs():
     logger.info('Trying to GET observation jobs from the network')
     response = requests.get(url, params=params, headers=headers, verify=settings.VERIFY_SSL)
 
+
     if not response.status_code == 200:
         raise Exception('Status code: {0} on request: {1}'.format(response.status_code, url))
 
     for job in scheduler.get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
-
+            
+    sock = Commsocket('127.0.0.1',5010)
+    
+    tasks = []
     for obj in response.json():
+        tasks.append(obj)
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
@@ -134,3 +144,50 @@ def get_jobs():
                           run_date=receiver_start,
                           id='receiver_{0}'.format(job_id),
                           kwargs=kwargs)
+    tasks.reverse()
+
+    while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
+        tasks.pop()
+    
+    b = sock.connect()
+    if b:
+        sock.send_not_recv(json.dumps(tasks))    
+    else:
+        print 'Task listener thread not online'
+    
+        
+def task_feeder(port1,port2):
+    logger.info('Started task feeder')
+    print port1,' ',port2
+    sock = Commsocket('127.0.0.1',port1)
+    sock.bind()
+    q = Queue(maxsize=1)
+    p = Process(target=task_listener, args=(port2,q))
+    p.daemon = True
+    p.start()
+    while 1:
+        conn = sock.listen()
+        data = conn.recv(sock.tasks_buffer_size)
+        conn.send(q.get())
+    if conn:
+        conn.close()
+    p.join()
+
+    
+def task_listener(port,queue):
+    logger.info('Started task listener')
+    print port
+    sock = Commsocket('127.0.0.1',port)
+    sock.bind()
+    while 1:
+        conn = sock.listen()
+        data = conn.recv(sock.tasks_buffer_size)
+        print 'Got data: ' 
+        print data
+        if not queue.empty():
+            queue.get()
+            queue.put(data)
+        else:
+            queue.put(data)
+    if conn:
+         conn.close()
