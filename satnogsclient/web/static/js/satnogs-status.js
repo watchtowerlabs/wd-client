@@ -62,22 +62,29 @@ function update_observations(data,param) {
   document.getElementById("current-tle2").innerHTML = current_obs["tle2"];
 
   //Update scheduled observations
+  if (scheduled_obs.length > 0) {
+    $('#scheduled-observation-table tr:not(:first)').remove();
+    for (i=0; i< scheduled_obs.length; i++) {
+      var freq = parseFloat(scheduled_obs[i]["frequency"])/10e5;
+      if (isNaN(freq)) {
+        freq = 'NA'
+      }
+      else {
+        freq = freq.toFixed(2) + ' MHz';
+      }
+      var tr = "<tr> \
+                  <td>" + scheduled_obs[i]["tle0"] + "</td> \
+                  <td>" + scheduled_obs[i]["start"] + "</td> \
+                  <td>" + scheduled_obs[i]["end"] + "</td> \
+                  <td>" + freq +"</td> \
+                </tr>";
+      $('#scheduled-observation-table').append(tr);
+  }
+}
+else {
   $('#scheduled-observation-table tr:not(:first)').remove();
-  for (i=0; i< scheduled_obs.length; i++) {
-    var freq = parseFloat(scheduled_obs[i]["frequency"])/10e5;
-    if (isNaN(freq)) {
-      freq = 'NA'
-    }
-    else {
-      freq = freq.toFixed(2) + ' MHz';
-    }
-    var tr = "<tr> \
-                <td>" + scheduled_obs[i]["tle0"] + "</td> \
-                <td>" + scheduled_obs[i]["start"] + "</td> \
-                <td>" + scheduled_obs[i]["end"] + "</td> \
-                <td>" + freq +"</td> \
-              </tr>";
-    $('#scheduled-observation-table').append(tr);
+  var tr = "<tr><td colspan='4'>No observations scheduled</td></tr>";
+  $('#scheduled-observation-table').append(tr);
 }
 }
 
