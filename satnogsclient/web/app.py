@@ -30,7 +30,8 @@ def control():
     sock = Commsocket('127.0.0.1',5011)
     b = sock.connect()
     if b:
-        sock.send("Hello there\n")   
+        sock.send2("Hello there\n")
+        print sock.receive(sock._TASKS_BUFFER_SIZE)   
     else:
         print 'Task feeder thread not online'
     
