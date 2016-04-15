@@ -126,10 +126,6 @@ def get_jobs():
             job.remove()
     sock = Commsocket('127.0.0.1', 5010)
     tasks = []
-            
-    sock = Commsocket('127.0.0.1',5010)
-    
-    tasks = []
     for obj in response.json():
         tasks.append(obj)
         start = parser.parse(obj['start'])
