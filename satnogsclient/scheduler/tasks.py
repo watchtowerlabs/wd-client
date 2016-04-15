@@ -6,6 +6,8 @@ import sys
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
+from multiprocessing import Process, Queue
+import json
 
 import pytz
 import requests
@@ -115,6 +117,7 @@ def get_jobs():
     logger.info('Trying to GET observation jobs from the network')
     response = requests.get(url, params=params, headers=headers, verify=settings.VERIFY_SSL)
 
+
     if not response.status_code == 200:
         raise Exception('Status code: {0} on request: {1}'.format(response.status_code, url))
 
@@ -123,7 +126,10 @@ def get_jobs():
             job.remove()
     sock = Commsocket('127.0.0.1', 5010)
     tasks = []
-
+            
+    sock = Commsocket('127.0.0.1',5010)
+    
+    tasks = []
     for obj in response.json():
         tasks.append(obj)
         start = parser.parse(obj['start'])
@@ -186,4 +192,4 @@ def task_listener(port, queue):
             queue.get()
         queue.put(data)
     if conn:
-        conn.close()
+         conn.close()

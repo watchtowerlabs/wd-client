@@ -12,6 +12,7 @@ import pytz
 
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.orbital import pinpoint
+from satnogsclient.observer.udpsocket import Udpsocket
 
 
 logger = logging.getLogger('satnogsclient')
@@ -37,6 +38,9 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
+
+    _azimuth = None
+    _altitude= None
 
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
@@ -65,7 +69,7 @@ class Worker:
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
 
-    def trackstart(self, port):
+    def trackstart(self, port, start_thread):
         """
         Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
@@ -79,9 +83,10 @@ class Worker:
         self.t.daemon = True
         self.t.start()
 
-        self.r = threading.Thread(target=self._status_interface, args=(port,))
-        self.r.daemon = True
-        self.r.start()
+        if start_thread:
+            self.r = threading.Thread(target=self._status_interface,args=(port,))
+            self.r.daemon = True
+            self.r.start()
 
         return self.is_alive
 
@@ -108,8 +113,28 @@ class Worker:
             if p['ok']:
                 self.send_to_socket(p, sock)
                 time.sleep(self.SLEEP_TIME)
-
         sock.disconnect()
+
+    def _status_interface(self,port):
+        sock = Commsocket('127.0.0.1',port)
+        #sock.get_sock().bind(('127.0.0.1',port))
+        sock.bind()
+        while self.is_alive:
+            conn = sock.listen()
+            data = conn.recv(sock.buffer_size)
+            print 'Got data: '
+            print data
+            dict={'azimuth': "{0:.2f}".format(self._azimuth),
+                  'altitude': "{0:.2f}".format(self._altitude),
+                  'frequency': self._frequency,
+                  'tle0': self.satellite_dict['tle0'],
+                  'tle1': self.satellite_dict['tle1'],
+                  'tle2': self.satellite_dict['tle2']}
+            conn.send(json.dumps(dict))
+            if conn:
+                conn.close()
+
+
 
     def trackstop(self):
         """

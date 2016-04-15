@@ -12,7 +12,7 @@ logger = logging.getLogger('satnogsclient')
 
 
 if __name__ == '__main__':
-    interval = NETWORK_API_QUERY_INTERVAL
+    interval = NETWORK_API_QUERY_INTERVAL 
     msg = 'Registering `get_jobs` periodic task ({0} min. interval)'.format(interval)
     logger.info(msg)
     scheduler.add_job(get_jobs, 'interval', minutes=interval)
@@ -32,6 +32,6 @@ if __name__ == '__main__':
 
     try:
         logger.info('Press Ctrl+C to exit SatNOGS poller')
-        app.run(host='0.0.0.0', port=5000, ssl_context='adhoc')
+        app.run(host='127.0.0.1', port=5000, ssl_context='adhoc')
     except (KeyboardInterrupt, SystemExit):
         scheduler.shutdown()
