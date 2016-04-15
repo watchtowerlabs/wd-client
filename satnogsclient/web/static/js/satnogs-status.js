@@ -1,0 +1,99 @@
+function AnimateRotate(degrees) {
+    var $elem = $('#current-pass-arrow');
+    $({deg: degrees}).animate({deg: degrees}, {
+        duration: 2000,
+        step: function(now) {
+            $elem.css({
+                transform: 'rotate(' + now + 'deg)'
+            });
+        }
+    });
+}
+
+function initMap(lat,lng) {
+  var latf = parseFloat(lat);
+  var lngf = parseFloat(lng);
+  var map = new google.maps.Map(document.getElementById('map'), {
+    zoom: 1,
+    center: new google.maps.LatLng(latf, lngf)
+  });
+
+  var marker = new google.maps.Marker({
+    position: new google.maps.LatLng(latf, lngf),
+    map: map,
+    title: 'Hello World!'
+  });
+
+  map.setZoom(1);
+  return map;
+}
+
+function update_status_ui(data, param) {
+  update_observations(data,param);
+}
+
+function update_observations(data,param) {
+  var json_data = data;
+  var current_obs = json_data['observation']['current'];
+  var scheduled_obs = json_data['observation']['scheduled'];
+
+  //Update current observation
+  if (current_obs["azimuth"] === "NA" && current_obs["altitude"] === "NA") {
+    document.getElementById("azimuth").innerHTML = current_obs["azimuth"];
+    document.getElementById("elevation").innerHTML = current_obs["altitude"];
+  }
+  else {
+    document.getElementById("azimuth").innerHTML = current_obs["azimuth"] + " &deg;";
+    document.getElementById("elevation").innerHTML = current_obs["altitude"] + " &deg;";
+    param.setCenter(new google.maps.LatLng(current_obs["azimuth"] , current_obs["altitude"]));
+    AnimateRotate(parseFloat(current_obs["azimuth"]));
+  }
+  if (current_obs["frequency"] === "NA") {
+    document.getElementById("freq").innerHTML = current_obs["frequency"];
+  }
+  else {
+    document.getElementById("freq").innerHTML = current_obs["frequency"] + " MHz";
+  }
+
+  //Update scheduled observations
+  $('#scheduled-observation-table tr:not(:first)').remove();
+  for (i=0; i< scheduled_obs.length; i++) {
+    var freq = parseFloat(scheduled_obs[i]["frequency"])/10e6;
+    var tr = "<tr> \
+                <td>" + scheduled_obs[i]["tle0"] + "</td> \
+                <td>" + scheduled_obs[i]["start"] + "</td> \
+                <td>" + scheduled_obs[i]["end"] + "</td> \
+                <td>" + freq.toFixed(2) + " MHz"+"</td> \
+              </tr>";
+    $('#scheduled-observation-table').append(tr);
+}
+}
+
+function query_status_info(JSONData, localMode, url, param) {
+  var localJSONData = JSONData;
+  var postMode = localMode;
+
+   $.ajax({
+          type: postMode,
+          url: url,
+          contentType:"application/json; charset=utf-8",
+          dataType:"json",
+          data:  JSONData,
+          success: function(data) {
+              update_status_ui(data , param);
+          }
+  });
+}
+
+$(document).ready(function(){
+  document.getElementById("azimuth").innerHTML = "NA";
+  document.getElementById("elevation").innerHTML = "NA";
+  document.getElementById("freq").innerHTML = "NA";
+  map = initMap(49.496675,-102.65625);
+
+  var counter = 45;
+  setInterval(function(){
+      query_status_info({}, 'GET', '/update_status', map);
+  }, 2000);
+
+})

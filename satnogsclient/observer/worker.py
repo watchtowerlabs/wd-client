@@ -111,7 +111,6 @@ class Worker:
             if p['ok']:
                 self.send_to_socket(p, sock)
                 time.sleep(self.SLEEP_TIME)
-
         sock.disconnect()
 
     def _status_interface(self,port):
@@ -123,10 +122,12 @@ class Worker:
             data = conn.recv(sock.buffer_size)
             print 'Got data: '
             print data
-            dict={'satelite_dict': self.satellite_dict,
-                  'azimuth': "{0:.2f}".format(self._azimuth),
+            dict={'azimuth': "{0:.2f}".format(self._azimuth),
                   'altitude': "{0:.2f}".format(self._altitude),
-                  'frequency': self._frequency}
+                  'frequency': self._frequency,
+                  'tle0': self.satellite_dict['tle0'],
+                  'tle1': self.satellite_dict['tle1'],
+                  'tle2': self.satellite_dict['tle2']}
             conn.send(json.dumps(dict))
             if conn:
                 conn.close()
