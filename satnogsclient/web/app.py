@@ -1,9 +1,7 @@
 from flask import Flask, render_template, request, json, jsonify
 
-from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient import settings as client_settings
 from satnogsclient.scheduler import tasks
-from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.observer.commsocket import Commsocket
 import logging
 from flask.json import JSONDecoder

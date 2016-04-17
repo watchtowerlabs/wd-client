@@ -18,8 +18,6 @@ from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
 from satnogsclient.observer.commsocket import Commsocket
 
-from multiprocessing import Process, Queue
-import json
 
 
 logger = logging.getLogger('satnogsclient')
@@ -124,7 +122,9 @@ def get_jobs():
     for job in scheduler.get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
-    sock = Commsocket('127.0.0.1', 5010)
+            
+    sock = Commsocket('127.0.0.1',5010)
+    
     tasks = []
     for obj in response.json():
         tasks.append(obj)
@@ -145,47 +145,49 @@ def get_jobs():
                           id='receiver_{0}'.format(job_id),
                           kwargs=kwargs)
     tasks.reverse()
+
     while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
         tasks.pop()
+    
     b = sock.connect()
     if b:
-        sock.send_not_recv(json.dumps(tasks))
+        sock.send_not_recv(json.dumps(tasks))    
     else:
         print 'Task listener thread not online'
-
-
-def task_feeder(task_feeder_port, task_listener_port):
-    """ The task feeder thread listens for requests from the ui for the upcoming tasks
-    and responds with the tasks that the listener provides through a Queue """
-
+    
+        
+def task_feeder(port1,port2):
     logger.info('Started task feeder')
-    sock = Commsocket('127.0.0.1', task_feeder_port)
+    print port1,' ',port2
+    sock = Commsocket('127.0.0.1',port1)
     sock.bind()
     q = Queue(maxsize=1)
-    p = Process(target=task_listener, args=(task_listener_port, q))
+    p = Process(target=task_listener, args=(port2,q))
     p.daemon = True
     p.start()
     while 1:
         conn = sock.listen()
-        conn.recv(sock.tasks_buffer_size)
+        data = conn.recv(sock.tasks_buffer_size)
         conn.send(q.get())
     if conn:
         conn.close()
     p.join()
 
-
-def task_listener(port, queue):
-    """ The task listener process listens for upcoming tasks updates from get_jobs()
-    and stores them in a queue from which the feeder will get them when requested from the ui """
-
+    
+def task_listener(port,queue):
     logger.info('Started task listener')
-    sock = Commsocket('127.0.0.1', port)
+    print port
+    sock = Commsocket('127.0.0.1',port)
     sock.bind()
     while 1:
         conn = sock.listen()
         data = conn.recv(sock.tasks_buffer_size)
+        print 'Got data: ' 
+        print data
         if not queue.empty():
             queue.get()
-        queue.put(data)
+            queue.put(data)
+        else:
+            queue.put(data)
     if conn:
          conn.close()

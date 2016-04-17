@@ -12,7 +12,6 @@ import pytz
 
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.orbital import pinpoint
-from satnogsclient.observer.udpsocket import Udpsocket
 
 
 logger = logging.getLogger('satnogsclient')
@@ -38,10 +37,6 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
-
-    _azimuth = None
-    _altitude= None
-
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
         self._IP = ip
@@ -113,6 +108,7 @@ class Worker:
             if p['ok']:
                 self.send_to_socket(p, sock)
                 time.sleep(self.SLEEP_TIME)
+
         sock.disconnect()
 
     def _status_interface(self,port):
@@ -122,8 +118,6 @@ class Worker:
         while self.is_alive:
             conn = sock.listen()
             data = conn.recv(sock.buffer_size)
-            print 'Got data: '
-            print data
             dict={'azimuth': "{0:.2f}".format(self._azimuth),
                   'altitude': "{0:.2f}".format(self._altitude),
                   'frequency': self._frequency,
@@ -147,21 +141,6 @@ class Worker:
         if datetime.now(pytz.utc) > self._observation_end:
             self.trackstop()
 
-    def _status_interface(self, port):
-        sock = Commsocket('127.0.0.1', port)
-        conn = None
-        sock.bind()
-        while self.is_alive:
-            conn = sock.listen()
-            data = conn.recv(sock.buffer_size)
-            print 'Got data: '
-            print data
-            dict = {'satelite_dict': self.satellite_dict,
-                    'azimuth': self._azimuth,
-                    'altitude': self._altitude}
-            conn.send(json.dumps(dict))
-        if conn:
-            conn.close()
 
 
 class WorkerTrack(Worker):
