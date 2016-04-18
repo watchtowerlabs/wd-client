@@ -170,7 +170,10 @@ def task_feeder(port1,port2):
         conn = sock.accept()
         if conn:
             data = conn.recv(sock.tasks_buffer_size)
-            conn.send(q.get())
+            if not q.empty():
+                conn.send(q.get())
+            else:
+                conn.send('[]')
     p.join()
 
     
