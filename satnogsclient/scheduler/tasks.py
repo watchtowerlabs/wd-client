@@ -165,12 +165,15 @@ def task_feeder(port1,port2):
     p = Process(target=task_listener, args=(port2,q))
     p.daemon = True
     p.start()
+    sock.listen()
     while 1:
-        conn = sock.listen()
-        data = conn.recv(sock.tasks_buffer_size)
-        conn.send(q.get())
-    if conn:
-        conn.close()
+        conn = sock.accept()
+        if conn:
+            data = conn.recv(sock.tasks_buffer_size)
+            if not q.empty():
+                conn.send(q.get())
+            else:
+                conn.send('[]')
     p.join()
 
     
@@ -179,15 +182,13 @@ def task_listener(port,queue):
     print port
     sock = Commsocket('127.0.0.1',port)
     sock.bind()
+    sock.listen()
     while 1:
-        conn = sock.listen()
-        data = conn.recv(sock.tasks_buffer_size)
-        print 'Got data: ' 
-        print data
-        if not queue.empty():
-            queue.get()
-            queue.put(data)
-        else:
-            queue.put(data)
-    if conn:
-         conn.close()
+        conn = sock.accept()
+        if conn:
+            data = conn.recv(sock.tasks_buffer_size)
+            if not queue.empty():
+                queue.get()
+                queue.put(data)
+            else:
+                queue.put(data)

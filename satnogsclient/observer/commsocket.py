@@ -21,6 +21,7 @@ class Commsocket:
         self._TCP_PORT = port
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        self.s.setsockopt(socket.IPPROTO_TCP, socket.TCP_NODELAY, 1)
 
     @property
     def ip(self):
@@ -94,6 +95,8 @@ class Commsocket:
 
     def listen(self):
         self.s.listen(1)
+    
+    def accept(self):
         conn, addr = self.s.accept()
         return conn
 
