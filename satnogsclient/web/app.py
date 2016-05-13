@@ -45,12 +45,20 @@ def get_status_info():
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
+@app.route('/command', methods=['GET', 'POST'])
+def get_command():
+    return True
 
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
     return render_template('status.j2')
-    
+
+@app.route('/control/')
+def control():
+    '''Control status satnogs-client.'''
+    return render_template('control.j2')
+
 
 @app.route('/configuration/')
 def configuration():
