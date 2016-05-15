@@ -47,7 +47,10 @@ def get_status_info():
 
 @app.route('/command', methods=['GET', 'POST'])
 def get_command():
-    return True
+    #TODO: Handle the request and act
+    response = {}
+    response['Response'] = 'This is a test response'
+    return jsonify(response);
 
 @app.route('/')
 def status():

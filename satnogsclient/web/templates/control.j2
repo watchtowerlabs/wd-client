@@ -6,5 +6,46 @@
 {% block content %}
   <div class="container">
     <h1>Control</h1>
+    <div class="panel panel-default">
+      <div class="panel-heading">Command</div>
+      <div class="panel-body">
+        <div class="row">
+          <div class="col-xs-6">
+            <div class="row">
+              <div class="col-xs-12 col-md-8">
+                <div class="dropdown" id="command-dropdown">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="command-btn" data-toggle="dropdown">ECSS Commands
+                  <span class="caret"></span></button>
+                  <ul class="dropdown-menu" role="menu" aria-labelledby="menu1">
+                    <li role="presentation"><a role="menuitem" href="#">Test Service</a></li
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-6 col-md-4">
+                <form class="form-inline parameter-panel" id="service-params" style="display: none;">
+                  <div class="form-group">
+                    <label class="sr-only" for="exampleInputEmail3">Service ID</label>
+                    <input class="form-control" id="test-service-id" placeholder="Service ID">
+                  </div>
+                </form>
+                <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
+              </div>
+            </div>
+          </div>
+          <div class="col-xs-6">
+            <div class="panel panel-default">
+              <div class="panel-body" id="response-panel">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
+
+{% endblock %}
+{% block js %}
+<script src="{{ url_for('static', filename='js/satnogs-control.js') }}"></script>
 {% endblock %}
