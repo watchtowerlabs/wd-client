@@ -74,3 +74,11 @@ body {
   display: inline-flex;
   margin-left: 5px;
 }
+
+.parameter-panel {
+  margin-top: 10px;
+}
+
+#command-dropdown {
+  margin-bottom: 10px;
+}
