@@ -4,6 +4,7 @@ import os
 import time
 import sys
 from datetime import datetime, timedelta
+from satnogsclient import ecss_settings
 from dateutil import parser
 from urlparse import urljoin
 from multiprocessing import Process, Queue
@@ -17,6 +18,7 @@ from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
 from satnogsclient.observer.commsocket import Commsocket
+from boto.dynamodb.condition import NULL
 
 
 
@@ -192,3 +194,104 @@ def task_listener(port,queue):
                 queue.put(data)
             else:
                 queue.put(data)
+                
+def get_packet_fields(buf):
+    size = len(buf)
+    assert((buf != NULL) == true)
+    assert((size > ecss_settings.MIN_PKT_SIZE and size < ecss_settings.MAX_PKT_SIZE) == true)
+    tmp_crc1 = buf[size - 1];
+    for i in range(0,size -2):
+        tmp_src2 = tmp_src2 ^ buf[i]
+
+    ver = buf[0] >> 5;
+
+    pkt_type = (buf[0] >> 4) & 0x01;
+    dfield_hdr = (buf[0] >> 3) & 0x01;
+
+    pkt_app_id = buf[1];
+
+    pkt_seq_flags = buf[2] >> 6;
+    t = bytearray(2)
+    t[0] = buf[2]
+    t[1] = buf[3]
+    t.reverse()
+    pkt_seq_count = t & 0x3FFF;
+    
+    t = bytearray(2)
+    t[0] = buf[4]
+    t[1] = buf[5]
+    t.reverse()
+
+    pkt_len = t
+
+    ccsds_sec_hdr = buf[6] >> 7;
+
+    tc_pus = buf[6] >> 4;
+
+    pkt_ack = 0x07 & buf[6];
+
+    pkt_ser_type = buf[7];
+    pkt_ser_subtype = buf[8];
+    pkt_dest_id = buf[9];
+
+    pkt_verification_state = ecss_settings.SATR_PKT_INIT
+
+    if not ((pkt_app_id < ecss_settings.LAST_APP_ID) == true) :
+        pkt_verification_state = ecss_settings.SATR_PKT_ILLEGAL_APPID
+        #return SATR_PKT_ILLEGAL_APPID; 
+
+    if not ((pkt_len == size - ecss_settings.ECSS_HEADER_SIZE - 1) == true):
+        pkt_verification_state = ecss_settings.SATR_PKT_INV_LEN
+        #return SATR_PKT_INV_LEN; 
+    pkt_len = pkt_len - ecss_settings.ECSS_DATA_HEADER_SIZE - ecss_settings.ECSS_CRC_SIZE + 1;
+
+    if not ((tmp_crc1 == tmp_crc2) == true) :
+        pkt_verification_state = ecss_settings.SATR_PKT_INC_CRC
+        #return SATR_PKT_INC_CRC; 
+
+    if not((ecss_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == true) : 
+        pkt_verification_state = ecss_settings.SATR_PKT_ILLEGAL_PKT_TP
+        #return SATR_PKT_ILLEGAL_PKT_TP; 
+
+    if not ((ver == ecss_settings.ECSS_VER_NUMBER) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR; 
+
+    if not ((tc_pus == ECSS_PUS_VER) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR;
+
+    if not ((ccsds_sec_hdr == ecss_settings.ECSS_SEC_HDR_FIELD_FLG) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR;
+
+    if not ((pkt_type == 'TC' or pkt_type == 'TM') == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR;
+
+    if not ((dfield_hdr == ecss_settings.ECSS_DATA_FIELD_HDR_FLG) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR;
+
+    if not ((pkt_ack == ecss_settings.TC_ACK_NO or pkt_ack == ecss_settings.TC_ACK_ACC) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR;
+
+    if not ((pkt_seq_flags == ecss_settings.TC_TM_SEQ_SPACKET) == true) :
+        pkt_verification_state = ecss_settings.SATR_ERROR
+        #return SATR_ERROR; 
+    pkt_data = bytearray(pkt_len)
+
+    pktdata = buf[ecss_settings.ECSS_DATA_OFFSET : size -2]
+    
+    #return SATR_OK;
+                
+def ecss_listener(port):
+    logger.info('Started ecss listener')
+    sock = Commsocket('127.0.0.1',port)
+    sock.bind()
+    sock.listen()
+    while 1:
+        conn = sock.accept()
+        if conn:
+            data = conn.recv(sock.tasks_buffer_size)

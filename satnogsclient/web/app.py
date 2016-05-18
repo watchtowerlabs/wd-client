@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, json, jsonify
+import binascii
 
 from satnogsclient import settings as client_settings
+from satnogsclient import ecss_settings
 from satnogsclient.scheduler import tasks
 from satnogsclient.observer.commsocket import Commsocket
 import logging
@@ -45,19 +47,69 @@ def get_status_info():
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
-@app.route('/command', methods=['GET', 'POST'])
+@app.route('/control/', methods=['GET', 'POST'])
 def get_command():
-    return True
+    ecss = {'app_id': 1,
+            'type': 0,
+            'size' : 0,
+            'count' : 1,
+            'ser_type' : 17,
+            'ser_subtype' : 1,
+            'data' : bytearray(0),
+            'dest_id' : 1,
+            'ack': 1}
+    assert((ecss['type'] == 0) or (ecss['type'] == 1) == True )
+    assert((ecss['app_id'] < ecss_settings.LAST_APP_ID) == True)
+    data_size = ecss['size']
+    packet_size = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE + ecss_settings.ECSS_HEADER_SIZE
+    buf = bytearray(packet_size)
+    app_id = ecss['app_id']
+    app_id_ms = app_id & 0xFF00
+    app_id_ls = app_id & 0x00FF
+    buf[0] = ( ecss_settings.ECSS_VER_NUMBER << 5 | ecss['type'] 
+               << 4 | ecss_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
+    buf[1] = app_id_ls
+    seq_flags = ecss_settings.TC_TM_SEQ_SPACKET
+    seq_count = ecss['count']
+    seq_count_ms = seq_count & 0xFF00
+    seq_count_ls = seq_count & 0x00FF
+    buf[2] = (seq_flags << 6 | seq_count_ms)
+    buf[3] = seq_count_ls
+     
+    if ecss['type'] == 0 :
+        buf[6] = ecss_settings.ECSS_PUS_VER << 4 ;
+    elif ecss['type'] == 1 :
+        buf[6] = ( ecss_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | ecss_settings.ECSS_PUS_VER << 4 | ecss['ack']);    
+    buf[7] = ecss['ser_type']
+    buf[8] = ecss['ser_subtype']
+    buf[9] = ecss['dest_id']
+    
+    buf_pointer = ecss_settings.ECSS_DATA_OFFSET
+    buf[buf_pointer:data_size] = ecss['data']
+    data_w_headers = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE -1
+    packet_size_ms = data_w_headers  & 0xFF00
+    packet_size_ls = data_w_headers  & 0x00FF
+    buf[4] = packet_size_ms
+    buf[5] = packet_size_ls
+    buf_pointer = buf_pointer + data_size
+    
+    for i in range(0,buf_pointer):
+        buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
+    size = buf_pointer + 2
+    assert((size > ecss_settings.MIN_PKT_SIZE and size < ecss_settings.MAX_PKT_SIZE) == True)
+    print binascii.hexlify(buf)
+    return render_template('control.j2')
+
 
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
     return render_template('status.j2')
 
-@app.route('/control/')
-def control():
-    '''Control status satnogs-client.'''
-    return render_template('control.j2')
+#@app.route('/control/')
+#def control():
+#    '''Control status satnogs-client.'''
+#    return render_template('control.j2')
 
 
 @app.route('/configuration/')
