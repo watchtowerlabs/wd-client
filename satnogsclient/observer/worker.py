@@ -149,7 +149,6 @@ class WorkerTrack(Worker):
         # Read az/alt and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
-
         self._azimuth = az
         self._altitude = alt
 
