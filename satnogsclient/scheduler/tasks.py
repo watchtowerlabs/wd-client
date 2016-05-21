@@ -195,7 +195,18 @@ def task_listener(port,queue):
             else:
                 queue.put(data)
                 
-def get_packet_fields(buf):
+def ecss_encoder(port):
+    logger.info('Started ecss encoder')
+    sock = Commsocket('127.0.0.1',port)
+    sock.bind()
+    sock.listen()
+    while 1:
+        conn = sock.accept()
+        if conn:
+            data = conn.recv(sock.tasks_buffer_size)
+            packetizer(data)
+                
+def packetizer(buf):
     size = len(buf)
     assert((buf != NULL) == true)
     assert((size > ecss_settings.MIN_PKT_SIZE and size < ecss_settings.MAX_PKT_SIZE) == true)
@@ -286,8 +297,8 @@ def get_packet_fields(buf):
     
     #return SATR_OK;
                 
-def ecss_listener(port):
-    logger.info('Started ecss listener')
+def ecss_decoder(port):
+    logger.info('Started ecss decoder')
     sock = Commsocket('127.0.0.1',port)
     sock.bind()
     sock.listen()
@@ -295,3 +306,49 @@ def ecss_listener(port):
         conn = sock.accept()
         if conn:
             data = conn.recv(sock.tasks_buffer_size)
+            depacketizer(data)
+         
+         
+            
+def depacketizer(ecss):
+    assert((ecss['type'] == 0) or (ecss['type'] == 1) == True )
+    assert((ecss['app_id'] < ecss_settings.LAST_APP_ID) == True)
+    data_size = ecss['size']
+    packet_size = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE + ecss_settings.ECSS_HEADER_SIZE
+    buf = bytearray(packet_size)
+    app_id = ecss['app_id']
+    app_id_ms = app_id & 0xFF00
+    app_id_ls = app_id & 0x00FF
+    buf[0] = ( ecss_settings.ECSS_VER_NUMBER << 5 | ecss['type'] 
+               << 4 | ecss_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
+    buf[1] = app_id_ls
+    seq_flags = ecss_settings.TC_TM_SEQ_SPACKET
+    seq_count = ecss['count']
+    seq_count_ms = seq_count & 0xFF00
+    seq_count_ls = seq_count & 0x00FF
+    buf[2] = (seq_flags << 6 | seq_count_ms)
+    buf[3] = seq_count_ls
+     
+    if ecss['type'] == 0 :
+        buf[6] = ecss_settings.ECSS_PUS_VER << 4 ;
+    elif ecss['type'] == 1 :
+        buf[6] = ( ecss_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | ecss_settings.ECSS_PUS_VER << 4 | ecss['ack']);    
+    buf[7] = ecss['ser_type']
+    buf[8] = ecss['ser_subtype']
+    buf[9] = ecss['dest_id']
+    
+    buf_pointer = ecss_settings.ECSS_DATA_OFFSET
+    buf[buf_pointer:data_size] = ecss['data']
+    data_w_headers = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE -1
+    packet_size_ms = data_w_headers  & 0xFF00
+    packet_size_ls = data_w_headers  & 0x00FF
+    buf[4] = packet_size_ms
+    buf[5] = packet_size_ls
+    buf_pointer = buf_pointer + data_size
+    
+    for i in range(0,buf_pointer):
+        buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
+    size = buf_pointer + 2
+    assert((size > ecss_settings.MIN_PKT_SIZE and size < ecss_settings.MAX_PKT_SIZE) == True)
+    print binascii.hexlify(buf)
+            
