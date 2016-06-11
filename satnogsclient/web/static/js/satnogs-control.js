@@ -4,13 +4,59 @@ $(document).ready(function(){
 })
 
 $(function(){
-    $("#command-dropdown li a").click(function(){
-      $("#command-btn:first-child").text($(this).text());
-      // if ($("#command-btn:first-child").text() == 'Test Service') {
-      //   $("#command-btn:first-child").append('<span class="caret"></span>');
-      //   var elem= document.getElementById('test-service-params');
-      //   elem.style.display= "block";
-      // }
+  $("#command-dropdown li a").click(function(){
+  $("#command-btn:first-child").text($(this).text());
+  $("#command-btn:first-child").append('<span class="caret" id="caret-custom"></span>');
+    if ($("#command-btn:first-child").text() == 'Test Service') {
+      var elem= document.getElementById('service-params');
+      elem.style.display= "block";
+    }
+   });
+
+   $("#power-radio").change(function(){
+     // If checkbox not checked already
+     if ($('input[name=power-radio]').prop('checked') == true) {
+       var elem= document.getElementById('subservice-params-power');
+       var elem2= document.getElementById('subservice-params-time');
+       elem.style.display= "block";
+       elem2.style.display= "none";
+       $('input[name=time-radio]').prop('checked',false);
+       // TODO: Uncheck every other radio
+     }
+   });
+
+   $("#comms-tx-on").change(function(){
+     // If checkbox not checked already
+     if ($('input[name=comms-tx-on]').prop('checked') == true) {
+       $('input[id=comms-tx-off]').prop('checked',false);
+       alert("Comms TX is on");
+       request = encode_comms_tx_rf(1);
+       query_control_backend(request, 'POST', '/command', true);
+       // TODO: Uncheck every other radio
+     }
+   });
+
+   $("#comms-tx-off").change(function(){
+     // If checkbox not checked already
+     if ($('input[name=comms-tx-on]').prop('checked') == true) {
+       $('input[id=comms-tx-on]').prop('checked',false);
+       alert("Comms TX is off");
+       request = encode_comms_tx_rf(0);
+       query_control_backend(request, 'POST', '/command', true);
+       // TODO: Uncheck every other radio
+     }
+   });
+
+   $("#time-radio").change(function(){
+     // If checkbox not checked already
+     if ($('input[name=power-radio]').prop('checked') == true) {
+       var elem= document.getElementById('subservice-params-time');
+       var elem2= document.getElementById('subservice-params-power');
+       elem.style.display= "block";
+       elem2.style.display= "none";
+       $('input[name=power-radio]').prop('checked',false);
+       // TODO: Uncheck every other radio
+     }
    });
 
    $("#send-cmd").click(function(){
@@ -35,26 +81,56 @@ function encode_test_service() {
   DataFieldHeader.SourceID = '3';
   DataFieldHeader.Spare = '0';
 
+  var PacketID = new Object();
+  PacketID.VersionNumber = '0';
+  PacketID.Type = '1';
+  PacketID.DataFieldHeaderFlag = '1';
+  PacketID.ApplicationProcessID = '1';
+
+  var PacketSequenceControl = new Object();
+  PacketSequenceControl.SequenceFlags = '3';
+  PacketSequenceControl.SequenceCount = '59';
+
   var PacketDataField = new Object();
   PacketDataField.DataFieldHeader = DataFieldHeader;
   PacketDataField.ApplicationData = '';
   PacketDataField.Spare = '0';
   PacketDataField.PacketErrorControl = '5';
 
-  //var PacketData = new Object();
-  //PacketData.PacketDataField = PacketDataField;
+  var PacketHeader = new Object();
+  PacketHeader.PacketID = PacketID;
+  PacketHeader.PacketSequenceControl = PacketSequenceControl;
+  PacketHeader.PacketLength = '66';
 
-  //var PacketDataFieldJsonArray = new Array();
-  //PacketDataFieldJsonArray.push(PacketDataField);
-  //console.log(JSON.stringify(PacketDataField));
-  //console.log(JSON.stringify(PacketDataField['DataFieldHeader']['ServiceType']));
-  var json_packet = JSON.parse(JSON.stringify(PacketDataField));
-  return json_packet
+  var TestServicePacket = new Object();
+  TestServicePacket.PacketHeader = PacketHeader;
+  TestServicePacket.PacketDataField = PacketDataField;
+
+  console.log(JSON.stringify(TestServicePacket));
+  var json_packet = JSON.stringify(TestServicePacket);
+  return json_packet;
+}
+
+function encode_comms_tx_rf(status) {
+  var response = new Object();
+  var custom_cmd = new Object();
+  var comms_tx_rf = new Object();
+  if (status) {
+    custom_cmd.comms_tx_rf = 'ON';
+  }
+  else {
+    custom_cmd.comms_tx_rf = 'OFF';
+  }
+  response.custom_cmd = custom_cmd;
+  console.log(JSON.stringify(response));
+  var json_packet = JSON.stringify(response);
+  return json_packet;
 }
 
 function print_command_response(data) {
-  var response_panel= document.getElementById('response-panel');
-  response_panel.innerHTML = data['Response'];
+  var response_panel= document.getElementById('response-panel-body');
+  response_panel.innerHTML += data['Response'];
+  response_panel.innerHTML += '<br>';
 }
 
 function query_control_backend(JSONData, localMode, url, param) {

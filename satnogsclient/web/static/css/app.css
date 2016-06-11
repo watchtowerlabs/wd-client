@@ -82,3 +82,21 @@ body {
 #command-dropdown {
   margin-bottom: 10px;
 }
+
+#response-panel {
+  margin-top: 10px;
+}
+
+#response-panel-body {
+  height: 120px;
+  overflow-y: scroll;
+}
+
+#caret-custom {
+  margin-left: 5px;
+}
+
+#subservice-params-power,
+#subservice-params-time {
+  margin-bottom: 20px;
+}

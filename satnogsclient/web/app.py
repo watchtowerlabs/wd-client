@@ -47,9 +47,13 @@ def get_status_info():
 
 @app.route('/command', methods=['GET', 'POST'])
 def get_command():
-    #TODO: Handle the request and act
+    requested_command = request.get_json();
+    print 'Command received';
     response = {}
-    response['Response'] = 'This is a test response'
+    if 'custom_cmd' in requested_command:
+        if 'comms_tx_rf' in requested_command['custom_cmd']:
+            response['Response'] = 'Comms is ' + requested_command['custom_cmd']['comms_tx_rf'];
+            #TODO: Handle the comms_tx_rf request
     return jsonify(response);
 
 @app.route('/')

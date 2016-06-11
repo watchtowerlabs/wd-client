@@ -10,7 +10,16 @@
       <div class="panel-heading">Command</div>
       <div class="panel-body">
         <div class="row">
-          <div class="col-xs-6">
+          <div class="col-md-6">
+            <div class="row">
+              <div class="col-xs-12 col-md-12">
+                <div class="radio" id="power-radio">
+                  <label>Comms TX status:</label>
+                  <label><input type="radio" name="comms-tx-on" id="comms-tx-on">ON</label>
+                  <label><input type="radio" name="comms-tx-off" id="comms-tx-off">OFF</label>
+                </div>
+              </div>
+            </div>
             <div class="row">
               <div class="col-xs-12 col-md-8">
                 <div class="dropdown" id="command-dropdown">
@@ -22,21 +31,44 @@
                 </div>
               </div>
             </div>
-            <div class="row">
-              <div class="col-xs-6 col-md-4">
-                <form class="form-inline parameter-panel" id="service-params" style="display: none;">
-                  <div class="form-group">
-                    <label class="sr-only" for="exampleInputEmail3">Service ID</label>
-                    <input class="form-control" id="test-service-id" placeholder="Service ID">
+            <div class="row" id="service-params" style="display: none;">
+              <div class="col-xs-12 col-md-12">
+                  <div class="row">
+                    <div class="col-xs-3 col-md-3">
+                      <div class="radio" id="power-radio">
+                        <label><input type="radio" name="power-radio" id="power-radio-input">Power Control</label>
+                      </div>
+                      <div class="radio" id="time-radio">
+                        <label><input type="radio" name="time-radio">Time Control</label>
+                      </div>
+                    </div>
                   </div>
-                </form>
-                <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
+                  <div class="row" id="subservice-params-power" style="display: none;">
+                    <div class="col-xs-9 col-md-9">
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Power" aria-describedby="basic-addon2">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row" id="subservice-params-time" style="display: none;">
+                    <div class="col-xs-9 col-md-9">
+                      <div class="input-group">
+                        <input type="text" class="form-control" placeholder="Time" aria-describedby="basic-addon2">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-xs-12 col-md-12">
+                      <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
+                    </div>
+                  </div>
               </div>
             </div>
           </div>
-          <div class="col-xs-6">
-            <div class="panel panel-default">
-              <div class="panel-body" id="response-panel">
+          <div class="col-md-6">
+            <div class="panel panel-primary" id="response-panel">
+              <div class="panel-heading">Terminal</div>
+              <div class="panel-body" id="response-panel-body">
               </div>
             </div>
           </div>
