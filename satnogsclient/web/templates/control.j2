@@ -13,10 +13,12 @@
           <div class="col-md-6">
             <div class="row">
               <div class="col-xs-12 col-md-12">
-                <div class="radio" id="power-radio">
-                  <label>Comms TX status:</label>
-                  <label><input type="radio" name="comms-tx-on" id="comms-tx-on">ON</label>
-                  <label><input type="radio" name="comms-tx-off" id="comms-tx-off">OFF</label>
+                <div id="comms-on-off">
+                  <div class="inline-label-bold">Comms TX status:</div>
+                  <div class="btn-group" role="group">
+                    <button type="button" class="btn label-success" name="comms-tx-on" id="comms-tx-on">ON</button>
+                    <button type="button" class="btn label-danger" name="comms-tx-off" id="comms-tx-off">OFF</button>
+                  </div>
                 </div>
               </div>
             </div>

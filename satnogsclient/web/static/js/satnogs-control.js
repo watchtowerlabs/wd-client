@@ -25,26 +25,14 @@ $(function(){
      }
    });
 
-   $("#comms-tx-on").change(function(){
-     // If checkbox not checked already
-     if ($('input[name=comms-tx-on]').prop('checked') == true) {
-       $('input[id=comms-tx-off]').prop('checked',false);
-       alert("Comms TX is on");
-       request = encode_comms_tx_rf(1);
-       query_control_backend(request, 'POST', '/command', true);
-       // TODO: Uncheck every other radio
-     }
+   $("#comms-tx-on").click(function(){
+     request = encode_comms_tx_rf(1);
+     query_control_backend(request, 'POST', '/command', true);
    });
 
-   $("#comms-tx-off").change(function(){
-     // If checkbox not checked already
-     if ($('input[name=comms-tx-on]').prop('checked') == true) {
-       $('input[id=comms-tx-on]').prop('checked',false);
-       alert("Comms TX is off");
-       request = encode_comms_tx_rf(0);
-       query_control_backend(request, 'POST', '/command', true);
-       // TODO: Uncheck every other radio
-     }
+   $("#comms-tx-off").click(function(){
+     request = encode_comms_tx_rf(0);
+     query_control_backend(request, 'POST', '/command', true);
    });
 
    $("#time-radio").change(function(){
@@ -116,10 +104,10 @@ function encode_comms_tx_rf(status) {
   var custom_cmd = new Object();
   var comms_tx_rf = new Object();
   if (status) {
-    custom_cmd.comms_tx_rf = 'ON';
+    custom_cmd.comms_tx_rf = 'comms_on';
   }
   else {
-    custom_cmd.comms_tx_rf = 'OFF';
+    custom_cmd.comms_tx_rf = 'comms_off';
   }
   response.custom_cmd = custom_cmd;
   console.log(JSON.stringify(response));

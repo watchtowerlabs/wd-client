@@ -100,3 +100,18 @@ body {
 #subservice-params-time {
   margin-bottom: 20px;
 }
+
+.inline-label-bold {
+  font-weight: bold;
+  margin-right: 5px;
+}
+
+.radio-inline {
+  margin-right: 10px;
+  display: inline-flex;
+}
+
+#comms-on-off {
+  display: inline-flex;
+  margin-bottom: 15px;
+}
