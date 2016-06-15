@@ -47,6 +47,8 @@ RIG_IP = environ.get('SATNOGS_RIG_IP', '127.0.0.1')
 RIG_PORT = int(environ.get('SATNOGS_RIG_PORT', 4532))
  
 PPM_ERROR = float(environ.get('SATNOGS_PPM_ERROR', 0))
+
+SERIAL_PORT = "/dev/tty.usbserial"
  
  # Logging configuration
 DEFAULT_LOGGING = {

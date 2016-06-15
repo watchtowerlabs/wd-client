@@ -5,6 +5,7 @@ from satnogsclient.settings import (NETWORK_API_QUERY_INTERVAL,
                                     NETWORK_API_POST_INTERVAL)
 from satnogsclient.scheduler import scheduler
 from satnogsclient.scheduler.tasks import get_jobs, post_data, task_feeder
+from satnogsclient.observer.serial_handler import read_from_serial
 from satnogsclient.web.app import app
 import threading
 
@@ -26,6 +27,11 @@ if __name__ == '__main__':
     r = threading.Thread(target=task_feeder,args=(5011,5010,))
     r.daemon = True
     r.start()
+    
+    logger.info('Starting serial listener thread...')
+    ser = threading.Thread(target=read_from_serial)
+    ser.daemon = True
+    ser.start()
 
     logger.info('Starting scheduler...')
     scheduler.start()
