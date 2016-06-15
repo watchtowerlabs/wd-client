@@ -7,6 +7,7 @@ import ctypes
 from satnogsclient import packet_settings
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer import hldlc 
 
 logger = logging.getLogger('satnogsclient')
 
@@ -168,6 +169,7 @@ def ecss_packetizer(ecss):
         buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
     size = buf_pointer + 2
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
+    hldlc.HLDLC_frame(buf)
     sock.send_not_recv(buf)
     return packet_settings.SATR_OK
     

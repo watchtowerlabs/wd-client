@@ -53,7 +53,7 @@ def get_status_info():
 def get_command():
     requested_command = request.get_json();
     response = {}
-    response['Response'] = 'This is a test response'
+    response['Response'] = 'This is a test response'  
     if requested_command is not None:
         print 'Command received';
         if 'custom_cmd' in requested_command:

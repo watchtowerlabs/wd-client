@@ -124,3 +124,8 @@ SATRF_DIR_ERROR            = 49
 SATR_LAST                  = 50
 
 
+HLDLC_START_FLAG    =     0x7E
+HLDLC_CONTROL_FLAG  =     0x7D
+UART_BUF_SIZE       =     4096
+
+
