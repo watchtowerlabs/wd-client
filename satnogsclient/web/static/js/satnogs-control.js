@@ -4,10 +4,39 @@ $(document).ready(function(){
 })
 
 $(function(){
-   $("#testservice-select").click(function(){
+   $("#custom-select").click(function(){
      var elem= document.getElementById('service-param-panel');
      elem.style.display= "block";
    });
+
+   $('#service-param-panel select').on('change', function() {
+     // Handle change on service parameter dropdowns
+   });
+
+  $('#service-send').on('click', function() {
+    var list = $('#service-param-panel').find("select");
+    var missing = [];
+    var flag = true;
+    for (i=0; i<list.length; i++){
+      if (isNaN(list[i].value)) {
+        missing.push(list[i].value);
+        flag = false;
+      }
+    }
+    var app_id = $('#service-param-app_id').val();
+    var type = $('#service-param-type').val();
+    var ack = $('#service-param-ack').val();
+    var service_type = $('#service-param-service_type').val();
+    var dest_id = $('#service-param-dest_id').val();
+
+
+    if (flag){
+      encode_service(app_id, service_type,dest_id,ack,type);
+    }
+    else{
+      alert('Please fill ' + missing);
+    }
+  });
 
    $("#comms-tx-on").click(function(){
      request = encode_comms_tx_rf(1);
@@ -101,19 +130,19 @@ function progressHandlingFunction(e){
   });
 });
 
-function encode_test_service() {
+function encode_service(app_id, service_type,service_subtype,ack,type) {
   var DataFieldHeader = new Object();
   DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
   DataFieldHeader.TCPacketPUSVersionNumber = '1';
-  DataFieldHeader.Ack = '0';
-  DataFieldHeader.ServiceType = '17';
-  DataFieldHeader.ServiceSubType = '1';
-  DataFieldHeader.SourceID = '3';
+  DataFieldHeader.Ack = ack;
+  DataFieldHeader.ServiceType = service_type;
+  DataFieldHeader.ServiceSubType = service_subtype;
+  DataFieldHeader.SourceID = app_id;
   DataFieldHeader.Spare = '0';
 
   var PacketID = new Object();
   PacketID.VersionNumber = '0';
-  PacketID.Type = '1';
+  PacketID.Type = type;
   PacketID.DataFieldHeaderFlag = '1';
   PacketID.ApplicationProcessID = '1';
 
