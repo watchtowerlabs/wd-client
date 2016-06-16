@@ -5,11 +5,20 @@ $(document).ready(function(){
 
 $(function(){
   $("#command-dropdown li a").click(function(){
-  $("#command-btn:first-child").text($(this).text());
-  $("#command-btn:first-child").append('<span class="caret" id="caret-custom"></span>');
-    if ($("#command-btn:first-child").text() == 'Test Service') {
-      var elem= document.getElementById('service-params');
-      elem.style.display= "block";
+    if($(this).index() == 0) {
+      $("#command-btn:first-child").text($(this).text());
+      $("#command-btn:first-child").append('<span class="caret" id="caret-custom"></span>');
+        if ($("#command-btn:first-child").text() == 'Test Service') {
+          var elem= document.getElementById('service-params');
+          elem.style.display= "block";
+        }
+    } else if($(this).index() == 1) {
+      $("#command-btn:nth-child(2)").text($(this).text());
+      $("#command-btn:nth-child(2)").append('<span class="caret" id="caret-custom"></span>');
+        if ($("#command-btn:nth-child(2)").text() == 'Custom Packet') {
+          var elem= document.getElementById('service-params-custom');
+          elem.style.display= "block";
+        }
     }
    });
 
