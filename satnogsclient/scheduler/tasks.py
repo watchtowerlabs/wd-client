@@ -124,7 +124,7 @@ def get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
             
-    sock = Commsocket('127.0.0.1',5010)
+    sock = Commsocket('127.0.0.1',client_settings.TASK_LISTENER_TCP_PORT)
     
     tasks = []
     for obj in response.json():
