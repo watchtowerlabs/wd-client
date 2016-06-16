@@ -1,13 +1,13 @@
 from flask import Flask, render_template, request, json, jsonify
-import binascii
-import struct
-import ctypes
+
 
 from satnogsclient import settings as client_settings
-from satnogsclient import ecss_settings
+from satnogsclient import packet_settings
 from satnogsclient.scheduler import tasks
+from satnogsclient.observer import packet
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer import serial_handler
 import logging
 from flask.json import JSONDecoder
 
@@ -60,7 +60,7 @@ def get_raw():
 def get_command():
     requested_command = request.get_json();
     response = {}
-    response['Response'] = 'This is a test response'
+    response['Response'] = 'This is a test response'  
     if requested_command is not None:
         print 'Command received';
         if 'custom_cmd' in requested_command:
@@ -80,68 +80,11 @@ def get_command():
                         'dest_id' : 2,
                         'ack': 0}
                 if ecss['command_type'] == 'comms_off' :
-                    data = ctypes.create_string_buffer(25)
-                    data[0:9] = 'RF SW CMD'
-                    struct.pack_into("<I",data,9,0x593d55df)
-                    struct.pack_into("<I",data,13,0x4d2f84c0)
-                    struct.pack_into("<I",data,17,0x24d60191)
-                    struct.pack_into("<I",data,21,0x9287b5fd)
-                    d = bytearray(data)
-                    print list(d)
-                    sock.send(d)
+                    packet.comms_off()
                 elif ecss['command_type'] == 'comms_on' :
-                    data = ctypes.create_string_buffer(25)
-                    data[0:9] = 'RF SW CMD'
-                    struct.pack_into("<I",data,9,0xda4942a9)
-                    struct.pack_into("<I",data,13,0xa7a45d61)
-                    struct.pack_into("<I",data,17,0x413981b)
-                    struct.pack_into("<I",data,21,0xa94ee2d3)
-                    d = bytearray(data)
-                    print list(d)
-                    sock.send(d)
+                    packet.comms_on()
                 else :
-                    assert((ecss['type'] == 0) or (ecss['type'] == 1) == True )
-                    assert((ecss['app_id'] < ecss_settings.LAST_APP_ID) == True)
-                    data_size = ecss['size']
-                    packet_size = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE + ecss_settings.ECSS_HEADER_SIZE
-                    buf = bytearray(packet_size)
-                    app_id = ecss['app_id']
-                    app_id_ms = app_id & 0xFF00
-                    app_id_ls = app_id & 0x00FF
-                    buf[0] = ( ecss_settings.ECSS_VER_NUMBER << 5 | ecss['type']
-                           << 4 | ecss_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
-                    buf[1] = app_id_ls
-                    seq_flags = ecss_settings.TC_TM_SEQ_SPACKET
-                    seq_count = ecss['count']
-                    seq_count_ms = seq_count & 0xFF00
-                    seq_count_ls = seq_count & 0x00FF
-                    buf[2] = (seq_flags << 6 | seq_count_ms)
-                    buf[3] = seq_count_ls
-
-                    if ecss['type'] == 0 :
-                        buf[6] = ecss_settings.ECSS_PUS_VER << 4 ;
-                    elif ecss['type'] == 1 :
-                        buf[6] = ( ecss_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | ecss_settings.ECSS_PUS_VER << 4 | ecss['ack']);
-                    buf[7] = ecss['ser_type']
-                    buf[8] = ecss['ser_subtype']
-                    buf[9] = ecss['dest_id']
-
-                    buf_pointer = ecss_settings.ECSS_DATA_OFFSET
-                    buf[buf_pointer:data_size] = ecss['data']
-                    data_w_headers = data_size + ecss_settings.ECSS_DATA_HEADER_SIZE + ecss_settings.ECSS_CRC_SIZE -1
-                    packet_size_ms = data_w_headers  & 0xFF00
-                    packet_size_ls = data_w_headers  & 0x00FF
-                    buf[4] = packet_size_ms
-                    buf[5] = packet_size_ls
-                    buf_pointer = buf_pointer + data_size
-
-                    for i in range(0,buf_pointer):
-                        buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
-                    size = buf_pointer + 2
-                    assert((size > ecss_settings.MIN_PKT_SIZE and size < ecss_settings.MAX_PKT_SIZE) == True)
-                    print binascii.hexlify(buf)
-
-                    sock.send(buf)
+                    packet.ecss_packetizer(ecss)
                 return jsonify(response);
     return render_template('control.j2')
 
