@@ -29,7 +29,7 @@ if __name__ == '__main__':
     r.start()
     
     logger.info('Starting serial listener thread...')
-    ser = threading.Thread(target=read_from_serial)
+    ser = threading.Thread(target=read_from_serial,args=())
     ser.daemon = True
     ser.start()
 

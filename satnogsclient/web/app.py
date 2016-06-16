@@ -7,6 +7,7 @@ from satnogsclient.scheduler import tasks
 from satnogsclient.observer import packet
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer import serial_handler
 import logging
 from flask.json import JSONDecoder
 
