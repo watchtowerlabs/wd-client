@@ -32,19 +32,26 @@
               </div>
             </div>
             <hr>
-            <div class="row">
-              <div class="col-xs-6 col-md-6" id="testservice-panel">
-                <div>Test Service</div>
-                <div id="service-params">
-                  <select multiple class="form-control" id="test-service-select">
-                    <option id="power-radio-input">Power control</option>
-                    <option id="power-radio-input">Time Control</option>
-                  </select>
-                  <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
+            <div class="row" id="service-panel">
+              <label for="">Services</label>
+              <div id="service-panel">
+                <select multiple class="form-control" id="service-select">
+                  <option id="testservice-select">Test</option>
+                </select>
+              </div>
+              <div id="service-param-panel" style="display:none;">
+                <div class="dropdown">
+                  <button class="btn btn-default dropdown-toggle" type="button" id="app-id-select" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                    App ID
+                    <span class="caret"></span>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                    <li><a href="#">1</a></li>
+                    <li><a href="#">2</a></li>
+                  </ul>
                 </div>
               </div>
-              <div class="col-xs-6 col-md-6" id="service-param-panel">
-              </div>
+              <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
             </div>
             <hr>
             <div class="row">
