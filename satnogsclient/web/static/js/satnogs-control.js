@@ -4,9 +4,22 @@ $(document).ready(function(){
 })
 
 $(function(){
-   $("#testservice-select").click(function(){
+   $("#testservice-select").click(function() {
      var elem= document.getElementById('service-param-panel');
      elem.style.display= "block";
+
+     var elem= document.getElementById('service-param-custom');
+     elem.style.display= "none";
+
+   });
+
+   $("#customservice-select").click(function() {
+     var elem= document.getElementById('service-param-panel');
+     elem.style.display= "none";
+
+     var elem= document.getElementById('service-param-custom');
+     elem.style.display= "block";
+
    });
 
    $("#comms-tx-on").click(function(){
@@ -89,6 +102,14 @@ function progressHandlingFunction(e){
    //
   //  });
 
+
+  $("#send-custom-cmd").click(function() {
+    alert('Hello' + $("service-param-custom-app_id").attr('value'));
+
+    request = encode_custom_service();
+    query_control_backend(request, 'POST', '/command', true);
+  });
+
    $("#send-cmd").click(function(){
      if ($("#command-btn:first-child").text() == 'Test Service') {
        request = encode_test_service();
@@ -100,6 +121,46 @@ function progressHandlingFunction(e){
      query_control_backend(request, 'POST', '/command', true);
   });
 });
+
+function encode_custom_service() {
+  var DataFieldHeader = new Object();
+  DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
+  DataFieldHeader.TCPacketPUSVersionNumber = '1';
+  DataFieldHeader.Ack = $("service-param-custom-app_id").value;
+  DataFieldHeader.ServiceType = '17';
+  DataFieldHeader.ServiceSubType = '1';
+  DataFieldHeader.SourceID = '3';
+  DataFieldHeader.Spare = '0';
+
+  var PacketID = new Object();
+  PacketID.VersionNumber = '0';
+  PacketID.Type = '1';
+  PacketID.DataFieldHeaderFlag = '1';
+  PacketID.ApplicationProcessID = '1';
+
+  var PacketSequenceControl = new Object();
+  PacketSequenceControl.SequenceFlags = '3';
+  PacketSequenceControl.SequenceCount = '59';
+
+  var PacketDataField = new Object();
+  PacketDataField.DataFieldHeader = DataFieldHeader;
+  PacketDataField.ApplicationData = '';
+  PacketDataField.Spare = '0';
+  PacketDataField.PacketErrorControl = '5';
+
+  var PacketHeader = new Object();
+  PacketHeader.PacketID = PacketID;
+  PacketHeader.PacketSequenceControl = PacketSequenceControl;
+  PacketHeader.PacketLength = '66';
+
+  var TestServicePacket = new Object();
+  TestServicePacket.PacketHeader = PacketHeader;
+  TestServicePacket.PacketDataField = PacketDataField;
+
+  console.log(JSON.stringify(TestServicePacket));
+  var json_packet = JSON.stringify(TestServicePacket);
+  return json_packet;
+}
 
 function encode_test_service() {
   var DataFieldHeader = new Object();
