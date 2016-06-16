@@ -7,6 +7,7 @@ from satnogsclient.scheduler import tasks
 from satnogsclient.observer import packet
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
+from satnogsclient.observer import serial_handler
 import logging
 from flask.json import JSONDecoder
 
@@ -48,6 +49,12 @@ def get_status_info():
 
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
+
+@app.route('/raw', methods=['GET', 'POST'])
+def get_raw():
+    with open('/home/ctriant/hope', 'wb') as file_:
+        file_.write(request.get_data());
+    return request.get_data();
 
 @app.route('/command', methods=['GET', 'POST'])
 def get_command():

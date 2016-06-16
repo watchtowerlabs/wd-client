@@ -24,7 +24,7 @@ def ecss_encoder(port):
             data = conn.recv(sock.tasks_buffer_size)
             ecss_packetizer(data)
                 
-def ecss_depacketizer(buf):
+def ecss_depacketizer(buf,dict_out):
     size = len(buf)
     assert((buf != NULL) == true)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == true)
@@ -112,6 +112,15 @@ def ecss_depacketizer(buf):
     pkt_data = bytearray(pkt_len)
 
     pktdata = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
+    dict_out={'type':pkt_type,
+             'app_id':pkt_app_id,
+             'size':pkt_len,
+             'ack':pkt_ack,
+             'ser_type':pkt_ser_type,
+             'ser_subtype':pkt_ser_subtype,
+             'dest_id':pkt_dest_id,
+             'data':pktdata
+             }
     
     return packet_settings.SATR_OK;
                 
@@ -171,7 +180,7 @@ def ecss_packetizer(ecss):
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     buf_out = bytearray(0)
     hldlc.HLDLC_frame(buf,buf_out)
-    sock.send_not_recv(buf)
+    sock.send_not_recv(buf_out)
     return packet_settings.SATR_OK
     
 def comms_off():
