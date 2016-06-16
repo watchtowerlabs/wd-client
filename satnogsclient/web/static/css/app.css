@@ -96,9 +96,16 @@ body {
   margin-left: 5px;
 }
 
-#subservice-params-power,
-#subservice-params-time {
+#test-service-select {
   margin-bottom: 20px;
+}
+
+#testservice-panel {
+  border-right: #e4e0e0 1px solid;
+}
+
+#switch-panel {
+  text-align: center;
 }
 
 .inline-label-bold {
@@ -114,4 +121,60 @@ body {
 #comms-on-off {
   display: inline-flex;
   margin-bottom: 15px;
+}
+
+.box {
+    font-size: 1.25rem;
+    background-color: #fff;
+    position: relative;
+    padding: 100px 20px;
+}
+
+.box__dragndrop,
+.box__uploading,
+.box__success,
+.box__error {
+  display: none;
+}
+
+.box.has-advanced-upload {
+    outline: 2px dashed #92b0b3;
+    outline-offset: -10px;
+    -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+    transition: outline-offset .15s ease-in-out, background-color .15s linear;
+}
+
+.box.has-advanced-upload .box__icon {
+    width: 100%;
+    height: 50px;
+    fill: #92b0b3;
+    display: block;
+    margin-bottom: 40px;
+}
+
+.box__file {
+    width: 0.1px;
+    height: 0.1px;
+    opacity: 0;
+    overflow: hidden;
+    position: absolute;
+    z-index: -1;
+}
+
+.box__file + label {
+    max-width: 80%;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: pointer;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.box__button {
+    display: block;
+    margin: 40px auto 0;
+}
+
+.box.has-advanced-upload .box__dragndrop {
+  display: inline;
 }
