@@ -4,8 +4,9 @@ $(document).ready(function(){
 })
 
 $(function(){
-   $("#power-radio").change(function(){
-     // If checkbox not checked already
+   $("#testservice-select").click(function(){
+     var elem= document.getElementById('service-param-panel');
+     elem.style.display= "block";
    });
 
    $("#comms-tx-on").click(function(){

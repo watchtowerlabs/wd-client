@@ -52,7 +52,7 @@ RIG_PORT = int(environ.get('SATNOGS_RIG_PORT', 4532))
  
 PPM_ERROR = float(environ.get('SATNOGS_PPM_ERROR', 0))
 
-SERIAL_PORT = "/dev/ttyS0"
+SERIAL_PORT = "/dev/tty0"
  
  # Logging configuration
 DEFAULT_LOGGING = {
