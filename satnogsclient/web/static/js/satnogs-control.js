@@ -26,6 +26,132 @@ $(function(){
      // Handle change on service parameter dropdowns
    });
 
+  $('#service-param-service_type').on('change', function() {
+     // Handle change on service parameter dropdowns
+    var subservice = $(this).find("option:selected").text();
+    
+    var VR_SERVICE = {
+      TM_VR_ACCEPTANCE_SUCCESS: 1,
+      TM_VR_ACCEPTANCE_FAILURE: 2
+    };
+
+    var HK_SERVICE = {
+      TC_HK_REPORT_PARAMETERS: 21,
+      TM_HK_PARAMETERS_REPORT: 23
+    };
+
+    var EV_SERVICE = {
+      TM_EV_NORMAL_REPORT: 1,
+      TM_EV_ERROR_REPORT:  4
+    };
+
+    var FM_SERVICE = {
+      TC_FM_PERFORM_FUNCTION: 1
+    };
+
+    var SC_SERVICE = {
+      TC_SC_ENABLE_RELEASE:          1,
+      TC_SC_DISABLE_RELEASE:         2,
+      TC_SC_RESET_SCHEDULE:          3,
+      TC_SC_INSERT_TC:               4,
+      TC_SC_DELETE_TC:               5,
+      TC_SC_TIME_SHIFT_SPECIFIC:     7,
+      TC_SC_TIME_SHIFT_SELECTED_OTP: 8,
+      TC_SC_TIME_SHIFT_ALL:         15
+    };
+
+    var LD_SERVICE = {
+      TM_LD_FIRST_DOWNLINK:     1,
+      TC_LD_FIRST_UPLINK:       9,
+      TM_LD_INT_DOWNLINK:       2,
+      TC_LD_INT_UPLINK:        10,
+      TM_LD_LAST_DOWNLINK:      3,
+      TC_LD_LAST_UPLINK:       11,
+      TC_LD_ACK_DOWNLINK:       5,
+      TM_LD_ACK_UPLINK:        14,
+      TC_LD_REPEAT_DOWNLINK:    6,
+      TM_LD_REPEAT_UPLINK:     15,
+      TM_LD_REPEATED_DOWNLINK:  7,
+      TC_LD_REPEATED_UPLINK:   12,
+      TM_LD_ABORT_SE_DOWNLINK:  4,
+      TC_LD_ABORT_SE_UPLINK:   13,
+      TC_LD_ABORT_RE_DOWNLINK:  8,
+      TM_LD_ABORT_RE_UPLINK:   16
+    };
+
+    var MS_SERVICE = {
+      TC_MS_ENABLE:             1,
+      TC_MS_DISABLE:            2,
+      TC_MS_CONTENT:            8,
+      TC_MS_DOWNLINK:           9,
+      TC_MS_DELETE:            11,
+      TC_MS_REPORT:            12,
+      TM_MS_CATALOGUE_REPORT:  13,
+      TC_MS_UPLINK:            14,
+      TC_MS_FORMAT:            15
+    };
+
+    var CT_SERVICE = {
+      TC_CT_PERFORM_TEST: 1,
+      TM_CT_REPORT_TEST:  2
+    };
+
+    var $select = $('#service-param-service_subtype');                        
+    $select.find('option').remove();   
+    $select.append('<option selected="true" style="display:none;">Service sub Type</option>');
+    
+    if(subservice == "TC_VERIFICATION_SERVICE") {
+      for(key in VR_SERVICE) {
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_HOUSEKEEPING_SERVICE") {
+      for(key in HK_SERVICE) {
+        $select.append('<option value=' + HK_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_EVENT_SERVICE") {
+      for(key in EV_SERVICE) {
+        $select.append('<option value=' + EV_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_FUNCTION_MANAGEMENT_SERVICE") {
+      for(key in FM_SERVICE) {
+        $select.append('<option value=' + FM_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_TIME_MANAGEMENT_SERVICE") {
+      for(key in VR_SERVICE) {
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_SCHEDULING_SERVICE") {
+      for(key in SC_SERVICE) {
+        $select.append('<option value=' + SC_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_LARGE_DATA_SERVICE") {
+      for(key in LD_SERVICE) {
+        $select.append('<option value=' + LD_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_MASS_STORAGE_SERVICE") {
+      for(key in MS_SERVICE) {
+        $select.append('<option value=' + MS_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_TEST_SERVICE") {
+      for(key in CT_SERVICE) {
+        $select.append('<option value=' + CT_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+    else if(subservice == "TC_SU_MNLP_SERVICE") {
+      for(key in VR_SERVICE) {
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+      }
+    }
+  });
+
   $('#service-send').on('click', function() {
     var list = $('#service-param-panel').find("select");
     var missing = [];
@@ -40,11 +166,12 @@ $(function(){
     var type = $('#service-param-type').val();
     var ack = $('#service-param-ack').val();
     var service_type = $('#service-param-service_type').val();
+    var service_subtype = $('#service-param-service_subtype').val();
     var dest_id = $('#service-param-dest_id').val();
 
 
     if (flag){
-      encode_service(app_id, service_type,dest_id,ack,type);
+      encode_service(type, app_id, service_type, service_subtype, dest_id, ack);
     }
     else{
       alert('Please fill ' + missing);
@@ -151,7 +278,7 @@ function progressHandlingFunction(e){
   });
 });
 
-function encode_service(app_id, service_type,service_subtype,ack,type) {
+function encode_service(type, app_id, service_type, service_subtype, ack) {
   var DataFieldHeader = new Object();
   DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
   DataFieldHeader.TCPacketPUSVersionNumber = '1';
