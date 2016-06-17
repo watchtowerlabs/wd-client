@@ -36,7 +36,7 @@
               <label for="">Services</label>
               <div id="service-panel">
                 <select multiple class="form-control" id="service-select">
-                  <option id="test-select">Power</option>
+                  <option id="power-select">Power</option>
                   <option id="test-select">Test</option>
                   <option id="custom-select">Custom</option>
                 </select>
@@ -54,8 +54,8 @@
                   </select>
                   <select id="service-param-type" class="form-control">
                     <option selected="true" style="display:none;">Type</option>
+                    <option value="0" >TM</option>
                     <option value="1" >TC</option>
-                    <option value="2" >TM</option>
                   </select>
                   <select id="service-param-ack" class="form-control">
                     <option selected="true" style="display:none;">ACK</option>
@@ -88,6 +88,39 @@
                     <option value="7" >UMB</option>
                   </select>
                   <input type="text" id="service-param-service-data">
+                  <select id="service-param-dev-id" class="form-control">
+                    <option selected="true" style="display:none;">App ID</option>
+                    <option value="1" >OBC_DEV_ID</option>
+                    <option value="2" >EPS_DEV_ID</option>
+                    <option value="3" >ADCS_DEV_ID</option>
+                    <option value="4" >COMMS_DEV_ID</option>
+                    <option value="5" >IAC_DEV_ID</option>
+                    <option value="6" >SU_DEV_ID</option>
+                    <option value="7" >GPS_DEV_ID</option>
+                    <option value="8" >OBC_SD_DEV_ID</option>
+                    <option value="9" >ADCS_SD_DEV_ID</option>
+                    <option value="10" >ADCS_SENSORS</option>
+                    <option value="11" >ADCS_GPS</option>
+                    <option value="12" >ADCS_MAGNETO</option>
+                    <option value="13" >ADCS_SPIN</option>
+                    <option value="14" >ADCS_GPS</option>
+                    <option value="15" >ADCS_GPS</option>
+                  </select>
+                  <select id="service-param-function" class="form-control">
+                    <option selected="true" style="display:none;">Type</option>
+                    <option value="1" >ON</option>
+                    <option value="2" >OFF</option>
+                  </select>
+                  <select id="service-param-power-ack" class="form-control">
+                    <option selected="true" style="display:none;">ACK</option>
+                    <option value="0" >NO ACK</option>
+                    <option value="1" >ACK</option>
+                  </select>      
+                  <select id="service-param-power-dest_id" class="form-control">
+                    <option selected="true" style="display:none;">Dest ID</option>
+                    <option value="6" >GND</option>
+                    <option value="7" >UMB</option>
+                  </select>
                 </div>
                 <button class="btn btn-primary" id="service-send"> Send </button>
             </div>

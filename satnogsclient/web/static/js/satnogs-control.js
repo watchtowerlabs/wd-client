@@ -8,18 +8,17 @@ $(function(){
      var elem= document.getElementById('service-param-panel');
      elem.style.display= "block";
 
-     var elem= document.getElementById('service-param-custom');
+     var elem= document.getElementById('service-param-power');
      elem.style.display= "none";
 
    });
 
-   $("#customservice-select").click(function() {
+   $("#power-select").click(function() {
      var elem= document.getElementById('service-param-panel');
      elem.style.display= "none";
 
-     var elem= document.getElementById('service-param-custom');
+     var elem= document.getElementById('service-param-power');
      elem.style.display= "block";
-
    });
 
    $('#service-param-panel select').on('change', function() {
@@ -162,15 +161,45 @@ $(function(){
         flag = false;
       }
     }
-    var app_id = $('#service-param-app_id').val();
-    var type = $('#service-param-type').val();
-    var ack = $('#service-param-ack').val();
-    var service_type = $('#service-param-service_type').val();
-    var service_subtype = $('#service-param-service_subtype').val();
-    var dest_id = $('#service-param-dest_id').val();
 
-    var data = $('#service-param-service-data').val().split(",");
-    alert(data);
+    if( == "custom") {
+      var app_id = $('#service-param-app_id').val();
+      var type = $('#service-param-type').val();
+      var ack = $('#service-param-ack').val();
+      var service_type = $('#service-param-service_type').val();
+      var service_subtype = $('#service-param-service_subtype').val();
+      var dest_id = $('#service-param-dest_id').val();
+
+      var data = $('#service-param-service-data').val().split(",");
+    }
+    else if( == "power") {
+      var dev_id = $('#service-param-dev-id').val();
+      var type = 1;
+      var ack = $('#service-param-power-ack').val();
+      
+      var service_type = 8;
+      var service_subtype = 1;
+      var dest_id = $('#service-param-power-dest_id').val();
+
+      if(dev_id == 1) { var app_id = 2; }
+      else if(dev_id == 2) { var app_id = 2; }
+      else if(dev_id == 3) { var app_id = 2; }
+      else if(dev_id == 4) { var app_id = 2; }
+      else if(dev_id == 5) { var app_id = 1; }
+      else if(dev_id == 6) { var app_id = 2; }
+      else if(dev_id == 7) { var app_id = 3; }
+      else if(dev_id == 8) { var app_id = 1; }
+      else if(dev_id == 9) { var app_id = 3; }
+      else if(dev_id == 10) { var app_id = 3; }
+      else if(dev_id == 11) { var app_id = 3; }
+      else if(dev_id == 12) { var app_id = 3; }
+      else if(dev_id == 13) { var app_id = 3; }
+      else if(dev_id == 14) { var app_id = 3; }
+      else if(dev_id == 15) { var app_id = 3; }
+
+      var fun_id = $('#service-param-function').val();
+      var data = { fun_id, dev_id};
+    }
 
     if (flag){
       encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
@@ -308,7 +337,7 @@ function encode_service(type, app_id, service_type, service_subtype, ack, data) 
 
   if(typeof data != "undefined") {
     PacketDataField.ApplicationData = data;
-    alert(PacketDataField.ApplicationData);
+    alert(data);
   }
 
 
