@@ -278,7 +278,7 @@ function progressHandlingFunction(e){
   });
 });
 
-function encode_service(type, app_id, service_type, service_subtype, ack) {
+function encode_service(type, app_id, service_type, service_subtype, ack, data) {
   var DataFieldHeader = new Object();
   DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
   DataFieldHeader.TCPacketPUSVersionNumber = '1';
@@ -308,6 +308,10 @@ function encode_service(type, app_id, service_type, service_subtype, ack) {
   PacketHeader.PacketID = PacketID;
   PacketHeader.PacketSequenceControl = PacketSequenceControl;
   PacketHeader.PacketLength = '66';
+
+  if(typeof data != "undefined") {
+
+  }
 
   var TestServicePacket = new Object();
   TestServicePacket.PacketHeader = PacketHeader;
