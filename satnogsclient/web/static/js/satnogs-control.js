@@ -306,6 +306,12 @@ function encode_service(type, app_id, service_type, service_subtype, ack, data) 
   PacketDataField.Spare = '0';
   PacketDataField.PacketErrorControl = '5';
 
+  if(typeof data != "undefined") {
+    PacketDataField.ApplicationData = data;
+    alert(PacketDataField.ApplicationData);
+  }
+
+
   var PacketHeader = new Object();
   PacketHeader.PacketID = PacketID;
   PacketHeader.PacketSequenceControl = PacketSequenceControl;
@@ -314,11 +320,6 @@ function encode_service(type, app_id, service_type, service_subtype, ack, data) 
   var TestServicePacket = new Object();
   TestServicePacket.PacketHeader = PacketHeader;
   TestServicePacket.PacketDataField = PacketDataField;
-
-  if(typeof data != "undefined") {
-    TestServicePacket.ApplicationData = data;
-    alert(TestServicePacket.ApplicationData);
-  }
 
   console.log(JSON.stringify(TestServicePacket));
   var json_packet = JSON.stringify(TestServicePacket);
