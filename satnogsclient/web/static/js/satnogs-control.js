@@ -169,9 +169,11 @@ $(function(){
     var service_subtype = $('#service-param-service_subtype').val();
     var dest_id = $('#service-param-dest_id').val();
 
+    var data = $('#service-param-service-data').val().split(",");
+    alert(data);
 
     if (flag){
-      encode_service(type, app_id, service_type, service_subtype, dest_id, ack);
+      encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
     }
     else{
       alert('Please fill ' + missing);
@@ -309,13 +311,14 @@ function encode_service(type, app_id, service_type, service_subtype, ack, data) 
   PacketHeader.PacketSequenceControl = PacketSequenceControl;
   PacketHeader.PacketLength = '66';
 
-  if(typeof data != "undefined") {
-
-  }
-
   var TestServicePacket = new Object();
   TestServicePacket.PacketHeader = PacketHeader;
   TestServicePacket.PacketDataField = PacketDataField;
+
+  if(typeof data != "undefined") {
+    TestServicePacket.ApplicationData = data;
+    alert(TestServicePacket.ApplicationData);
+  }
 
   console.log(JSON.stringify(TestServicePacket));
   var json_packet = JSON.stringify(TestServicePacket);
