@@ -4,7 +4,7 @@ $(document).ready(function(){
 })
 
 $(function(){
-   $("#testservice-select").click(function() {
+   $("#custom-select").click(function(){
      var elem= document.getElementById('service-param-panel');
      elem.style.display= "block";
 
@@ -21,6 +21,35 @@ $(function(){
      elem.style.display= "block";
 
    });
+
+   $('#service-param-panel select').on('change', function() {
+     // Handle change on service parameter dropdowns
+   });
+
+  $('#service-send').on('click', function() {
+    var list = $('#service-param-panel').find("select");
+    var missing = [];
+    var flag = true;
+    for (i=0; i<list.length; i++){
+      if (isNaN(list[i].value)) {
+        missing.push(list[i].value);
+        flag = false;
+      }
+    }
+    var app_id = $('#service-param-app_id').val();
+    var type = $('#service-param-type').val();
+    var ack = $('#service-param-ack').val();
+    var service_type = $('#service-param-service_type').val();
+    var dest_id = $('#service-param-dest_id').val();
+
+
+    if (flag){
+      encode_service(app_id, service_type,dest_id,ack,type);
+    }
+    else{
+      alert('Please fill ' + missing);
+    }
+  });
 
    $("#comms-tx-on").click(function(){
      request = encode_comms_tx_rf(1);
@@ -122,59 +151,19 @@ function progressHandlingFunction(e){
   });
 });
 
-function encode_custom_service() {
+function encode_service(app_id, service_type,service_subtype,ack,type) {
   var DataFieldHeader = new Object();
   DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
   DataFieldHeader.TCPacketPUSVersionNumber = '1';
-  DataFieldHeader.Ack = $("service-param-custom-app_id").value;
-  DataFieldHeader.ServiceType = '17';
-  DataFieldHeader.ServiceSubType = '1';
-  DataFieldHeader.SourceID = '3';
+  DataFieldHeader.Ack = ack;
+  DataFieldHeader.ServiceType = service_type;
+  DataFieldHeader.ServiceSubType = service_subtype;
+  DataFieldHeader.SourceID = app_id;
   DataFieldHeader.Spare = '0';
 
   var PacketID = new Object();
   PacketID.VersionNumber = '0';
-  PacketID.Type = '1';
-  PacketID.DataFieldHeaderFlag = '1';
-  PacketID.ApplicationProcessID = '1';
-
-  var PacketSequenceControl = new Object();
-  PacketSequenceControl.SequenceFlags = '3';
-  PacketSequenceControl.SequenceCount = '59';
-
-  var PacketDataField = new Object();
-  PacketDataField.DataFieldHeader = DataFieldHeader;
-  PacketDataField.ApplicationData = '';
-  PacketDataField.Spare = '0';
-  PacketDataField.PacketErrorControl = '5';
-
-  var PacketHeader = new Object();
-  PacketHeader.PacketID = PacketID;
-  PacketHeader.PacketSequenceControl = PacketSequenceControl;
-  PacketHeader.PacketLength = '66';
-
-  var TestServicePacket = new Object();
-  TestServicePacket.PacketHeader = PacketHeader;
-  TestServicePacket.PacketDataField = PacketDataField;
-
-  console.log(JSON.stringify(TestServicePacket));
-  var json_packet = JSON.stringify(TestServicePacket);
-  return json_packet;
-}
-
-function encode_test_service() {
-  var DataFieldHeader = new Object();
-  DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
-  DataFieldHeader.TCPacketPUSVersionNumber = '1';
-  DataFieldHeader.Ack = '0';
-  DataFieldHeader.ServiceType = '17';
-  DataFieldHeader.ServiceSubType = '1';
-  DataFieldHeader.SourceID = '3';
-  DataFieldHeader.Spare = '0';
-
-  var PacketID = new Object();
-  PacketID.VersionNumber = '0';
-  PacketID.Type = '1';
+  PacketID.Type = type;
   PacketID.DataFieldHeaderFlag = '1';
   PacketID.ApplicationProcessID = '1';
 

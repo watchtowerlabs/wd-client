@@ -10,7 +10,7 @@
       <div class="panel-heading">Command</div>
       <div class="panel-body">
         <div class="row" id="switch-panel">
-          <div class="col-md-6">
+          <div class="col-md-7" id="command-col">
             <div class="row">
               <div class="col-xs-6 col-md-6">
                 <div class="inline-label-bold">Comms TX status</div>
@@ -36,68 +36,54 @@
               <label for="">Services</label>
               <div id="service-panel">
                 <select multiple class="form-control" id="service-select">
-                  <option id="testservice-select">Test</option>
-                  <option id="customservice-select">Custom</option>
+                  <option id="custom-select">Custom</option>
                 </select>
               </div>
               <div id="service-param-panel" style="display:none;">
-                <div class="dropdown">
-                  <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    App ID
-                    <span class="caret"></span>
-                  </button>
-                  <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li><a href="#">1</a></li>
-                    <li><a href="#">2</a></li>
-                  </ul>
+                <div class="dropdown-group-inline">
+                  <select id="service-param-app_id" class="form-control">
+                    <option selected="true" style="display:none;">App ID</option>
+                    <option value="1" >OBC</option>
+                    <option value="2" >EPS</option>
+                    <option value="3" >ADCS</option>
+                    <option value="4" >COMMS</option>
+                    <option value="6" >GND</option>
+                    <option value="7" >UMB</option>
+                  </select>
+                  <select id="service-param-type" class="form-control">
+                    <option selected="true" style="display:none;">Type</option>
+                    <option value="1" >TC</option>
+                    <option value="2" >TM</option>
+                  </select>
+                  <select id="service-param-ack" class="form-control">
+                    <option selected="true" style="display:none;">ACK</option>
+                    <option value="0" >NO ACK</option>
+                    <option value="1" >ACK</option>
+                  </select>
+                  <select id="service-param-service_type" class="form-control">
+                    <option selected="true" style="display:none;">Service Type</option>
+                    <option value="1" >TC_VERIFICATION_SERVICE</option>
+                    <option value="3" >TC_HOUSEKEEPING_SERVICE</option>
+                    <option value="5" >TC_EVENT_SERVICE</option>
+                    <option value="8" >TC_FUNCTION_MANAGEMENT_SERVICE</option>
+                    <option value="9" >TC_TIME_MANAGEMENT_SERVICE</option>
+                    <option value="11" >TC_SCHEDULING_SERVICE</option>
+                    <option value="13" >TC_LARGE_DATA_SERVICE</option>
+                    <option value="15" >TC_MASS_STORAGE_SERVICE</option>
+                    <option value="17" >TC_TEST_SERVICE</option>
+                    <option value="18" >TC_SU_MNLP_SERVICE</option>
+                  </select>
+                  <select id="service-param-dest_id" class="form-control">
+                    <option selected="true" style="display:none;">Dest ID</option>
+                    <option value="1" >OBC</option>
+                    <option value="2" >EPS</option>
+                    <option value="3" >ADCS</option>
+                    <option value="4" >COMMS</option>
+                    <option value="6" >GND</option>
+                    <option value="7" >UMB</option>
+                  </select>
                 </div>
-              </div>
-              <div id="service-param-custom" style="display:none;">
-                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    App ID
-                    <span class="caret"></span>
-                  </button>
-                <div class="dropdown">
-                  <ul id="service-param-custom-app_id" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li value="1" >OBC</li>
-                    <li value="2" >EPS</li>
-                    <li value="3" >ADCS</li>
-                    <li value="4" >COMMS</li>
-                    <li value="6" >GND</li>
-                    <li value="7" >UMB</li>
-                  </ul>
-                  <ul id="service-param-custom-type" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li value="1" ><a href="#">TC</a></li>
-                    <li value="0" ><a href="#">TM</a></li>
-                  </ul>
-                  <ul id="service-param-custom-ack" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li value="0" ><a href="#">NO ACK</a></li>
-                    <li value="1" ><a href="#">ACK</a></li>
-                  </ul>
-                  <ul id="service-param-custom-service_type" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li value="1" ><a href="#">TC_VERIFICATION_SERVICE</a></li>
-                    <li value="3" ><a href="#">TC_HOUSEKEEPING_SERVICE</a></li>
-                    <li value="5" ><a href="#">TC_EVENT_SERVICE</a></li>
-                    <li value="8" ><a href="#">TC_FUNCTION_MANAGEMENT_SERVICE</a></li>
-                    <li value="9" ><a href="#">TC_TIME_MANAGEMENT_SERVICE</a></li>
-                    <li value="11" ><a href="#">TC_SCHEDULING_SERVICE</a></li>
-                    <li value="13" ><a href="#">TC_LARGE_DATA_SERVICE</a></li>
-                    <li value="15" ><a href="#">TC_MASS_STORAGE_SERVICE</a></li>
-                    <li value="17" ><a href="#">TC_TEST_SERVICE</a></li>
-                    <li value="18" ><a href="#">TC_SU_MNLP_SERVICE</a></li>
-                  </ul>
-                  <ul id="service-param-custom-dest_id" class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                    <li value="1" ><a href="#">OBC</a></li>
-                    <li value="2" ><a href="#">EPS</a></li>
-                    <li value="3" ><a href="#">ADCS</a></li>
-                    <li value="4" ><a href="#">COMMS</a></li>
-                    <li value="6" ><a href="#">GND</a></li>
-                    <li value="7" ><a href="#">UMB</a></li>
-                  </ul>
-                  <button type="submit" class="btn btn-primary" id="send-custom-cmd">Send</button>
-                </div>
-              </div>
-              <button type="submit" class="btn btn-primary" id="send-cmd">Submit</button>
+                <button class="btn btn-primary" id="service-send"> Send </button>
             </div>
             <hr>
             <div class="row">
@@ -126,11 +112,16 @@
               </form>
             </div>
           </div>
-          <div class="col-md-6">
-            <div class="panel panel-primary" id="response-panel">
-              <div class="panel-heading">Terminal</div>
-              <div class="panel-body" id="response-panel-body">
-              </div>
+        </div>
+        <div class="col-md-5">
+          <div class="panel panel-primary" id="response-panel">
+            <div class="panel-heading">WOD</div>
+            <div class="panel-body" id="response-panel-body">
+            </div>
+          </div>
+          <div class="panel panel-primary" id="response-panel">
+            <div class="panel-heading">Terminal</div>
+            <div class="panel-body" id="response-panel-body">
             </div>
           </div>
         </div>
