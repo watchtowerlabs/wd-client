@@ -10,6 +10,7 @@ from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.observer import serial_handler
 import logging
 from flask.json import JSONDecoder
+import binascii
 
 logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
@@ -74,15 +75,17 @@ def get_command():
                 return jsonify(response);
         elif 'ecss_cmd' in requested_command:
             response['Response'] = 'ECSS command send';
-            ecss = {'app_id': requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID'],
-                    'type': requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type'],
+            ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
+                    'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
                     'size' : 0,
                     'count' : 59,
-                    'ser_type' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType'],
-                    'ser_subtype' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType'],
+                    'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
+                    'ser_subtype' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
                     'data' : bytearray(0),
-                    'dest_id' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID'],
-                    'ack': requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']}
+                    'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
+                    'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
+            buf = packet.construct_packet(ecss)
+            serial_handler.write(buf)
             return jsonify(response);
     return render_template('control.j2')
 
