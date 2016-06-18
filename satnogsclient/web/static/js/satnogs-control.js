@@ -199,7 +199,7 @@ $(function(){
       else if(dev_id == 15) { var app_id = 3; }
 
       var fun_id = $('#service-param-function').val();
-      var data = { fun_id, dev_id};
+      var data = [fun_id, dev_id];
     }
 
     if (flag){
