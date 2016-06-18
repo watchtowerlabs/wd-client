@@ -36,6 +36,7 @@
               <label for="">Services</label>
               <div id="service-panel">
                 <select multiple class="form-control" id="service-select">
+                  <option id="time-select">Time</option>
                   <option id="power-select">Power</option>
                   <option id="test-select">Test</option>
                   <option id="custom-select">Custom</option>
@@ -95,6 +96,25 @@
                   </div>
                   <div class="row">
                     <button class="btn btn-primary" id="test2"> Send </button>
+                  </div>
+                </div>
+                <div id="service-param-test" style="display:none;">
+                  <div class="dropdown-group-inline">
+                    <select id="service-param-test-app_id" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="1" >OBC</option>
+                      <option value="2" >EPS</option>
+                      <option value="3" >ADCS</option>
+                      <option value="4" >COMMS</option>
+                    </select>
+                    <select id="service-param-test-dest_id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <button class="btn btn-primary" id="test3"> Send </button>
                   </div>
                 </div>
                 <div id="service-param-power" style="display:none;">

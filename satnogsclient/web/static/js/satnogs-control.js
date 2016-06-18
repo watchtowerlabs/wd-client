@@ -10,6 +10,9 @@ $(function(){
 
      var elem= document.getElementById('service-param-power');
      elem.style.display= "none";
+
+     var elem= document.getElementById('service-param-test');
+     elem.style.display= "none";
    });
 
    $("#power-select").click(function() {
@@ -17,6 +20,20 @@ $(function(){
      elem.style.display= "none";
 
      var elem= document.getElementById('service-param-power');
+     elem.style.display= "block";
+
+    var elem= document.getElementById('service-param-test');
+     elem.style.display= "none";
+   });
+
+   $("#test-select").click(function() {
+     var elem= document.getElementById('service-param-custom');
+     elem.style.display= "none";
+
+     var elem= document.getElementById('service-param-power');
+     elem.style.display= "none";
+
+     var elem= document.getElementById('service-param-test');
      elem.style.display= "block";
    });
 
@@ -200,6 +217,16 @@ $(function(){
 
       var fun_id = $('#service-param-function').val();
       var data = [fun_id, dev_id];
+    }
+    else if(selected_value == "Test") {
+      var app_id = $('#service-param-test-app_id').val();
+      var type = 1;
+      var ack = 0;
+
+      var service_type = 17;
+      var service_subtype = 1;
+      var dest_id = $('#service-param-test-dest_id').val();
+      var data = [];
     }
 
     if (flag){
