@@ -157,6 +157,39 @@
                     <button class="btn btn-primary" id="test1"> Send </button>
                   </div>
                 </div>
+                <div id="service-param-time" style="display:none;">
+                  <div class="dropdown-group-inline">
+                    <select id="service-param-time-report" class="form-control">
+                      <option selected="true" style="display:none;">Function</option>
+                      <option value="manual" >Set time in UTC</option>
+                      <option value="auto" >Set current time in UTC</option>
+                      <option value="utc" >Get UTC time</option>
+                      <option value="qb50" >Get QB50 time</option>
+                    </select>
+                    <select id="service-param-time-dest_id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                    <div class="row">
+                      <label> Day: </label>
+                      <input type="text" id="service-param-service-day">
+                      <label> Month: </label>
+                      <input type="text" id="service-param-service-mon">
+                      <label> Year: </label>
+                      <input type="text" id="service-param-service-year">
+                      <label> Hour: </label>
+                      <input type="text" id="service-param-service-hour">
+                      <label> Minute: </label>
+                      <input type="text" id="service-param-service-min">
+                      <label> Second: </label>
+                      <input type="text" id="service-param-service-sec">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <button class="btn btn-primary" id="test4"> Send </button>
+                  </div>
+                </div>
               </div>
             </div>
             <hr>
