@@ -5,7 +5,7 @@ $(document).ready(function(){
 
 $(function(){
    $("#custom-select").click(function(){
-     var elem= document.getElementById('service-param-panel');
+     var elem= document.getElementById('service-param-custom');
      elem.style.display= "block";
 
      var elem= document.getElementById('service-param-power');
@@ -13,7 +13,7 @@ $(function(){
    });
 
    $("#power-select").click(function() {
-     var elem= document.getElementById('service-param-panel');
+     var elem= document.getElementById('service-param-custom');
      elem.style.display= "none";
 
      var elem= document.getElementById('service-param-power');
@@ -150,8 +150,9 @@ $(function(){
     }
   });
 
-  $('#service-send').on('click', function() {
-    var list = $('#service-param-panel').find("select");
+  $('#service-param-panel :button').on('click', function() {
+    //TODO: Check whether all required fields are selected
+    var list = $('this').parent().siblings().find('select');
     var selected_value = $('#service-select').val();
     var missing = [];
     var flag = true;
@@ -202,7 +203,8 @@ $(function(){
     }
 
     if (flag){
-      encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+      request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+      query_control_backend(request, 'POST', '/command', true);
     }
     else{
       alert('Please fill ' + missing);
@@ -231,44 +233,44 @@ $(function(){
      }
    });
 
-   $(':file').change(function(){
-      // var file = this.files[0];
-      // var name = file.name;
-      // var size = file.size;
-      // var type = file.type;
-      //Your validation
-  });
-
-  $(':button').click(function(){
-    var formData = new FormData($('form')[0]);
-    $.ajax({
-        url: '/raw',  //Server script to process data
-        type: 'POST',
-        xhr: function() {  // Custom XMLHttpRequest
-            var myXhr = $.ajaxSettings.xhr();
-            if(myXhr.upload){ // Check if upload property exists
-                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-            }
-            return myXhr;
-        },
-        //Ajax events
-        // beforeSend: beforeSendHandler,
-        // success: completeHandler,
-        // error: errorHandler,
-        // Form data
-        data: formData.get('file'),
-        //Options to tell jQuery not to process data or worry about content-type.
-        cache: false,
-        contentType: false,
-        processData: false
-    });
-});
-
-function progressHandlingFunction(e){
-    if(e.lengthComputable){
-        $('progress').attr({value:e.loaded,max:e.total});
-    }
-}
+//    $(':file').change(function(){
+//       // var file = this.files[0];
+//       // var name = file.name;
+//       // var size = file.size;
+//       // var type = file.type;
+//       //Your validation
+//   });
+//
+//   $(':button').click(function(){
+//     var formData = new FormData($('form')[0]);
+//     $.ajax({
+//         url: '/raw',  //Server script to process data
+//         type: 'POST',
+//         xhr: function() {  // Custom XMLHttpRequest
+//             var myXhr = $.ajaxSettings.xhr();
+//             if(myXhr.upload){ // Check if upload property exists
+//                 myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+//             }
+//             return myXhr;
+//         },
+//         //Ajax events
+//         // beforeSend: beforeSendHandler,
+//         // success: completeHandler,
+//         // error: errorHandler,
+//         // Form data
+//         data: formData.get('file'),
+//         //Options to tell jQuery not to process data or worry about content-type.
+//         cache: false,
+//         contentType: false,
+//         processData: false
+//     });
+// });
+//
+// function progressHandlingFunction(e){
+//     if(e.lengthComputable){
+//         $('progress').attr({value:e.loaded,max:e.total});
+//     }
+// }
 
   //  $("#fileinput").click(function(){
   //     input = document.getElementById('fileinput');
@@ -288,14 +290,6 @@ function progressHandlingFunction(e){
   //     data = reader.readAsBinaryString(file);
    //
   //  });
-
-
-  $("#send-custom-cmd").click(function() {
-    alert('Hello' + $("service-param-custom-app_id").attr('value'));
-
-    request = encode_custom_service();
-    query_control_backend(request, 'POST', '/command', true);
-  });
 
    $("#send-cmd").click(function(){
      if ($("#command-btn:first-child").text() == 'Test Service') {
@@ -349,8 +343,11 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
   TestServicePacket.PacketHeader = PacketHeader;
   TestServicePacket.PacketDataField = PacketDataField;
 
-  console.log(JSON.stringify(TestServicePacket));
-  var json_packet = JSON.stringify(TestServicePacket);
+  var ecss_cmd = new Object();
+  ecss_cmd.ecss_cmd = TestServicePacket;
+
+  console.log(JSON.stringify(ecss_cmd));
+  var json_packet = JSON.stringify(ecss_cmd);
   return json_packet;
 }
 

@@ -41,88 +41,103 @@
                   <option id="custom-select">Custom</option>
                 </select>
               </div>
-              <div id="service-param-panel" style="display:none;">
-                <div class="dropdown-group-inline">
-                  <select id="service-param-app_id" class="form-control">
-                    <option selected="true" style="display:none;">App ID</option>
-                    <option value="1" >OBC</option>
-                    <option value="2" >EPS</option>
-                    <option value="3" >ADCS</option>
-                    <option value="4" >COMMS</option>
-                    <option value="6" >GND</option>
-                    <option value="7" >UMB</option>
-                  </select>
-                  <select id="service-param-type" class="form-control">
-                    <option selected="true" style="display:none;">Type</option>
-                    <option value="0" >TM</option>
-                    <option value="1" >TC</option>
-                  </select>
-                  <select id="service-param-ack" class="form-control">
-                    <option selected="true" style="display:none;">ACK</option>
-                    <option value="0" >NO ACK</option>
-                    <option value="1" >ACK</option>
-                  </select>
-                  <select id="service-param-service_type" class="form-control">
-                    <option selected="true" style="display:none;">Service Type</option>
-                    <option value="1" >TC_VERIFICATION_SERVICE</option>
-                    <option value="3" >TC_HOUSEKEEPING_SERVICE</option>
-                    <option value="5" >TC_EVENT_SERVICE</option>
-                    <option value="8" >TC_FUNCTION_MANAGEMENT_SERVICE</option>
-                    <option value="9" >TC_TIME_MANAGEMENT_SERVICE</option>
-                    <option value="11" >TC_SCHEDULING_SERVICE</option>
-                    <option value="13" >TC_LARGE_DATA_SERVICE</option>
-                    <option value="15" >TC_MASS_STORAGE_SERVICE</option>
-                    <option value="17" >TC_TEST_SERVICE</option>
-                    <option value="18" >TC_SU_MNLP_SERVICE</option>
-                  </select>
-                  <select id="service-param-service_subtype" class="form-control">
-                    <option selected="true" style="display:none;">Service sub Type</option>
-                  </select>         
-                  <select id="service-param-dest_id" class="form-control">
-                    <option selected="true" style="display:none;">Dest ID</option>
-                    <option value="1" >OBC</option>
-                    <option value="2" >EPS</option>
-                    <option value="3" >ADCS</option>
-                    <option value="4" >COMMS</option>
-                    <option value="6" >GND</option>
-                    <option value="7" >UMB</option>
-                  </select>
-                  <input type="text" id="service-param-service-data">
-                  <select id="service-param-dev-id" class="form-control">
-                    <option selected="true" style="display:none;">App ID</option>
-                    <option value="1" >OBC_DEV_ID</option>
-                    <option value="2" >EPS_DEV_ID</option>
-                    <option value="3" >ADCS_DEV_ID</option>
-                    <option value="4" >COMMS_DEV_ID</option>
-                    <option value="5" >IAC_DEV_ID</option>
-                    <option value="6" >SU_DEV_ID</option>
-                    <option value="7" >GPS_DEV_ID</option>
-                    <option value="8" >OBC_SD_DEV_ID</option>
-                    <option value="9" >ADCS_SD_DEV_ID</option>
-                    <option value="10" >ADCS_SENSORS</option>
-                    <option value="11" >ADCS_GPS</option>
-                    <option value="12" >ADCS_MAGNETO</option>
-                    <option value="13" >ADCS_SPIN</option>
-                    <option value="14" >ADCS_GPS</option>
-                    <option value="15" >ADCS_GPS</option>
-                  </select>
-                  <select id="service-param-function" class="form-control">
-                    <option selected="true" style="display:none;">Type</option>
-                    <option value="1" >ON</option>
-                    <option value="2" >OFF</option>
-                  </select>
-                  <select id="service-param-power-ack" class="form-control">
-                    <option selected="true" style="display:none;">ACK</option>
-                    <option value="0" >NO ACK</option>
-                    <option value="1" >ACK</option>
-                  </select>      
-                  <select id="service-param-power-dest_id" class="form-control">
-                    <option selected="true" style="display:none;">Dest ID</option>
-                    <option value="6" >GND</option>
-                    <option value="7" >UMB</option>
-                  </select>
+              <div id="service-param-panel">
+                <div id="service-param-custom" style="display:none;">
+                  <div class="dropdown-group-inline">
+                    <select id="service-param-app_id" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="1" >OBC</option>
+                      <option value="2" >EPS</option>
+                      <option value="3" >ADCS</option>
+                      <option value="4" >COMMS</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                    <select id="service-param-type" class="form-control">
+                      <option selected="true" style="display:none;">Type</option>
+                      <option value="0" >TM</option>
+                      <option value="1" >TC</option>
+                    </select>
+                    <select id="service-param-ack" class="form-control">
+                      <option selected="true" style="display:none;">ACK</option>
+                      <option value="0" >NO ACK</option>
+                      <option value="1" >ACK</option>
+                    </select>
+                    <select id="service-param-service_type" class="form-control">
+                      <option selected="true" style="display:none;">Service Type</option>
+                      <option value="1" >TC_VERIFICATION_SERVICE</option>
+                      <option value="3" >TC_HOUSEKEEPING_SERVICE</option>
+                      <option value="5" >TC_EVENT_SERVICE</option>
+                      <option value="8" >TC_FUNCTION_MANAGEMENT_SERVICE</option>
+                      <option value="9" >TC_TIME_MANAGEMENT_SERVICE</option>
+                      <option value="11" >TC_SCHEDULING_SERVICE</option>
+                      <option value="13" >TC_LARGE_DATA_SERVICE</option>
+                      <option value="15" >TC_MASS_STORAGE_SERVICE</option>
+                      <option value="17" >TC_TEST_SERVICE</option>
+                      <option value="18" >TC_SU_MNLP_SERVICE</option>
+                    </select>
+                    <select id="service-param-service_subtype" class="form-control">
+                      <option selected="true" style="display:none;">Service sub Type</option>
+                    </select>
+                    <select id="service-param-dest_id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="1" >OBC</option>
+                      <option value="2" >EPS</option>
+                      <option value="3" >ADCS</option>
+                      <option value="4" >COMMS</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <label> Application Data: </label>
+                    <input type="text" id="service-param-service-data">
+                  </div>
+                  <div class="row">
+                    <button class="btn btn-primary" id="test2"> Send </button>
+                  </div>
                 </div>
-                <button class="btn btn-primary" id="service-send"> Send </button>
+                <div id="service-param-power" style="display:none;">
+                  <div class="dropdown-group-inline">
+                    <select id="service-param-dev-id" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="1" >OBC_DEV_ID</option>
+                      <option value="2" >EPS_DEV_ID</option>
+                      <option value="3" >ADCS_DEV_ID</option>
+                      <option value="4" >COMMS_DEV_ID</option>
+                      <option value="5" >IAC_DEV_ID</option>
+                      <option value="6" >SU_DEV_ID</option>
+                      <option value="7" >GPS_DEV_ID</option>
+                      <option value="8" >OBC_SD_DEV_ID</option>
+                      <option value="9" >ADCS_SD_DEV_ID</option>
+                      <option value="10" >ADCS_SENSORS</option>
+                      <option value="11" >ADCS_GPS</option>
+                      <option value="12" >ADCS_MAGNETO</option>
+                      <option value="13" >ADCS_SPIN</option>
+                      <option value="14" >ADCS_GPS</option>
+                      <option value="15" >ADCS_GPS</option>
+                    </select>
+                    <select id="service-param-function" class="form-control">
+                      <option selected="true" style="display:none;">Type</option>
+                      <option value="1" >ON</option>
+                      <option value="2" >OFF</option>
+                    </select>
+                    <select id="service-param-power-ack" class="form-control">
+                      <option selected="true" style="display:none;">ACK</option>
+                      <option value="0" >NO ACK</option>
+                      <option value="1" >ACK</option>
+                    </select>
+                    <select id="service-param-power-dest_id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                  </div>
+                  <div class="row">
+                    <button class="btn btn-primary" id="test1"> Send </button>
+                  </div>
+                </div>
+              </div>
             </div>
             <hr>
             <div class="row">
@@ -151,16 +166,16 @@
               </form>
             </div>
           </div>
-        </div>
-        <div class="col-md-5">
-          <div class="panel panel-primary" id="response-panel">
-            <div class="panel-heading">WOD</div>
-            <div class="panel-body" id="response-panel-body">
+          <div class="col-md-5">
+            <div class="panel panel-primary" id="response-panel">
+              <div class="panel-heading">WOD</div>
+              <div class="panel-body" id="response-panel-body">
+              </div>
             </div>
-          </div>
-          <div class="panel panel-primary" id="response-panel">
-            <div class="panel-heading">Terminal</div>
-            <div class="panel-body" id="response-panel-body">
+            <div class="panel panel-primary" id="response-panel">
+              <div class="panel-heading">Terminal</div>
+              <div class="panel-body" id="response-panel-body">
+              </div>
             </div>
           </div>
         </div>

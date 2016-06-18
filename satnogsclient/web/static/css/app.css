@@ -155,6 +155,10 @@ body {
   margin-bottom: 15px;
 }
 
+#service-send {
+  margin-top: 15px;
+}
+
 .box {
     font-size: 1.25rem;
     background-color: #fff;

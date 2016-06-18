@@ -60,32 +60,30 @@ def get_raw():
 def get_command():
     requested_command = request.get_json();
     response = {}
-    response['Response'] = 'This is a test response'  
+    response['Response'] = 'This is a test response'
     if requested_command is not None:
         print 'Command received';
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
                 response['Response'] = 'Comms is ' + requested_command['custom_cmd']['comms_tx_rf'];
-                comms_status = requested_command['custom_cmd']['comms_tx_rf'];
                 #TODO: Handle the comms_tx_rf request
-                sock = Udpsocket('147.52.17.78', 16886)
-                ecss = {'command_type':comms_status,
-                        'app_id': 1,
-                        'type': 1,
-                        'size' : 0,
-                        'count' : 59,
-                        'ser_type' : 17,
-                        'ser_subtype' : 1,
-                        'data' : bytearray(0),
-                        'dest_id' : 2,
-                        'ack': 0}
                 if ecss['command_type'] == 'comms_off' :
-                    packet.comms_off()
+                    packet.comms_off();
                 elif ecss['command_type'] == 'comms_on' :
-                    packet.comms_on()
-                else :
-                    packet.ecss_packetizer(ecss)
+                    packet.comms_on();
                 return jsonify(response);
+        elif 'ecss_cmd' in requested_command:
+            response['Response'] = 'ECSS command send';
+            ecss = {'app_id': requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID'],
+                    'type': requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type'],
+                    'size' : 0,
+                    'count' : 59,
+                    'ser_type' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType'],
+                    'ser_subtype' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType'],
+                    'data' : bytearray(0),
+                    'dest_id' : requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID'],
+                    'ack': requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']}
+            return jsonify(response);
     return render_template('control.j2')
 
 
