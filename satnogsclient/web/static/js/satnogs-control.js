@@ -10,7 +10,6 @@ $(function(){
 
      var elem= document.getElementById('service-param-power');
      elem.style.display= "none";
-
    });
 
    $("#power-select").click(function() {
@@ -28,7 +27,7 @@ $(function(){
   $('#service-param-service_type').on('change', function() {
      // Handle change on service parameter dropdowns
     var subservice = $(this).find("option:selected").text();
-    
+
     var VR_SERVICE = {
       TM_VR_ACCEPTANCE_SUCCESS: 1,
       TM_VR_ACCEPTANCE_FAILURE: 2
@@ -95,64 +94,65 @@ $(function(){
       TM_CT_REPORT_TEST:  2
     };
 
-    var $select = $('#service-param-service_subtype');                        
-    $select.find('option').remove();   
+    var $select = $('#service-param-service_subtype');
+    $select.find('option').remove();
     $select.append('<option selected="true" style="display:none;">Service sub Type</option>');
-    
+
     if(subservice == "TC_VERIFICATION_SERVICE") {
       for(key in VR_SERVICE) {
-        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_HOUSEKEEPING_SERVICE") {
       for(key in HK_SERVICE) {
-        $select.append('<option value=' + HK_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + HK_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_EVENT_SERVICE") {
       for(key in EV_SERVICE) {
-        $select.append('<option value=' + EV_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + EV_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_FUNCTION_MANAGEMENT_SERVICE") {
       for(key in FM_SERVICE) {
-        $select.append('<option value=' + FM_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + FM_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_TIME_MANAGEMENT_SERVICE") {
       for(key in VR_SERVICE) {
-        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_SCHEDULING_SERVICE") {
       for(key in SC_SERVICE) {
-        $select.append('<option value=' + SC_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + SC_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_LARGE_DATA_SERVICE") {
       for(key in LD_SERVICE) {
-        $select.append('<option value=' + LD_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + LD_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_MASS_STORAGE_SERVICE") {
       for(key in MS_SERVICE) {
-        $select.append('<option value=' + MS_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + MS_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_TEST_SERVICE") {
       for(key in CT_SERVICE) {
-        $select.append('<option value=' + CT_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + CT_SERVICE[key] + '>' + key + '</option>');
       }
     }
     else if(subservice == "TC_SU_MNLP_SERVICE") {
       for(key in VR_SERVICE) {
-        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>'); 
+        $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>');
       }
     }
   });
 
   $('#service-send').on('click', function() {
     var list = $('#service-param-panel').find("select");
+    var selected_value = $('#service-select').val();
     var missing = [];
     var flag = true;
     for (i=0; i<list.length; i++){
@@ -162,7 +162,7 @@ $(function(){
       }
     }
 
-    if( == "custom") {
+    if(selected_value == "Custom") {
       var app_id = $('#service-param-app_id').val();
       var type = $('#service-param-type').val();
       var ack = $('#service-param-ack').val();
@@ -172,11 +172,11 @@ $(function(){
 
       var data = $('#service-param-service-data').val().split(",");
     }
-    else if( == "power") {
+    else if(selected_value == "Power") {
       var dev_id = $('#service-param-dev-id').val();
       var type = 1;
       var ack = $('#service-param-power-ack').val();
-      
+
       var service_type = 8;
       var service_subtype = 1;
       var dest_id = $('#service-param-power-dest_id').val();
@@ -309,21 +309,21 @@ function progressHandlingFunction(e){
   });
 });
 
-function encode_service(type, app_id, service_type, service_subtype, ack, data) {
+function encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data) {
   var DataFieldHeader = new Object();
   DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
   DataFieldHeader.TCPacketPUSVersionNumber = '1';
   DataFieldHeader.Ack = ack;
   DataFieldHeader.ServiceType = service_type;
   DataFieldHeader.ServiceSubType = service_subtype;
-  DataFieldHeader.SourceID = app_id;
+  DataFieldHeader.SourceID = dest_id;
   DataFieldHeader.Spare = '0';
 
   var PacketID = new Object();
   PacketID.VersionNumber = '0';
   PacketID.Type = type;
   PacketID.DataFieldHeaderFlag = '1';
-  PacketID.ApplicationProcessID = '1';
+  PacketID.ApplicationProcessID = app_id;
 
   var PacketSequenceControl = new Object();
   PacketSequenceControl.SequenceFlags = '3';
@@ -337,7 +337,6 @@ function encode_service(type, app_id, service_type, service_subtype, ack, data) 
 
   if(typeof data != "undefined") {
     PacketDataField.ApplicationData = data;
-    alert(data);
   }
 
 
