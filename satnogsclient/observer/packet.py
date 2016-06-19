@@ -137,13 +137,11 @@ def ecss_decoder(port):
          
          
             
-def ecss_packetizer(ecss):
+def ecss_packetizer(ecss,buf):
     sock = Commsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
-    assert((ecss['type'] == 0) or (ecss['type'] == 1) == True )
+    assert(((ecss['type'] == 0) or (ecss['type'] == 1)) == True )
     assert((ecss['app_id'] < packet_settings.LAST_APP_ID) == True)
     data_size = ecss['size']
-    packet_size = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
-    buf = bytearray(packet_size)
     app_id = ecss['app_id']
     app_id_ms = app_id & 0xFF00
     app_id_ls = app_id & 0x00FF
@@ -178,9 +176,6 @@ def ecss_packetizer(ecss):
         buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
     size = buf_pointer + 2
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
-    buf_out = bytearray(0)
-    hldlc.HLDLC_frame(buf,buf_out)
-    sock.send_not_recv(buf_out)
     return packet_settings.SATR_OK
     
 def comms_off():
@@ -204,3 +199,17 @@ def comms_on():
     struct.pack_into("<I",data,21,0xa94ee2d3)
     d = bytearray(data)
     sock.send(d)    
+
+def construct_packet(ecss_dict):
+    out_buf = bytearray(0)
+    packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
+    ecssbuf = bytearray(packet_size)
+    ecss_packetizer(ecss_dict, ecssbuf)
+    hldlc.HLDLC_frame(ecssbuf,out_buf)
+    return out_buf
+    
+    
+    
+    
+
+
