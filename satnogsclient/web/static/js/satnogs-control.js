@@ -3,6 +3,24 @@ $(document).ready(function() {
 
     datepicker = $('#datetimepicker1').datetimepicker();
 
+    var backend = "gnu-radio";
+
+    $("#comms-gnu").click(function() {
+
+      backend = "gnu-radio";
+
+      $("#comms-gnu").css('background-color','#5cb85c');
+      $("#comms-ser").css('background-color','#d9534f');
+    });
+
+    $("#comms-ser").click(function() {
+
+      backend = "serial";
+
+      $("#comms-gnu").css('background-color','#d9534f');
+      $("#comms-ser").css('background-color','#5cb85c');
+    });
+
     $("#custom-select").click(function() {
         var elem = document.getElementById('service-param-custom');
         elem.style.display = "block";
@@ -438,6 +456,7 @@ $(document).ready(function() {
 
         var ecss_cmd = new Object();
         ecss_cmd.ecss_cmd = TestServicePacket;
+        ecss_cmd.backend = backend;
 
         console.log(JSON.stringify(ecss_cmd));
         var json_packet = JSON.stringify(ecss_cmd);
