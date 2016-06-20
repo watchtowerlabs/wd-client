@@ -22,60 +22,65 @@ $(document).ready(function() {
     });
 
     $("#custom-select").click(function() {
-        var elem = document.getElementById('service-param-custom');
-        elem.style.display = "block";
-
-        var elem = document.getElementById('service-param-power');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-test');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-time');
-        elem.style.display = "none";
+      display_service('service-param-custom');
     });
 
     $("#power-select").click(function() {
-        var elem = document.getElementById('service-param-custom');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-power');
-        elem.style.display = "block";
-
-        var elem = document.getElementById('service-param-test');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-time');
-        elem.style.display = "none";
+      display_service('service-param-power');
     });
 
     $("#test-select").click(function() {
-        var elem = document.getElementById('service-param-custom');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-power');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-test');
-        elem.style.display = "block";
-
-        var elem = document.getElementById('service-param-time');
-        elem.style.display = "none";
+      display_service('service-param-test');
     });
 
     $("#time-select").click(function() {
-        var elem = document.getElementById('service-param-custom');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-power');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-test');
-        elem.style.display = "none";
-
-        var elem = document.getElementById('service-param-time');
-        elem.style.display = "block";
+      display_service('service-param-time');
     });
+
+    $("#tle-select").click(function() {
+      display_service('service-param-tle');
+    });
+
+    function display_service(selection) {
+
+      var r1 = 'service-param-custom';
+      var r2 = 'service-param-power';
+      var r3 = 'service-param-test';
+      var r4 = 'service-param-time';
+      var r5 = 'service-param-tle';
+
+      if(selection == r1) {
+        r1 = r5;
+      }
+      else if(selection == r2) {
+        r2 = r5;
+      }
+      else if(selection == r3) {
+        r3 = r5;
+      }
+      else if(selection == r4) {
+        r4 = r5;
+      }
+      else if(selection == r5) {
+
+      }
+
+      var elem = document.getElementById(r1);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(r2);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(r3);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(r4);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(selection);
+      elem.style.display = "block";
+
+    }
 
     $('#service-param-panel select').on('change', function() {
         // Handle change on service parameter dropdowns
@@ -305,6 +310,24 @@ $(document).ready(function() {
             else {
               data = [];
             }
+        } else if (selected_value == "ADCS TLE update") {
+            // TODO: Is app_id needed in time service?
+            //var app_id = $('#service-param-time-app_id').val();
+            var app_id = 7;
+            var type = 0;
+            var ack = 0;
+
+            var service_type = 3;
+            var service_subtype = 23;
+            var dest_id = 3;
+
+            data = (6 + $('#service-param-service-tle').val()).split('');
+            //number of TLE chanacters
+            if(data.length != 137) { 
+              alert("TLE shouldnt be: " + data.length); 
+              return 0; 
+            }
+
         }
 
         if (flag) {
