@@ -1,6 +1,10 @@
 // Initialize status page
 $(document).ready(function() {
 
+    setInterval(function(){
+      query_control_backend({}, 'POST', '/control_rx', true);
+    }, 10000);
+
     datepicker = $('#datetimepicker1').datetimepicker();
 
     $("#custom-select").click(function() {
@@ -460,10 +464,15 @@ $(document).ready(function() {
     }
 
     function print_command_response(data) {
-        var response_panel = document.getElementById('response-panel-body');
+      var response_panel = document.getElementById('response-panel-body');
+      if (data.hasOwnProperty('Response')) {
         response_panel.innerHTML += '[' + moment().format().toString() + ']: ' + data['Response'];
-        response_panel.innerHTML += '<br>';
-        response_panel.scrollTop = response_panel.scrollHeight;
+      }
+      else if (data.hasOwnProperty('ECSS_RX')) {
+        response_panel.innerHTML += '[' + moment().format().toString() + ']: ' + data['ECSS_RX'];
+      }
+      response_panel.innerHTML += '<br>';
+      response_panel.scrollTop = response_panel.scrollHeight;
     }
 
     function query_control_backend(JSONData, localMode, url, param) {
@@ -480,7 +489,6 @@ $(document).ready(function() {
                 print_command_response(data);
             },
             error: function(data) {
-                alert('Something went wrong!')
             }
         });
     }
