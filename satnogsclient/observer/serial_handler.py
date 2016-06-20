@@ -13,6 +13,7 @@ port = serial.Serial(client_settings.SERIAL_PORT, baudrate=9600, timeout=1.0)
 
 
 def write(buf):
+    print "Write in serial", buf
     port.write(buf)
     
 def read_from_serial():
@@ -24,6 +25,7 @@ def read_from_serial():
             if len(buf_in) == 1 and buf_in[0] != 0x7E:
                 buf_in = bytearray(0)
             elif len(buf_in) > 1 and buf_in[len(buf_in) - 1] == 0x7E:
+                print "From serial", buf_in
                 hldlc_buf = bytearray(0)
                 hldlc.HLDLC_deframe(buf_in, hldlc_buf)
                 ecss_dict = []
