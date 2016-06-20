@@ -265,13 +265,15 @@ $(document).ready(function() {
             var dest_id = $('#service-param-test-dest_id').val();
             var data = [];
         } else if (selected_value == "Time") {
-            var app_id = $('#service-param-test-app_id').val();
+            // TODO: Is app_id needed in time service?
+            //var app_id = $('#service-param-time-app_id').val();
+            var app_id = 1;
             var type = 1;
             var ack = 0;
 
             var service_type = 17;
             var service_subtype = 1;
-            var dest_id = $('#service-param-test-dest_id').val();
+            var dest_id = $('#service-param-time-dest_id').val();
 
             selected_action = $('#service-param-time-report').find("option:selected").val();
 
@@ -459,8 +461,9 @@ $(document).ready(function() {
 
     function print_command_response(data) {
         var response_panel = document.getElementById('response-panel-body');
-        response_panel.innerHTML += data['Response'];
+        response_panel.innerHTML += '[' + moment().format().toString() + ']: ' + data['Response'];
         response_panel.innerHTML += '<br>';
+        response_panel.scrollTop = response_panel.scrollHeight;
     }
 
     function query_control_backend(JSONData, localMode, url, param) {

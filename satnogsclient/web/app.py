@@ -51,6 +51,10 @@ def get_status_info():
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
+@app.route('/control_rx', methods=['GET', 'POST'])
+def get_control_rx():
+    return json_response
+
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
     with open('/home/ctriant/hope', 'wb') as file_:
@@ -66,12 +70,13 @@ def get_command():
         print 'Command received';
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
-                response['Response'] = 'Comms is ' + requested_command['custom_cmd']['comms_tx_rf'];
                 #TODO: Handle the comms_tx_rf request
-                if ecss['command_type'] == 'comms_off' :
+                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off' :
                     packet.comms_off();
-                elif ecss['command_type'] == 'comms_on' :
+                    response['Response'] = 'COMMS_OFF command sent';
+                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on' :
                     packet.comms_on();
+                    response['Response'] = 'COMMS_ON command sent';
                 return jsonify(response);
         elif 'ecss_cmd' in requested_command:
             response['Response'] = 'ECSS command send';

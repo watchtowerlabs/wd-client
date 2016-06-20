@@ -90,6 +90,7 @@ body {
 #response-panel-body {
   height: 120px;
   overflow-y: scroll;
+  text-align: left;
 }
 
 #caret-custom {
