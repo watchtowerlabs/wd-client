@@ -66,7 +66,11 @@ def get_control_rx():
     The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
     Next, for each item in list, json.dumps(item) will give the ecss dictionary
     """
-    return json_response
+    ecss_rx_packet = {};
+    ecss_rx_packet['ECSS_RX'] = 'Hello world! Space calling';
+    print '----------------------------------------------------';
+    print(jsonify(ecss_rx_packet));
+    return jsonify(ecss_rx_packet);
 
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
