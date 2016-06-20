@@ -129,8 +129,6 @@ class Worker:
                 conn.send(json.dumps(dict))
                 conn.close()
 
-
-
     def trackstop(self):
         """
         Sets object flag to false and stops the tracking thread.

@@ -131,7 +131,7 @@ class Observer:
         logger.debug('TLE: {0}'.format(self.tle))
         logger.debug('Observation end: {0}'.format(self.observation_end))
         self.tracker_rot.trackobject(self.location, self.tle)
-        self.tracker_rot.trackstart(5005, True)
+        self.tracker_rot.trackstart(settings.CURRENT_PASS_TCP_PORT, True)
 
     def run_rig(self):
         self.tracker_freq = WorkerFreq(ip=self.rig_ip,

@@ -17,7 +17,8 @@ from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.scheduler import scheduler
 from satnogsclient.observer.commsocket import Commsocket
-from boto.dynamodb.condition import NULL
+from satnogsclient.observer.udpsocket import Udpsocket
+from time import sleep
 
 
 
@@ -158,6 +159,7 @@ def get_jobs():
     
         
 def task_feeder(port1,port2):
+    sleep(1)
     logger.info('Started task feeder')
     print port1,' ',port2
     sock = Commsocket('127.0.0.1',port1)
@@ -194,4 +196,33 @@ def task_listener(port,queue):
             else:
                 queue.put(data)
 
-            
+def ecss_feeder(port1,port2):
+    sleep(1)
+    logger.info('Started ecss feeder')
+    print port1,' ',port2
+    sock = Udpsocket(('127.0.0.1',port1))    
+    qu = Queue(maxsize=10)
+    pr = Process(target=ecss_listener, args=(port2,qu))
+    pr.daemon = True
+    pr.start()
+    print pr
+    while 1:
+        conn = sock.recv()
+        list= []
+        while not qu.empty():
+            list.append(qu.get())
+        sock.sendto(json.dumps(list),conn[1])     
+    pr.join()
+
+    
+def ecss_listener(port,queue):
+    logger.info('Started ecss listener')
+    sock = Udpsocket(('127.0.0.1',port))
+    while 1:
+            conn = sock.recv()
+            data = conn[0]
+            print data
+            if not queue.empty():
+                queue.put(data)
+            else:
+                queue.put(data)         

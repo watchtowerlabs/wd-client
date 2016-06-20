@@ -44,7 +44,7 @@
               </div>
               <div id="service-param-panel">
                 <div id="service-param-custom" style="display:none;">
-                  <div class="dropdown-group-inline">
+                  <div class="dropdown-group-inline text-center m-b-md">
                     <select id="service-param-app_id" class="form-control">
                       <option selected="true" style="display:none;">App ID</option>
                       <option value="1" >OBC</option>
@@ -90,16 +90,16 @@
                       <option value="7" >UMB</option>
                     </select>
                   </div>
-                  <div class="row">
+                  <div class="text-center m-b-md">
                     <label> Application Data: </label>
                     <input type="text" id="service-param-service-data">
                   </div>
-                  <div class="row">
-                    <button class="btn btn-primary" id="test2"> Send </button>
+                  <div class="text-center text-center">
+                    <button class="btn btn-primary"> Send </button>
                   </div>
                 </div>
-                <div id="service-param-test" style="display:none;">
-                  <div class="dropdown-group-inline">
+                <div class="text-center" id="service-param-test" style="display:none;">
+                  <div class="dropdown-group-inline m-b-md">
                     <select id="service-param-test-app_id" class="form-control">
                       <option selected="true" style="display:none;">App ID</option>
                       <option value="1" >OBC</option>
@@ -113,12 +113,12 @@
                       <option value="7" >UMB</option>
                     </select>
                   </div>
-                  <div class="row">
-                    <button class="btn btn-primary" id="test3"> Send </button>
+                  <div class="text-center">
+                    <button class="btn btn-primary"> Send </button>
                   </div>
                 </div>
-                <div id="service-param-power" style="display:none;">
-                  <div class="dropdown-group-inline">
+                <div class="text-center" id="service-param-power" style="display:none;">
+                  <div class="dropdown-group-inline text-center m-b-md">
                     <select id="service-param-dev-id" class="form-control">
                       <option selected="true" style="display:none;">App ID</option>
                       <option value="1" >OBC_DEV_ID</option>
@@ -153,41 +153,49 @@
                       <option value="7" >UMB</option>
                     </select>
                   </div>
-                  <div class="row">
-                    <button class="btn btn-primary" id="test1"> Send </button>
+                  <div class="text-center">
+                    <button class="btn btn-primary"> Send </button>
                   </div>
                 </div>
                 <div id="service-param-time" style="display:none;">
-                  <div class="dropdown-group-inline">
-                    <select id="service-param-time-report" class="form-control">
-                      <option selected="true" style="display:none;">Function</option>
-                      <option value="manual" >Set time in UTC</option>
-                      <option value="auto" >Set current time in UTC</option>
-                      <option value="utc" >Get UTC time</option>
-                      <option value="qb50" >Get QB50 time</option>
-                    </select>
-                    <select id="service-param-time-dest_id" class="form-control">
-                      <option selected="true" style="display:none;">Dest ID</option>
-                      <option value="6" >GND</option>
-                      <option value="7" >UMB</option>
-                    </select>
-                    <div class="row">
-                      <label> Day: </label>
-                      <input type="text" id="service-param-service-day">
-                      <label> Month: </label>
-                      <input type="text" id="service-param-service-mon">
-                      <label> Year: </label>
-                      <input type="text" id="service-param-service-year">
-                      <label> Hour: </label>
-                      <input type="text" id="service-param-service-hour">
-                      <label> Minute: </label>
-                      <input type="text" id="service-param-service-min">
-                      <label> Second: </label>
-                      <input type="text" id="service-param-service-sec">
+                  <div class="text-center m-b-md">
+                    <div class="dropdown-group-inline">
+                      <select id="service-param-time-report" class="form-control">
+                        <option selected="true" style="display:none;">Function</option>
+                        <option value="manual" >Set time in UTC</option>
+                        <option value="auto" >Set current time in UTC</option>
+                        <option value="utc" >Get UTC time</option>
+                        <option value="qb50" >Get QB50 time</option>
+                      </select>
+                      <select id="service-param-time-dest_id" class="form-control">
+                        <option selected="true" style="display:none;">Dest ID</option>
+                        <option value="6" >GND</option>
+                        <option value="7" >UMB</option>
+                      </select>
                     </div>
                   </div>
-                  <div class="row">
-                    <button class="btn btn-primary" id="test4"> Send </button>
+                  <div class="text-center m-b-md">
+                    <div class='input-group date' id='datetimepicker1' style="display:none;">
+                        <input type='text' class="form-control" />
+                        <span class="input-group-addon">
+                            <span class="glyphicon glyphicon-calendar"></span>
+                        </span>
+                    </div>
+                    <!--<label> Day: </label>
+                    <input type="text" id="service-param-service-day">
+                    <label> Month: </label>
+                    <input type="text" id="service-param-service-mon">
+                    <label> Year: </label>
+                    <input type="text" id="service-param-service-year">
+                    <label> Hour: </label>
+                    <input type="text" id="service-param-service-hour">
+                    <label> Minute: </label>
+                    <input type="text" id="service-param-service-min">
+                    <label> Second: </label>
+                    <input type="text" id="service-param-service-sec">-->
+                  </div>
+                  <div class="text-center">
+                    <button class="btn btn-primary"> Send </button>
                   </div>
                 </div>
               </div>
@@ -221,13 +229,13 @@
           </div>
           <div class="col-md-5">
             <div class="panel panel-primary" id="response-panel">
-              <div class="panel-heading">WOD</div>
+              <div class="panel-heading">Terminal</div>
               <div class="panel-body" id="response-panel-body">
               </div>
             </div>
-            <div class="panel panel-primary" id="response-panel">
-              <div class="panel-heading">Terminal</div>
-              <div class="panel-body" id="response-panel-body">
+            <div class="panel panel-primary" id="response-panel-wod">
+              <div class="panel-heading">WOD</div>
+              <div class="panel-body" id="response-panel-body-wod">
               </div>
             </div>
           </div>

@@ -30,8 +30,8 @@ def get_status_info():
     scheduled_pass_json['Info'] = 'There are no scheduled observations.'
     #scheduled_pass_json = jsonify(scheduled_pass_json)
 
-    current_pass_sock = Commsocket('127.0.0.1',5005)
-    scheduled_pass_sock = Commsocket('127.0.0.1',5011)
+    current_pass_sock = Commsocket('127.0.0.1',client_settings.CURRENT_PASS_TCP_PORT)
+    scheduled_pass_sock = Commsocket('127.0.0.1',client_settings.TASK_FEEDER_TCP_PORT)
 
     current_pass_check = current_pass_sock.connect()
     scheduled_pass_check = scheduled_pass_sock.connect()
@@ -51,6 +51,23 @@ def get_status_info():
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
+@app.route('/control_rx', methods=['GET', 'POST'])
+def get_control_rx():
+    sock = Udpsocket(('127.0.0.1',client_settings.CLIENT_LISTENER_UDP_PORT))
+    try:
+        conn = sock.send_listen("Requesting received packets", ('127.0.0.1',client_settings.ECSS_FEEDER_UDP_PORT))
+        data = conn[0]
+        packet_list = json.loads(data)
+    except:
+        logger.error("An error with the ECSS feeder occured")
+    """
+    The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
+    each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
+    The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
+    Next, for each item in list, json.dumps(item) will give the ecss dictionary
+    """
+    return json_response
+
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
     with open('/home/ctriant/hope', 'wb') as file_:
@@ -66,12 +83,13 @@ def get_command():
         print 'Command received';
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
-                response['Response'] = 'Comms is ' + requested_command['custom_cmd']['comms_tx_rf'];
                 #TODO: Handle the comms_tx_rf request
-                if ecss['command_type'] == 'comms_off' :
+                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off' :
                     packet.comms_off();
-                elif ecss['command_type'] == 'comms_on' :
+                    response['Response'] = 'COMMS_OFF command sent';
+                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on' :
                     packet.comms_on();
+                    response['Response'] = 'COMMS_ON command sent';
                 return jsonify(response);
         elif 'ecss_cmd' in requested_command:
             response['Response'] = 'ECSS command send';

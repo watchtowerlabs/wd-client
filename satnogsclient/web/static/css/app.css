@@ -90,6 +90,7 @@ body {
 #response-panel-body {
   height: 120px;
   overflow-y: scroll;
+  text-align: left;
 }
 
 #caret-custom {
@@ -115,11 +116,18 @@ body {
 
 .dropdown-group-inline {
   display: inline-flex;
-  margin-bottom: 15px;
 }
 
 .dropdown-group-inline .dropdown {
   margin-right: 5px;
+}
+
+#service-param-panel :button {
+  margin-top: 15px;
+}
+
+.m-b-md {
+  margin-bottom: 15px;
 }
 
 .dropdown-menu>li:focus, .dropdown-menu>li:hover {

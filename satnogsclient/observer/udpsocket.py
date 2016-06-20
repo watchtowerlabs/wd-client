@@ -8,19 +8,24 @@ logger = logging.getLogger('satnogsclient')
 
 class Udpsocket:
     """
-    Handles connectivity with remote ctl demons
-    Namely: rotctl and rigctl
+    Class for handling udp sockets
     
     """
 
     _BUFFER_SIZE = 2048
     _connected = False
+    """
+    If the socket is used only for sending, an empty list for 'addr' is adequate
+    If the socket will be used for receiving, a valid address tuple must be given
+    """
 
-    def __init__(self, ip, port):
-        self._UDP_IP = ip
-        self._UDP_PORT = port
+    def __init__(self, addr):
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        
+        if len(addr) == 2:
+            self._UDP_IP = addr[0]
+            self._UDP_PORT = addr[1]
+            self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.s.bind((self._UDP_IP , self._UDP_PORT))
         
        
 
@@ -54,13 +59,18 @@ class Udpsocket:
     
     def get_sock(self):
         return self.s
-
-    def send(self, message):
-        self.s.sendto(message,(self._UDP_IP , self._UDP_PORT))
         
-    def listen(self):
+    def recv(self):
         data, addr = self.s.recvfrom(1024)
-        return data
+        return (data, addr)
+    
+    def sendto(self,message,addr):
+        self.s.sendto(message,addr)
+        
+    def send_listen(self, message, addr):
+        self.s.sendto(message,addr)
+        ret = self.recv()
+        return ret
     
     def set_timeout(self,sec):
         self.s.settimeout(sec)
