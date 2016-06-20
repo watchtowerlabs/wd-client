@@ -4,7 +4,7 @@ import logging
 from satnogsclient.settings import (NETWORK_API_QUERY_INTERVAL,
                                     NETWORK_API_POST_INTERVAL)
 from satnogsclient.scheduler import scheduler
-from satnogsclient.scheduler.tasks import get_jobs, post_data, task_feeder
+from satnogsclient.scheduler.tasks import get_jobs, post_data, task_feeder , ecss_feeder
 from satnogsclient.observer.serial_handler import read_from_serial
 from satnogsclient.observer.gnuradio_handler import read_from_gnuradio
 from satnogsclient import settings as client_settings
@@ -29,6 +29,12 @@ if __name__ == '__main__':
     r = threading.Thread(target=task_feeder,args=(client_settings.TASK_FEEDER_TCP_PORT,client_settings.TASK_LISTENER_TCP_PORT,))
     r.daemon = True
     r.start()
+    
+    logger.info('Starting ecss feeder thread...')
+    e = threading.Thread(target=ecss_feeder,args=(client_settings.ECSS_FEEDER_UDP_PORT,client_settings.ECSS_LISTENER_UDP_PORT,))
+    e.daemon = True
+    e.start()
+    
     
     logger.info('Starting serial listener thread...')
     ser = threading.Thread(target=read_from_serial,args=())
