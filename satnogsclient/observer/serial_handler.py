@@ -3,6 +3,7 @@ import array
 import time
 import logging
 
+from flask import Flask, render_template, request, json, jsonify
 from satnogsclient import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer import hldlc
@@ -21,18 +22,19 @@ def read_from_serial():
     buf_in = bytearray(0)
     while True:
         c = port.read()
+        #print "From serial port read"
         if len(c) != 0:
             buf_in.append(c)
             if len(buf_in) == 1 and buf_in[0] != 0x7E:
                 buf_in = bytearray(0)
             elif len(buf_in) > 1 and buf_in[len(buf_in) - 1] == 0x7E:
-                print "From serial", buf_in
+                print "From serial got pkt", ''.join('{:02x}'.format(x) for x in buf_in) 
                 hldlc_buf = bytearray(0)
                 hldlc.HLDLC_deframe(buf_in, hldlc_buf)
                 ecss_dict = []
                 packet.ecss_depacketizer(hldlc_buf,ecss_dict)
                 # dict must be sent to port
                 buf_in = bytearray(0)
-        ecss_feeder_sock.sendto(json.dumps(ecss_dict),('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))
+                ecss_feeder_sock.sendto(json.dumps(ecss_dict),('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))
 
     

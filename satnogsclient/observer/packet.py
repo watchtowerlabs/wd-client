@@ -26,9 +26,10 @@ def ecss_encoder(port):
                 
 def ecss_depacketizer(buf,dict_out):
     size = len(buf)
-    assert((buf != NULL) == true)
-    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == true)
+    assert((buf != 0) == True)
+    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     tmp_crc1 = buf[size - 1];
+    tmp_src2 = 0
     for i in range(0,size -2):
         tmp_src2 = tmp_src2 ^ buf[i]
 
@@ -44,7 +45,7 @@ def ecss_depacketizer(buf,dict_out):
     t[0] = buf[2]
     t[1] = buf[3]
     t.reverse()
-    pkt_seq_count = t & 0x3FFF;
+    #pkt_seq_count = t & 0x3FFF;
     
     t = bytearray(2)
     t[0] = buf[4]
@@ -65,48 +66,48 @@ def ecss_depacketizer(buf,dict_out):
 
     pkt_verification_state = packet_settings.SATR_PKT_INIT
 
-    if not ((pkt_app_id < packet_settings.LAST_APP_ID) == true) :
+    if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True) :
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_APPID
         return packet_settings.SATR_PKT_ILLEGAL_APPID; 
 
-    if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == true):
+    if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
         pkt_verification_state = packet_settings.SATR_PKT_INV_LEN
         return packet_settings.SATR_PKT_INV_LEN; 
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1;
 
-    if not ((tmp_crc1 == tmp_crc2) == true) :
+    if not ((tmp_crc1 == tmp_crc2) == True) :
         pkt_verification_state = packet_settings.SATR_PKT_INC_CRC
         return packet_settings.SATR_PKT_INC_CRC; 
 
-    if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == true) : 
+    if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True) : 
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_PKT_TP
         return packet_settings.SATR_PKT_ILLEGAL_PKT_TP; 
 
-    if not ((ver == packet_settings.ECSS_VER_NUMBER) == true) :
+    if not ((ver == packet_settings.ECSS_VER_NUMBER) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR; 
 
-    if not ((tc_pus == ECSS_PUS_VER) == true) :
+    if not ((tc_pus == ECSS_PUS_VER) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR;
 
-    if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == true) :
+    if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR;
 
-    if not ((pkt_type == 'TC' or pkt_type == 'TM') == true) :
+    if not ((pkt_type == 'TC' or pkt_type == 'TM') == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR;
 
-    if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == true) :
+    if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR;
 
-    if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == true) :
+    if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR;
 
-    if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == true) :
+    if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR; 
     pkt_data = bytearray(pkt_len)
