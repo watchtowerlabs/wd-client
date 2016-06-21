@@ -25,8 +25,8 @@
                   <div class="inline-label-bold">Backend</div>
                   <div>
                     <div class="btn-group" role="group">
-                      <button type="button" class="btn label-success" name="" id="comms-tx-on">GNURadio</button>
-                      <button type="button" class="btn label-danger" name="" id="comms-tx-off">Serial</button>
+                      <button type="button" class="btn label-success" name="" id="comms-gnu">GNURadio</button>
+                      <button type="button" class="btn label-danger" name="" id="comms-ser">Serial</button>
                     </div>
                   </div>
               </div>
@@ -40,8 +40,19 @@
                   <option id="power-select">Power</option>
                   <option id="test-select">Test</option>
                   <option id="custom-select">Custom</option>
+                  <option id="tle-select">ADCS TLE update</option>
                 </select>
               </div>
+              <div id="service-param-panel">
+                <div id="service-param-tle" style="display:none;">
+                  <div class="text-center m-b-md">
+                    <label> TLE: </label>
+                    <input type="text" id="service-param-service-tle">
+                  </div>
+                  <div class="text-center text-center">
+                    <button class="btn btn-primary"> Send </button>
+                  </div>
+                </div>
               <div id="service-param-panel">
                 <div id="service-param-custom" style="display:none;">
                   <div class="dropdown-group-inline text-center m-b-md">
