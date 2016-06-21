@@ -107,8 +107,12 @@ def get_command():
                     'data' : bytearray(0),
                     'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
+            print "CMD", ecss
             buf = packet.construct_packet(ecss)
-            serial_handler.write(buf)
+            if requested_command['backend'] == 'serial':
+                print "CMD to Serial"
+                serial_handler.write(buf)
+            #else gnu radio
             return jsonify(response);
     return render_template('control.j2')
 
