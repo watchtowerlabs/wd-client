@@ -26,8 +26,8 @@ def ecss_encoder(port):
                 
 def ecss_depacketizer(buf,dict_out):
     size = len(buf)
-    assert((buf != 0) == True)
-    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
+    assert((buf != NULL) == True)
+    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == true)
     tmp_crc1 = buf[size - 1];
     tmp_src2 = 0
     for i in range(0,size -2):
@@ -150,7 +150,7 @@ def ecss_packetizer(ecss,buf):
                << 4 | packet_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
     buf[1] = app_id_ls
     seq_flags = packet_settings.TC_TM_SEQ_SPACKET
-    seq_count = ecss['count']
+    seq_count = ecss['seq_count']
     seq_count_ms = seq_count & 0xFF00
     seq_count_ls = seq_count & 0x00FF
     buf[2] = (seq_flags << 6 | seq_count_ms)
@@ -208,6 +208,11 @@ def construct_packet(ecss_dict):
     ecss_packetizer(ecss_dict, ecssbuf)
     hldlc.HLDLC_frame(ecssbuf,out_buf)
     return out_buf
+
+def deconstruct_packet(buf_in, ecss_dict):
+    hldlc_buf = bytearray(0)
+    hldlc.HLDLC_deframe(buf_in, hldlc_buf)
+    ecss_depacketizer(hldlc_buf,ecss_dict)
     
     
     
