@@ -180,7 +180,7 @@ def ecss_packetizer(ecss,buf):
     return packet_settings.SATR_OK
     
 def comms_off():
-    sock = Udpsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
+    sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
     struct.pack_into("<I",data,9,0x593d55df)
@@ -188,10 +188,10 @@ def comms_off():
     struct.pack_into("<I",data,17,0x24d60191)
     struct.pack_into("<I",data,21,0x9287b5fd)
     d = bytearray(data)
-    sock.send(d)    
+    sock.sendto(d,(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))    
     
 def comms_on():
-    sock = Udpsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
+    sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
     struct.pack_into("<I",data,9,0xda4942a9)
@@ -199,7 +199,7 @@ def comms_on():
     struct.pack_into("<I",data,17,0x413981b)
     struct.pack_into("<I",data,21,0xa94ee2d3)
     d = bytearray(data)
-    sock.send(d)    
+    sock.sendto(d,(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))   
 
 def construct_packet(ecss_dict):
     out_buf = bytearray(0)
