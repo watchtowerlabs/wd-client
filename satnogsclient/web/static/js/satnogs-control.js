@@ -281,7 +281,7 @@ $(document).ready(function() {
             }
 
             var fun_id = $('#service-param-function').val();
-            var data = [fun_id, dev_id];
+            var data = [ fun_id, dev_id];
         } else if (selected_value == "Test") {
             var app_id = $('#service-param-test-app_id').val();
             var type = 1;
@@ -325,7 +325,9 @@ $(document).ready(function() {
             var service_subtype = 23;
             var dest_id = 3;
 
-            data = (6 + $('#service-param-service-tle').val()).split('');
+            data = [];
+            ascii_to_dec($('#service-param-service-tle').val().split(''), data);
+            data.unshift(6);
             //number of TLE chanacters
             if(data.length != 137) { 
               alert("TLE shouldnt be: " + data.length); 
@@ -440,6 +442,12 @@ $(document).ready(function() {
         }
         query_control_backend(request, 'POST', '/command', true);
     });
+
+    function ascii_to_dec(inc, out) {
+      for (var i = 0; i < inc.length; i++) {
+        out[i] = inc[i].charCodeAt(0);
+      }
+    }
 
     function encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data) {
         var DataFieldHeader = new Object();
