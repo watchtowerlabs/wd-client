@@ -100,7 +100,7 @@ def get_command():
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
                     'size' : 0,
-                    'count' : 59,
+                    'seq_count' : 59,
                     'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
                     'ser_subtype' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
                     'data' : bytearray(0),
