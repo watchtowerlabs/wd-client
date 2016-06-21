@@ -128,4 +128,103 @@ HLDLC_START_FLAG    =     0x7E
 HLDLC_CONTROL_FLAG  =     0x7D
 UART_BUF_SIZE       =     4096
 
+#Service Types
+TC_VERIFICATION_SERVICE        =  1
+TC_HOUSEKEEPING_SERVICE        =  3
+TC_EVENT_SERVICE               =  5
+TC_FUNCTION_MANAGEMENT_SERVICE =  8
+TC_TIME_MANAGEMENT_SERVICE     =  9 
+TC_SCHEDULING_SERVICE          =  11
+TC_LARGE_DATA_SERVICE          =  13
+TC_MASS_STORAGE_SERVICE        =  15
+TC_TEST_SERVICE                =  17
+TC_SU_MNLP_SERVICE             =  18
+
+# Service Subtypes 
+
+TM_VR_ACCEPTANCE_SUCCESS       = 1
+TM_VR_ACCEPTANCE_FAILURE       = 2
+TC_HK_REPORT_PARAMETERS        = 21
+TM_HK_PARAMETERS_REPORT        = 23
+
+TM_EV_NORMAL_REPORT            = 1
+TM_EV_ERROR_REPORT             = 4
+
+TC_FM_PERFORM_FUNCTION         = 1
+
+TC_SC_ENABLE_RELEASE           = 1
+TC_SC_DISABLE_RELEASE          = 2
+TC_SC_RESET_SCHEDULE           = 3
+TC_SC_INSERT_TC                = 4
+TC_SC_DELETE_TC                = 5
+TC_SC_TIME_SHIFT_SPECIFIC      = 7
+TC_SC_TIME_SHIFT_SELECTED_OTP  = 8
+TC_SC_TIME_SHIFT_ALL           = 15
+
+TM_LD_FIRST_DOWNLINK           = 1
+TC_LD_FIRST_UPLINK             = 9
+TM_LD_INT_DOWNLINK             = 2
+TC_LD_INT_UPLINK               = 10
+TM_LD_LAST_DOWNLINK            = 3
+TC_LD_LAST_UPLINK              = 11
+TC_LD_ACK_DOWNLINK             = 5
+TM_LD_ACK_UPLINK               = 14
+TC_LD_REPEAT_DOWNLINK          = 6
+TM_LD_REPEAT_UPLINK            = 15
+TM_LD_REPEATED_DOWNLINK        = 7
+TC_LD_REPEATED_UPLINK          = 12
+TM_LD_ABORT_SE_DOWNLINK        = 4
+TC_LD_ABORT_SE_UPLINK          = 13
+TC_LD_ABORT_RE_DOWNLINK        = 8
+TM_LD_ABORT_RE_UPLINK          = 16
+
+TC_MS_ENABLE                   = 1
+TC_MS_DISABLE                  = 2
+TC_MS_CONTENT                  = 8
+TC_MS_DOWNLINK                 = 9
+TC_MS_DELETE                   = 11
+TC_MS_REPORT                   = 12
+TM_MS_CATALOGUE_REPORT         = 13
+TC_MS_UPLINK                   = 14
+TC_MS_FORMAT                   = 15 
+
+TC_CT_PERFORM_TEST             = 1
+TM_CT_REPORT_TEST              = 2
+
+# mNLP science unit sub-service definitions 
+TC_SU_ON                       = 1
+TC_SU_OFF                      = 2
+TC_SU_RESET                    = 3
+TC_SU_LOAD_P                   = 4 #subservice 4
+TM_SU_LOAD_P                   = 5
+TC_SU_HC                       = 6 #subservice 5
+TM_SU_HC                       = 7
+TC_SU_CAL                      = 8 #subservice 6
+TM_SU_CAL                      = 9
+TC_SU_SCI                      = 10 #subservice 7
+TM_SU_SCI                      = 11
+TC_SU_HK                       = 12 #subservice 8
+TM_SU_HK                       = 13
+TC_SU_STM                      = 14 #subservice 9
+TM_SU_STM                      = 15
+TC_SU_DUMP                     = 16 #subservice 10
+TM_SU_DUMP                     = 17
+TC_SU_BIAS_ON                  = 18 #subservice 11
+TC_SU_BIAS_OFF                 = 19 #subservice 12
+TC_SU_MTEE_ON                  = 20 #subservice 13
+TC_SU_MTEE_OFF                 = 21 #subservice 14
+TM_SU_ERR                      = 22 #subservice 15
+TM_OBC_SU_ERR                  = 23 #subservice 16
+TC_OBC_EOT                     = 24 #subservice 17
+TC_SU_SCHE_ON                  = 25 #subservice 24
+TC_SU_SCHE_OFF                 = 26 #subservice 25
+
+#TIME MANAGEMENT SERVICE
+TM_TIME_SET_TIME_UTC           = 1 #subservice 1
+TM_TIME_SET_TIME_QB50          = 2 #subservice 2
+TM_REPORT_TIME_IN_UTC          = 3 #subservice 3
+TM_REPORT_TIME_IN_QB50         = 4 #subservice 4
+
+
+
 

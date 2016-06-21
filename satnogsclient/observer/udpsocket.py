@@ -71,6 +71,10 @@ class Udpsocket:
         self.s.sendto(message,addr)
         ret = self.recv()
         return ret
+    def recv_timeout(self,timeout):
+        self.s.settimeout(timeout)
+        conn = self.s.recvfrom(1024)
+        return conn
     
     def set_timeout(self,sec):
         self.s.settimeout(sec)
