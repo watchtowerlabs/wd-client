@@ -78,7 +78,7 @@ def get_control_rx():
 #    ecss_rx_packet['ECSS_RX'] = 'Hello world! Space calling';
 #    print '----------------------------------------------------';
 #    print(jsonify(ecss_rx_packet));
-    return jsonify(ecss_rx_packet);
+    return jsonify(ecss_dicts_list);
 
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
