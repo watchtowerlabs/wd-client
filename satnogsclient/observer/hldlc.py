@@ -14,7 +14,7 @@ def HLDLC_deframe(buf_in,buf_out):
             return packet_settings.SATR_EOT;
         elif buf_in[i] == packet_settings.HLDLC_CONTROL_FLAG:
             i = i+1
-            if not (i < size - 1) == true:
+            if not (i < size - 1) == True:
                 return packet_settings.SATR_ERROR
             if buf_in[i] == 0x5E:
                  buf_out.append(0x7E)

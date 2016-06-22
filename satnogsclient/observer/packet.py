@@ -26,12 +26,13 @@ def ecss_encoder(port):
                 
 def ecss_depacketizer(buf,dict_out):
     size = len(buf)
-    assert((buf != NULL) == True)
-    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == true)
+    assert((buf != 0) == True)
+    assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
+    print "I should see that"
     tmp_crc1 = buf[size - 1];
-    tmp_src2 = 0
+    tmp_crc2 = 0
     for i in range(0,size -2):
-        tmp_src2 = tmp_src2 ^ buf[i]
+        tmp_crc2 = tmp_crc2 ^ buf[i]
 
     ver = buf[0] >> 5;
 
@@ -47,13 +48,8 @@ def ecss_depacketizer(buf,dict_out):
     t.reverse()
     #pkt_seq_count = t & 0x3FFF;
     pkt_seq_count = (((t[0] & 0x3FF) << 8) | (t[1] & 0xFF))
-    
-    t = bytearray(2)
-    t[0] = buf[4]
-    t[1] = buf[5]
-    t.reverse()
 
-    pkt_len = t
+    pkt_len = (buf[4] << 8) | buf[5] 
 
     ccsds_sec_hdr = buf[6] >> 7;
 
@@ -72,8 +68,9 @@ def ecss_depacketizer(buf,dict_out):
         return packet_settings.SATR_PKT_ILLEGAL_APPID; 
 
     if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
-        pkt_verification_state = packet_settings.SATR_PKT_INV_LEN
+        print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1
         return packet_settings.SATR_PKT_INV_LEN; 
+    
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1;
 
     if not ((tmp_crc1 == tmp_crc2) == True) :
@@ -88,16 +85,15 @@ def ecss_depacketizer(buf,dict_out):
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR; 
 
-    if not ((tc_pus == ECSS_PUS_VER) == True) :
-        pkt_verification_state = packet_settings.SATR_ERROR
+    if not ((tc_pus == packet_settings.ECSS_PUS_VER) == True) :
         return packet_settings.SATR_ERROR;
 
     if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == True) :
-        pkt_verification_state = packet_settings.SATR_ERROR
+        print "INV HDR FIELD", ccsds_sec_hdr
         return packet_settings.SATR_ERROR;
 
-    if not ((pkt_type == 'TC' or pkt_type == 'TM') == True) :
-        pkt_verification_state = packet_settings.SATR_ERROR
+    if not ((pkt_type == packet_settings.TC or pkt_type == packet_settings.TM) == True) :
+        print "INV TYPE", pkt_type
         return packet_settings.SATR_ERROR;
 
     if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True) :
@@ -111,7 +107,7 @@ def ecss_depacketizer(buf,dict_out):
     if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
         return packet_settings.SATR_ERROR; 
-    pkt_data = bytearray(pkt_len)
+    pkt_data = bytes(pkt_len)
 
     pktdata = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
     dict_out={'type':pkt_type,
@@ -121,10 +117,10 @@ def ecss_depacketizer(buf,dict_out):
              'ser_type':pkt_ser_type,
              'ser_subtype':pkt_ser_subtype,
              'dest_id':pkt_dest_id,
-             'data':pktdata
+             'data':pkt_data
              }
-    
-    return packet_settings.SATR_OK;
+    print "I should see that also" , dict_out
+    return dict_out #packet_settings.SATR_OK;
                 
 def ecss_decoder(port):
     logger.info('Started ecss decoder')
@@ -213,7 +209,10 @@ def construct_packet(ecss_dict):
 def deconstruct_packet(buf_in, ecss_dict):
     hldlc_buf = bytearray(0)
     hldlc.HLDLC_deframe(buf_in, hldlc_buf)
-    ecss_depacketizer(hldlc_buf,ecss_dict)
+    print "HLDLC ", ''.join('{:02x}'.format(x) for x in buf_in)  ," ", ''.join('{:02x}'.format(x) for x in hldlc_buf)
+    res = ecss_depacketizer(hldlc_buf,ecss_dict)
+    print "the result is ", res
+    return res
     
     
     
