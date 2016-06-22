@@ -104,7 +104,7 @@ def get_command():
                     'seq_count' : 59,
                     'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
                     'ser_subtype' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
-                    'data' : bytearray(0),
+                    'data' : requested_command['ecss_cmd']['PacketDataField']['ApplicationData'],
                     'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
             print "CMD", ecss
