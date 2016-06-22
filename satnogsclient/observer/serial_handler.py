@@ -2,6 +2,7 @@ import serial
 import array
 import time
 import logging
+import cPickle
 
 from flask import Flask, render_template, request, json, jsonify
 from satnogsclient import packet_settings
@@ -39,7 +40,7 @@ def read_from_serial():
                 if ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:
                     ld_socket.sendto(json.dumps(ecss_dict), ('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT))
                 else:
-                    ecss_feeder_sock.sendto(json.dumps(ecss_dict),('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))
+                    ecss_feeder_sock.sendto(json.dumps(cPickle.dumps(ecss_dict)),('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))
                 buf_in = bytearray(0)
 
     

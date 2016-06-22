@@ -109,7 +109,7 @@ def ecss_depacketizer(buf,dict_out):
         return packet_settings.SATR_ERROR; 
     pkt_data = bytes(pkt_len)
 
-    pktdata = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
+    pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
     dict_out={'type':pkt_type,
              'app_id':pkt_app_id,
              'size':pkt_len,
