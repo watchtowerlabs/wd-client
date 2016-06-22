@@ -8,9 +8,13 @@ from satnogsclient.observer import hldlc
 from satnogsclient.observer import packet
 
 large_data_id = 0
+"""
+All packets have at the first byte of data the large data id or only the first?
+"""
 
-socket = Udpsocket('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT)
-gnuradio_sock = Udpsocket(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT) #Gnuradio's udp listen port
+
+socket = Udpsocket(('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT))
+gnuradio_sock = Udpsocket([]) #Gnuradio's udp listen port
 
 def uplink(filename, info):
     buf = bytearray(0)
@@ -53,19 +57,19 @@ def uplink(filename, info):
              'seq_count' : packet_count
              }
         hldlc_buf = bytearray(0)
-        packet.pack_packet(ecss, hldlc_buf)
-        gnuradio_sock.send(hldlc_buf)
+        packet.construct_packet(ecss, hldlc_buf)
+        gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT))
         got_ack = 0
         retries = 0
         while retries <3 or got_ack == 0:
             try:
                 ack = socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
                 ecss_dict = []
-                packet.unpack_packet(buf_in, ecss_dict)
-                if ecss_dict['seq_count'] == packet_count and ecss_dict['data'][0] == large_data_id:
+                packet.deconstruct_packet(buf_in, ecss_dict)
+                if ecss_dict['seq_count'] == packet_count:
                     got_ack = 1
                 else:
-                    gnuradio_sock.send(hldlc_buf) # Resend previous frame
+                    gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT)) # Resend previous frame
                     retries = retries + 1
             except:
                 retries = retries + 1
@@ -74,7 +78,7 @@ def uplink(filename, info):
             if ser_subtype == packet_settings.TC_LD_LAST_UPLINK:
                 global large_data_id
                 large_data_id = large_data_id +1
-                packet_count = packet_count + 1
+            packet_count = packet_count + 1
         else:
             print 'Abort'
             return
