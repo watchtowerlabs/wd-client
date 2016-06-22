@@ -57,23 +57,27 @@ $(document).ready(function() {
       var r4 = 'service-param-time';
       var r5 = 'service-param-tle';
       var r6 = 'service-param-mass-storage';
+      var r7 = 'service-param-housekeeping';
 
       if(selection == r1) {
-        r1 = r6;
+        r1 = r7;
       }
       else if(selection == r2) {
-        r2 = r6;
+        r2 = r7;
       }
       else if(selection == r3) {
-        r3 = r6;
+        r3 = r7;
       }
       else if(selection == r4) {
-        r4 = r6;
+        r4 = r7;
       }
       else if(selection == r5) {
-        r5 = r6;
+        r5 = r7;
       }
       else if(selection == r6) {
+        r6 = r7;
+      }
+      else if(selection == r7) {
 
       }
 
@@ -90,6 +94,9 @@ $(document).ready(function() {
       elem.style.display = "none";
 
       var elem = document.getElementById(r5);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(r6);
       elem.style.display = "none";
 
       var elem = document.getElementById(selection);
@@ -250,7 +257,19 @@ $(document).ready(function() {
             var dest_id = $('#service-param-dest_id').val();
 
             var data = $('#service-param-service-data').val().split(",");
+
+        } else if (selected_value == "House keeping") {
+
+            var app_id = $('#service-param-hk-app_id').val();
+            var type = 1;
+            var ack = 0;
+            var service_type = 3;
+            var service_subtype = 21;
+            var dest_id = $('#service-param-hk-dest-id').val();
+
+            var data[0] = $('#service-param-hk-sid').val();
         
+
         } else if (selected_value == "Mass storage") {
 
             var type = 1;

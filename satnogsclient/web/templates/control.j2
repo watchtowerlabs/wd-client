@@ -40,6 +40,7 @@
                   <option id="power-select">Power</option>
                   <option id="test-select">Test</option>
                   <option id="ms-select">Mass storage</option>
+                  <option id="hk-select">House keeping</option>
                   <option id="custom-select">Custom</option>
                   <option id="tle-select">ADCS TLE update</option>
                 </select>
@@ -105,6 +106,30 @@
                   <div class="text-center m-b-md">
                     <label> Application Data: </label>
                     <input type="text" id="service-param-service-data">
+                  </div>
+                  <div class="text-center text-center">
+                    <button class="btn btn-primary"> Send </button>
+                  </div>
+                </div>
+                <div id="service-param-housekeeping" style="display:none;">
+                  <div class="dropdown-group-inline text-center m-b-md">
+                    <select id="service-param-hk-app_id" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="1" >OBC</option>
+                      <option value="2" >EPS</option>
+                      <option value="3" >ADCS</option>
+                      <option value="4" >COMMS</option>
+                    </select>
+                    <select id="service-param-hk-sid" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="1" >HEALTH_REP</option>
+                      <option value="2" >EX_HEALTH_REP</option>
+                    </select>
+                    <select id="service-param-hk-dest-id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
                   </div>
                   <div class="text-center text-center">
                     <button class="btn btn-primary"> Send </button>
