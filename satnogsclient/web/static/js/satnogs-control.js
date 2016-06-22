@@ -25,6 +25,10 @@ $(document).ready(function() {
       $("#comms-ser").css('background-color','#5cb85c');
     });
 
+    $("#ms-select").click(function() {
+      display_service('service-param-mass-storage');
+    });
+
     $("#custom-select").click(function() {
       display_service('service-param-custom');
     });
@@ -52,20 +56,24 @@ $(document).ready(function() {
       var r3 = 'service-param-test';
       var r4 = 'service-param-time';
       var r5 = 'service-param-tle';
+      var r6 = 'service-param-mass-storage';
 
       if(selection == r1) {
-        r1 = r5;
+        r1 = r6;
       }
       else if(selection == r2) {
-        r2 = r5;
+        r2 = r6;
       }
       else if(selection == r3) {
-        r3 = r5;
+        r3 = r6;
       }
       else if(selection == r4) {
-        r4 = r5;
+        r4 = r6;
       }
       else if(selection == r5) {
+        r5 = r6;
+      }
+      else if(selection == r6) {
 
       }
 
@@ -79,6 +87,9 @@ $(document).ready(function() {
       elem.style.display = "none";
 
       var elem = document.getElementById(r4);
+      elem.style.display = "none";
+
+      var elem = document.getElementById(r5);
       elem.style.display = "none";
 
       var elem = document.getElementById(selection);
@@ -239,6 +250,59 @@ $(document).ready(function() {
             var dest_id = $('#service-param-dest_id').val();
 
             var data = $('#service-param-service-data').val().split(",");
+        
+        } else if (selected_value == "Mass storage") {
+
+            var type = 1;
+            var ack = $('#service-param-ms-ack').val();
+            var dest_id = $('#service-param-ms-dest-id').val();
+            var service_type = 15;
+            var data = [];
+
+            var store_id = $('#service-param-ms-sid').val();
+
+            var fun = $('#service-param-ms-function').val();
+
+            if(fun == "Format")
+                if (confirm('Are you sure you want to format the sd?')) {
+                    var service_subtype = 15;
+                } else {
+                    return 0;
+                }
+            } else if(fun == "File_system") {
+                var action = $('#service-param-ms-action').val();
+
+                if(action == "Report") {
+
+                    var fn = $('#service-param-service-ms-iter').val();
+
+                    var service_subtype = 12;
+                    data[0] = store_id;
+
+                    data[1] =  0x000000FF & fn;
+                    data[2] =  0x000000FF & (fn >> 8);
+                    data[3] =  0x000000FF & (fn >> 16);
+                    data[4] =  0x000000FF & (fn >> 24);
+
+                } else if(action == "Uplink") {
+
+                } else if(action == "Delete") {
+
+                    var service_subtype = 11;
+                    data[0] = store_id;
+
+                    data[1] = 0;
+
+                    data[2] = 0;
+                    data[3] = 0;
+                    data[4] = 0;
+                    data[5] = 0;
+                }
+
+            } else if(fun == "Enable") {
+
+            }
+
         } else if (selected_value == "Power") {
             var dev_id = $('#service-param-dev-id').val();
             var type = 1;

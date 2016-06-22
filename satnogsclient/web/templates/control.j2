@@ -39,6 +39,7 @@
                   <option id="time-select">Time</option>
                   <option id="power-select">Power</option>
                   <option id="test-select">Test</option>
+                  <option id="ms-select">Mass storage</option>
                   <option id="custom-select">Custom</option>
                   <option id="tle-select">ADCS TLE update</option>
                 </select>
@@ -104,6 +105,62 @@
                   <div class="text-center m-b-md">
                     <label> Application Data: </label>
                     <input type="text" id="service-param-service-data">
+                  </div>
+                  <div class="text-center text-center">
+                    <button class="btn btn-primary"> Send </button>
+                  </div>
+                </div>
+                <div id="service-param-mass-storage" style="display:none;">
+                  <div class="dropdown-group-inline text-center m-b-md">
+                    <select id="service-param-ms-function" class="form-control">
+                      <option selected="true" style="display:none;">App ID</option>
+                      <option value="File_system" >File system</option>
+                      <option value="Format" >Format</option>
+                      <option value="Enable" >Enable</option>
+                    </select>
+                    <select id="service-param-ms-ack" class="form-control">
+                      <option selected="true" style="display:none;">ACK</option>
+                      <option value="1" >ACK</option>
+                      <option value="0" >NO ACK</option>
+                    </select>
+                    <select id="service-param-test-ms-dest-id" class="form-control">
+                      <option selected="true" style="display:none;">Dest ID</option>
+                      <option value="6" >GND</option>
+                      <option value="7" >UMB</option>
+                    </select>
+                    <select id="service-param-ms-sid" class="form-control">
+                      <option selected="true" style="display:none;">Service Type</option>
+                      <option value="1" >SU_SCRIPT 1</option>
+                      <option value="2" >SU_SCRIPT 2</option>
+                      <option value="3" >SU_SCRIPT 3</option>
+                      <option value="4" >SU_SCRIPT 4</option>
+                      <option value="5" >SU_SCRIPT 5</option>
+                      <option value="6" >SU_SCRIPT 6</option>
+                      <option value="7" >SU_SCRIPT 7</option>
+                      <option value="8" >SU_LOG</option>
+                      <option value="9" >WOD_LOG</option>
+                      <option value="10" >EXT_WOD_LOG</option>
+                      <option value="11" >EVENT_LOG</option>
+                      <option value="12" >FOTOS</option>
+                    </select>
+                    <select id="service-param-ms-action" class="form-control">
+                      <option selected="true" style="display:none;">ACK</option>
+                      <option value="Delete" >Delete All</option>
+                      <option value="Report" >Report</option>
+                      <option value="Uplink" >Uplink</option>
+                    </select>
+                  </div>
+                  <div class="text-center m-b-md">
+                    <label> Iter: </label>
+                    <input type="text" id="service-param-service-ms-iter">
+                  </div>
+                  <div id="service-param-ms-fs-action">
+                    <label> File name </label>
+                    <label> File size </label>
+                    <label> Modified </label>
+                    <button class="btn btn-primary"> View </button>
+                    <button class="btn btn-primary"> Delete </button>
+                    <button class="btn btn-primary"> Delete To</button>
                   </div>
                   <div class="text-center text-center">
                     <button class="btn btn-primary"> Send </button>
