@@ -326,7 +326,7 @@ $(document).ready(function() {
             var dest_id = 3;
 
             data = [];
-            ascii_to_num($('#service-param-service-tle').val().split(' '), data);
+            ascii_to_dec($('#service-param-service-tle').val().split(''), data);
             data.unshift(6);
             //number of TLE chanacters
             if(data.length != 137) {
@@ -443,9 +443,9 @@ $(document).ready(function() {
         query_control_backend(request, 'POST', '/command', true);
     });
 
-    function ascii_to_num(inc, out) {
+    function ascii_to_dec(inc, out) {
       for (var i = 0; i < inc.length; i++) {
-        out[i] = parseInt(inc[i]);
+        out[i] = inc[i].charCodeAt(0);
       }
     }
 
