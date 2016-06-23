@@ -99,6 +99,25 @@ body {
 
 #service-select {
   margin-bottom: 20px;
+  cursor: pointer;
+  height: 500px;
+  border-bottom: 0;
+}
+
+#service-select.nav-tabs > li > a {
+    margin-right: 2px;
+    line-height: 1.42857143;
+    border: 1px solid transparent;
+    border-radius: 4px 0 0 0;
+}
+
+#service-select.nav-tabs li.active a {
+    background-color: #f8f8f8;
+}
+
+#service-select.nav-tabs li a:hover {
+    background-color: #95a5a6;
+    color: #fff;
 }
 
 #service-panel {
@@ -108,6 +127,10 @@ body {
 
 #service-param-panel {
   text-align: left;
+  margin-left: -32px;
+  height: 500px;
+  background-color: #f8f8f8;
+  border-radius: 0 5px 5px 5px;
 }
 
 #switch-panel {

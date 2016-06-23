@@ -35,19 +35,39 @@
               </div>
               <hr>
               <div class="row">
-                <label for="">Services</label>
-                <div id="service-panel">
-                  <select multiple class="form-control" id="service-select">
-                    <option id="time-select">Time</option>
-                    <option id="power-select">Power</option>
-                    <option id="test-select">Test</option>
-                    <option id="ms-select">Mass storage</option>
-                    <option id="hk-select">House keeping</option>
-                    <option id="custom-select">Custom</option>
-                    <option id="tle-select">ADCS TLE update</option>
-                  </select>
+                <div class="col-md-4">
+                  <!--<label for="">Services</label>
+                  <div id="service-panel">
+                    <select multiple class="form-control" id="service-select">
+                      <option id="time-select">Time</option>
+                      <option id="power-select">Power</option>
+                      <option id="test-select">Test</option>
+                      <option id="ms-select">Mass storage</option>
+                      <option id="hk-select">House keeping</option>
+                      <option id="custom-select">Custom</option>
+                      <option id="tle-select">ADCS TLE update</option>
+                    </select>
+                  </div>-->
+                  <ul class="nav nav-tabs nav-stacked" id="service-select">
+                    <li role="presentation" id="time-select" class="active"><a>Time</a></li>
+                    <li role="presentation" id="power-select"><a>Power</a></li>
+                    <li role="presentation" id="test-select"><a>Test</a></li>
+                    <li role="presentation" class="dropdown">
+                      <a class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" id="ms-select">
+                        Mass storage <span class="caret"></span>
+                      </a>
+                      <ul class="dropdown-menu">
+                        <li role="presentation"><a href="#">Mass storage Sub1</a></li>
+                        <li role="presentation"><a href="#">Mass storage Sub2</a></li>
+                        <li role="presentation"><a href="#">Mass storage Sub3</a></li>
+                      </ul>
+                    </li>
+                    <li role="presentation" id="hk-select"><a>House keeping</a></li>
+                    <li role="presentation" id="custom-select"><a>Custom</a></li>
+                    <li role="presentation" id="tle-select"><a>ADCS TLE update</a></li>
+                  </ul>
                 </div>
-                <div id="service-param-panel">
+                <div class="col-md-8" id="service-param-panel">
                   <div id="service-param-tle" style="display:none;">
                     <div class="text-center m-b-md">
                       <label> TLE: </label>
@@ -251,7 +271,7 @@
                       <button class="btn btn-primary"> Send </button>
                     </div>
                   </div>
-                  <div id="service-param-time" style="display:none;">
+                  <div id="service-param-time">
                     <div class="text-center m-b-md">
                       <div class="dropdown-group-inline">
                         <select id="service-param-time-report" class="form-control">
@@ -269,24 +289,12 @@
                       </div>
                     </div>
                     <div class="text-center m-b-md">
-                      <div class='input-group date' id='datetimepicker1' style="display:none;">
+                      <div class='input-group date' id='datetimepicker1'>
                           <input type='text' class="form-control" />
                           <span class="input-group-addon">
                               <span class="glyphicon glyphicon-calendar"></span>
                           </span>
                       </div>
-                      <!--<label> Day: </label>
-                      <input type="text" id="service-param-service-day">
-                      <label> Month: </label>
-                      <input type="text" id="service-param-service-mon">
-                      <label> Year: </label>
-                      <input type="text" id="service-param-service-year">
-                      <label> Hour: </label>
-                      <input type="text" id="service-param-service-hour">
-                      <label> Minute: </label>
-                      <input type="text" id="service-param-service-min">
-                      <label> Second: </label>
-                      <input type="text" id="service-param-service-sec">-->
                     </div>
                     <div class="text-center">
                       <button class="btn btn-primary"> Send </button>

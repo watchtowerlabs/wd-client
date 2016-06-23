@@ -32,18 +32,29 @@ $(document).ready(function() {
       var keys = [];
       for (var key in services) {
         var elem = document.getElementById(services[key]);
-         if (key == selection) {
-           elem.style.display = "block";
-         }
-         else {
-           elem.style.display = "none";
-         }
+        var service_param_panel = document.getElementById('service-param-panel');
+        var service_select = document.getElementById(key);
+        if (key == selection) {
+          elem.style.display = "block";
+          service_param_panel.style.backgroundColor = '#f8f8f8';
+        }
+        else {
+          elem.style.display = "none";
+          service_select.classList.remove('active');
+        }
       }
     }
 
-    $('#service-panel select').on('change', function() {
+    // $('#service-panel select').on('change', function() {
+    //     // Handle change on service parameter dropdowns
+    //     selected_service_id = $(this).find("option:selected").prop('id');
+    //     display_service(selected_service_id);
+    // });
+
+    $('#service-select li').on('click', function() {
         // Handle change on service parameter dropdowns
-        selected_service_id = $(this).find("option:selected").prop('id');
+        selected_service_id = $(this).prop('id');
+        $(this).addClass('active');
         display_service(selected_service_id);
     });
 
