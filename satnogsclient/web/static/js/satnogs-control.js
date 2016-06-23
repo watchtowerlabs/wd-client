@@ -5,7 +5,9 @@ $(document).ready(function() {
       query_control_backend({}, 'POST', '/control_rx', true);
     }, 10000);
 
-    datepicker = $('#datetimepicker1').datetimepicker();
+    datepicker = $('#datetimepicker1').datetimepicker({
+       format: 'DD/MMM/yyyy hh:mm:ss a',
+    });
     var backend = "gnu-radio";
 
     $("#comms-gnu").click(function() {
