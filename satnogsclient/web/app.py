@@ -70,7 +70,7 @@ def get_control_rx():
     Next, for each item in list, json.dumps(item) will give the ecss dictionary
     """
     ecss_dicts_list = []
-    if packet_list != "":   
+    if packet_list != "":
         for str_dict in packet_list:
             print str_dict
             ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
@@ -117,7 +117,7 @@ def get_command():
             if requested_command['backend'] == 'serial':
                 print "CMD to Serial"
                 serial_handler.write(buf)
-            elif:
+            else:
                 gnuradio_handler.write(buf)
             #else gnu radio
             return jsonify(response);
