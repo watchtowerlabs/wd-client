@@ -6,106 +6,44 @@ $(document).ready(function() {
     }, 10000);
 
     datepicker = $('#datetimepicker1').datetimepicker();
-
     var backend = "gnu-radio";
 
     $("#comms-gnu").click(function() {
-
       backend = "gnu-radio";
-
       $("#comms-gnu").css('background-color','#5cb85c');
       $("#comms-ser").css('background-color','#d9534f');
     });
 
     $("#comms-ser").click(function() {
-
       backend = "serial";
-
       $("#comms-gnu").css('background-color','#d9534f');
       $("#comms-ser").css('background-color','#5cb85c');
     });
 
-    $("#ms-select").click(function() {
-      display_service('service-param-mass-storage');
-    });
-
-    $("#custom-select").click(function() {
-      display_service('service-param-custom');
-    });
-
-    $("#power-select").click(function() {
-      display_service('service-param-power');
-    });
-
-    $("#test-select").click(function() {
-      display_service('service-param-test');
-    });
-
-    $("#time-select").click(function() {
-      display_service('service-param-time');
-    });
-
-    $("#tle-select").click(function() {
-      display_service('service-param-tle');
-    });
-
     function display_service(selection) {
-
-      var r1 = 'service-param-custom';
-      var r2 = 'service-param-power';
-      var r3 = 'service-param-test';
-      var r4 = 'service-param-time';
-      var r5 = 'service-param-tle';
-      var r6 = 'service-param-mass-storage';
-      var r7 = 'service-param-housekeeping';
-
-      if(selection == r1) {
-        r1 = r7;
+      var services = {'custom-select':'service-param-custom',
+                      'power-select':'service-param-power',
+                      'test-select':'service-param-test',
+                      'time-select':'service-param-time',
+                      'tle-select':'service-param-tle',
+                      'ms-select':'service-param-mass-storage',
+                      'hk-select':'service-param-housekeeping'};
+      var keys = [];
+      for (var key in services) {
+        var elem = document.getElementById(services[key]);
+         if (key == selection) {
+           elem.style.display = "block";
+         }
+         else {
+           elem.style.display = "none";
+         }
       }
-      else if(selection == r2) {
-        r2 = r7;
-      }
-      else if(selection == r3) {
-        r3 = r7;
-      }
-      else if(selection == r4) {
-        r4 = r7;
-      }
-      else if(selection == r5) {
-        r5 = r7;
-      }
-      else if(selection == r6) {
-        r6 = r7;
-      }
-      else if(selection == r7) {
-
-      }
-
-      var elem = document.getElementById(r1);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(r2);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(r3);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(r4);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(r5);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(r6);
-      elem.style.display = "none";
-
-      var elem = document.getElementById(selection);
-      elem.style.display = "block";
-
     }
 
-    $('#service-param-panel select').on('change', function() {
+    $('#service-panel select').on('change', function() {
         // Handle change on service parameter dropdowns
+        selected_service_id = $(this).find("option:selected").prop('id');
+        display_service(selected_service_id);
     });
 
     $('#service-param-service_type').on('change', function() {
@@ -258,69 +196,69 @@ $(document).ready(function() {
 
             var data = $('#service-param-service-data').val().split(",");
 
-        } else if (selected_value == "House keeping") {
-
-            var app_id = $('#service-param-hk-app_id').val();
-            var type = 1;
-            var ack = 0;
-            var service_type = 3;
-            var service_subtype = 21;
-            var dest_id = $('#service-param-hk-dest-id').val();
-
-            var data[0] = $('#service-param-hk-sid').val();
-        
-
-        } else if (selected_value == "Mass storage") {
-
-            var type = 1;
-            var ack = $('#service-param-ms-ack').val();
-            var dest_id = $('#service-param-ms-dest-id').val();
-            var service_type = 15;
-            var data = [];
-
-            var store_id = $('#service-param-ms-sid').val();
-
-            var fun = $('#service-param-ms-function').val();
-
-            if(fun == "Format")
-                if (confirm('Are you sure you want to format the sd?')) {
-                    var service_subtype = 15;
-                } else {
-                    return 0;
-                }
-            } else if(fun == "File_system") {
-                var action = $('#service-param-ms-action').val();
-
-                if(action == "Report") {
-
-                    var fn = $('#service-param-service-ms-iter').val();
-
-                    var service_subtype = 12;
-                    data[0] = store_id;
-
-                    data[1] =  0x000000FF & fn;
-                    data[2] =  0x000000FF & (fn >> 8);
-                    data[3] =  0x000000FF & (fn >> 16);
-                    data[4] =  0x000000FF & (fn >> 24);
-
-                } else if(action == "Uplink") {
-
-                } else if(action == "Delete") {
-
-                    var service_subtype = 11;
-                    data[0] = store_id;
-
-                    data[1] = 0;
-
-                    data[2] = 0;
-                    data[3] = 0;
-                    data[4] = 0;
-                    data[5] = 0;
-                }
-
-            } else if(fun == "Enable") {
-
-            }
+        // } else if (selected_value == "House keeping") {
+        //
+        //     var app_id = $('#service-param-hk-app_id').val();
+        //     var type = 1;
+        //     var ack = 0;
+        //     var service_type = 3;
+        //     var service_subtype = 21;
+        //     var dest_id = $('#service-param-hk-dest-id').val();
+        //
+        //     var data = $('#service-param-hk-sid').val();
+        //
+        //
+        // } else if (selected_value == "Mass storage") {
+        //
+        //     var type = 1;
+        //     var ack = $('#service-param-ms-ack').val();
+        //     var dest_id = $('#service-param-ms-dest-id').val();
+        //     var service_type = 15;
+        //     var data = [];
+        //
+        //     var store_id = $('#service-param-ms-sid').val();
+        //
+        //     var fun = $('#service-param-ms-function').val();
+        //
+        //     if(fun == "Format")
+        //         if (confirm('Are you sure you want to format the sd?')) {
+        //             var service_subtype = 15;
+        //         } else {
+        //             return 0;
+        //         }
+        //     } else if(fun == "File_system") {
+        //         var action = $('#service-param-ms-action').val();
+        //
+        //         if(action == "Report") {
+        //
+        //             var fn = $('#service-param-service-ms-iter').val();
+        //
+        //             var service_subtype = 12;
+        //             data[0] = store_id;
+        //
+        //             data[1] =  0x000000FF & fn;
+        //             data[2] =  0x000000FF & (fn >> 8);
+        //             data[3] =  0x000000FF & (fn >> 16);
+        //             data[4] =  0x000000FF & (fn >> 24);
+        //
+        //         } else if(action == "Uplink") {
+        //             continue;
+        //         } else if(action == "Delete") {
+        //
+        //             var service_subtype = 11;
+        //             data[0] = store_id;
+        //
+        //             data[1] = 0;
+        //
+        //             data[2] = 0;
+        //             data[3] = 0;
+        //             data[4] = 0;
+        //             data[5] = 0;
+        //         }
+        //
+        //     } else if(fun == "Enable") {
+        //       continue;
+        //     }
 
         } else if (selected_value == "Power") {
             var dev_id = $('#service-param-dev-id').val();
