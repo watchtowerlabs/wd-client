@@ -12,6 +12,7 @@ from satnogsclient.observer import gnuradio_handler
 import logging
 from flask.json import JSONDecoder
 import binascii
+import cPickle
 
 logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
@@ -55,12 +56,13 @@ def get_status_info():
 @app.route('/control_rx', methods=['GET', 'POST'])
 def get_control_rx():
     sock = Udpsocket(('127.0.0.1',client_settings.CLIENT_LISTENER_UDP_PORT))
+    packet_list = ""
     try:
         conn = sock.send_listen("Requesting received packets", ('127.0.0.1',client_settings.ECSS_FEEDER_UDP_PORT))
-        data = conn[0]
-        packet_list = json.loads(data)
     except:
         logger.error("An error with the ECSS feeder occured")
+    data = conn[0]
+    packet_list = json.loads(data)
     """
     The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
     each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
@@ -70,14 +72,10 @@ def get_control_rx():
     ecss_dicts_list = []
     if packet_list != "":   
         for str_dict in packet_list:
-            ecss_dict = json.loads(str_dict)
+            print str_dict
+            ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
             ecss_dicts_list.append(ecss_dict)
 
-
-#    ecss_rx_packet = {};
-#    ecss_rx_packet['ECSS_RX'] = 'Hello world! Space calling';
-#    print '----------------------------------------------------';
-#    print(jsonify(ecss_rx_packet));
     return jsonify(ecss_dicts_list);
 
 @app.route('/raw', methods=['GET', 'POST'])
@@ -107,19 +105,20 @@ def get_command():
             response['Response'] = 'ECSS command send';
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
-                    'size' : 0,
+                    'size' : len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'seq_count' : 59,
                     'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
                     'ser_subtype' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
                     'data' : map(int,requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
-            print "CMD", ecss
-            print "data", ecss['data']
+            print "CMD", requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']
             buf = packet.construct_packet(ecss)
             if requested_command['backend'] == 'serial':
                 print "CMD to Serial"
                 serial_handler.write(buf)
+            elif:
+                gnuradio_handler.write(buf)
             #else gnu radio
             return jsonify(response);
     return render_template('control.j2')

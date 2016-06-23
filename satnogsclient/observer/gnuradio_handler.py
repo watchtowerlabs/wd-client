@@ -2,12 +2,14 @@ import array
 import time
 import logging
 import json
+import cPickle
 
 from satnogsclient import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.observer import hldlc
 from satnogsclient.observer import packet
+
 
 logger = logging.getLogger('satnogsclient')
 
@@ -23,8 +25,10 @@ def read_from_gnuradio():
         conn = udp_local_sock.recv()
         buf_in = conn[0]
         ecss_dict = []
-        packet.deconstruct_packet(buf_in, ecss_dict)
+        ret = packet.deconstruct_packet(buf_in, ecss_dict)
+        ecss_dict = ret[0]
+        pickled =  cPickle.dumps(ecss_dict)
         if ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:
-            ld_socket.sendto(json.dumps(ecss_dict), ('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT))
+            ld_socket.sendto(pickled, ('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT))
         else:
-            ecss_feeder_sock.sendto(json.dumps(ecss_dict),('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))
+            ecss_feeder_sock.sendto(pickled,('127.0.0.1',client_settings.ECSS_LISTENER_UDP_PORT))

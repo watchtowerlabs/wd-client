@@ -205,12 +205,12 @@ def ecss_feeder(port1,port2):
     pr = Process(target=ecss_listener, args=(port2,qu))
     pr.daemon = True
     pr.start()
-    print pr
     while 1:
         conn = sock.recv()
         list= []
         while not qu.empty():
-            list.append(qu.get())
+            a = qu.get()
+            list.append(a)
         sock.sendto(json.dumps(list),conn[1])     
     pr.join()
 
@@ -221,7 +221,6 @@ def ecss_listener(port,queue):
     while 1:
             conn = sock.recv()
             data = conn[0]
-            print data
             if not queue.empty():
                 queue.put(data)
             else:

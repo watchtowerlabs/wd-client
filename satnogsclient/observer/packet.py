@@ -26,6 +26,7 @@ def ecss_encoder(port):
                 
 def ecss_depacketizer(buf,dict_out):
     size = len(buf)
+    print binascii.hexlify(buf)
     assert((buf != 0) == True)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     print "I should see that"
@@ -65,48 +66,49 @@ def ecss_depacketizer(buf,dict_out):
 
     if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True) :
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_APPID
-        return packet_settings.SATR_PKT_ILLEGAL_APPID; 
+        return (dict_out, packet_settings.SATR_PKT_ILLEGAL_APPID)
+
 
     if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
         print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1
-        return packet_settings.SATR_PKT_INV_LEN; 
+        return (dict_out, packet_settings.SATR_PKT_INV_LEN)
     
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1;
 
     if not ((tmp_crc1 == tmp_crc2) == True) :
         pkt_verification_state = packet_settings.SATR_PKT_INC_CRC
-        return packet_settings.SATR_PKT_INC_CRC; 
+        return (dict_out, packet_settings.SATR_PKT_INC_CRC)
 
     if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True) : 
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_PKT_TP
-        return packet_settings.SATR_PKT_ILLEGAL_PKT_TP; 
+        return (dict_out, packet_settings.SATR_PKT_ILLEGAL_PKT_TP)
 
     if not ((ver == packet_settings.ECSS_VER_NUMBER) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
-        return packet_settings.SATR_ERROR; 
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((tc_pus == packet_settings.ECSS_PUS_VER) == True) :
-        return packet_settings.SATR_ERROR;
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == True) :
         print "INV HDR FIELD", ccsds_sec_hdr
-        return packet_settings.SATR_ERROR;
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((pkt_type == packet_settings.TC or pkt_type == packet_settings.TM) == True) :
         print "INV TYPE", pkt_type
-        return packet_settings.SATR_ERROR;
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
-        return packet_settings.SATR_ERROR;
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
-        return packet_settings.SATR_ERROR;
+        return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True) :
         pkt_verification_state = packet_settings.SATR_ERROR
-        return packet_settings.SATR_ERROR; 
+        return (dict_out, packet_settings.SATR_ERROR)
     pkt_data = bytes(pkt_len)
 
     pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
@@ -120,7 +122,7 @@ def ecss_depacketizer(buf,dict_out):
              'data':pkt_data
              }
     print "I should see that also" , dict_out
-    return dict_out #packet_settings.SATR_OK;
+    return (dict_out, packet_settings.SATR_OK)
                 
 def ecss_decoder(port):
     logger.info('Started ecss decoder')
@@ -152,7 +154,6 @@ def ecss_packetizer(ecss,buf):
     seq_count_ls = seq_count & 0x00FF
     buf[2] = (seq_flags << 6 | seq_count_ms)
     buf[3] = seq_count_ls
-     
     if ecss['type'] == 0 :
         buf[6] = packet_settings.ECSS_PUS_VER << 4 ;
     elif ecss['type'] == 1 :
@@ -160,18 +161,18 @@ def ecss_packetizer(ecss,buf):
     buf[7] = ecss['ser_type']
     buf[8] = ecss['ser_subtype']
     buf[9] = ecss['dest_id']
-    
     buf_pointer = packet_settings.ECSS_DATA_OFFSET
-    buf[buf_pointer:data_size] = ecss['data']
+    for i in range(0,data_size):
+        buf[buf_pointer + i] = ecss['data'][i]
     data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE -1
     packet_size_ms = data_w_headers  & 0xFF00
     packet_size_ls = data_w_headers  & 0x00FF
     buf[4] = packet_size_ms
     buf[5] = packet_size_ls
     buf_pointer = buf_pointer + data_size
-    
     for i in range(0,buf_pointer):
         buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
+    
     size = buf_pointer + 2
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     return packet_settings.SATR_OK
