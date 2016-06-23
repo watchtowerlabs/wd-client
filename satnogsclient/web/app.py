@@ -70,13 +70,16 @@ def get_control_rx():
     Next, for each item in list, json.dumps(item) will give the ecss dictionary
     """
     ecss_dicts_list = []
-    if packet_list != "":
+    if packet_list:
         for str_dict in packet_list:
             print str_dict
             ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
             ecss_dicts_list.append(ecss_dict)
-
-    return jsonify(ecss_dicts_list);
+        return jsonify(ecss_dicts_list)
+    else:
+        tmp = {}
+        tmp['log_message'] = 'This is a test'
+        return jsonify(tmp)
 
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
@@ -88,7 +91,7 @@ def get_raw():
 def get_command():
     requested_command = request.get_json();
     response = {}
-    response['Response'] = 'This is a test response'
+    response['log_message'] = 'This is a test response'
     if requested_command is not None:
         print 'Command received';
         if 'custom_cmd' in requested_command:
@@ -96,13 +99,14 @@ def get_command():
                 #TODO: Handle the comms_tx_rf request
                 if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off' :
                     packet.comms_off();
-                    response['Response'] = 'COMMS_OFF command sent';
+                    response['log_message'] = 'COMMS_OFF command sent';
+                    response['id'] = 1;
                 elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on' :
                     packet.comms_on();
-                    response['Response'] = 'COMMS_ON command sent';
+                    response['log_message'] = 'COMMS_ON command sent';
+                    response['id'] = 1;
                 return jsonify(response);
         elif 'ecss_cmd' in requested_command:
-            response['Response'] = 'ECSS command send';
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
                     'size' : len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
@@ -114,6 +118,8 @@ def get_command():
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
             print "CMD", requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']
             buf = packet.construct_packet(ecss)
+            response['log_message'] = 'ECSS command send';
+            response['id'] = 1;
             if requested_command['backend'] == 'serial':
                 print "CMD to Serial"
                 serial_handler.write(buf)

@@ -539,17 +539,17 @@ function progressHandlingFunction(e){
     function print_command_response(data) {
       var response_panel = $('#response-panel-body ul');
       var data_type;
-      if (data.hasOwnProperty('Response')) {
+      if (data['id'] == 1) {
         data_type = 'cmd';
-        log_data = data['Response'];
+        log_data = data['log_message'];
       }
-      else if (data.hasOwnProperty('ECSS_RX')) {
+      else if (data['id'] == 2) {
         data_type = 'ecss';
-        log_data = data['ECSS_RX'];
+        log_data = data['log_message'];
       }
       else {
         data_type = 'other';
-        log_data = 'Test Empty';
+        log_data = data['log_message'];
       }
       response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format().toString() + '] ' + log_data + '</li>');
       response_panel.scrollTop = response_panel.scrollHeight;
