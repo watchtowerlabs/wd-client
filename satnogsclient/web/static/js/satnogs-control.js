@@ -1,12 +1,11 @@
-// Initialize status page
 $(document).ready(function() {
 
     setInterval(function(){
-      query_control_backend({}, 'POST', '/control_rx', true);
+      query_control_backend({}, 'POST', '/control_rx', "application/json; charset=utf-8", "json", true);
     }, 10000);
 
     datepicker = $('#datetimepicker1').datetimepicker({
-       format: 'DD/MMM/yyyy hh:mm:ss a',
+       format: 'DD/MMM/YYYY hh:mm:ss a',
     });
     var backend = "gnu-radio";
 
@@ -356,12 +355,11 @@ $(document).ready(function() {
               alert("TLE shouldnt be: " + data.length);
               return 0;
             }
-
         }
 
         if (flag) {
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', true);
+            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
         } else {
             alert('Please fill ' + missing);
         }
@@ -369,12 +367,12 @@ $(document).ready(function() {
 
     $("#comms-tx-on").click(function() {
         request = encode_comms_tx_rf(1);
-        query_control_backend(request, 'POST', '/command', true);
+        query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
     });
 
     $("#comms-tx-off").click(function() {
         request = encode_comms_tx_rf(0);
-        query_control_backend(request, 'POST', '/command', true);
+        query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
     });
 
     $("#time-radio").change(function() {
@@ -389,53 +387,44 @@ $(document).ready(function() {
         }
     });
 
-    $("#datetimepicker1").on({
-        click: function() {
-          $(this).show();
-        },
-        toggle: function() {
-        }
+   $(':file').change(function(){
+      // var file = this.files[0];
+      // var name = file.name;
+      // var size = file.size;
+      // var type = file.type;
+      //Your validation
     });
 
+  $('#upload-btn').click(function(){
+    var formData = new FormData($('form')[0]);
+    $.ajax({
+        url: '/raw',  //Server script to process data
+        type: 'POST',
+        xhr: function() {  // Custom XMLHttpRequest
+            var myXhr = $.ajaxSettings.xhr();
+            if(myXhr.upload){ // Check if upload property exists
+                myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
+            }
+            return myXhr;
+        },
+        //Ajax events
+        // beforeSend: beforeSendHandler,
+        // success: completeHandler,
+        // error: errorHandler,
+        // Form data
+        data: formData.get('file'),
+        //Options to tell jQuery not to process data or worry about content-type.
+        cache: false,
+        contentType: false,
+        processData: false
+    });
+});
 
-    //    $(':file').change(function(){
-    //       // var file = this.files[0];
-    //       // var name = file.name;
-    //       // var size = file.size;
-    //       // var type = file.type;
-    //       //Your validation
-    //   });
-    //
-    //   $(':button').click(function(){
-    //     var formData = new FormData($('form')[0]);
-    //     $.ajax({
-    //         url: '/raw',  //Server script to process data
-    //         type: 'POST',
-    //         xhr: function() {  // Custom XMLHttpRequest
-    //             var myXhr = $.ajaxSettings.xhr();
-    //             if(myXhr.upload){ // Check if upload property exists
-    //                 myXhr.upload.addEventListener('progress',progressHandlingFunction, false); // For handling the progress of the upload
-    //             }
-    //             return myXhr;
-    //         },
-    //         //Ajax events
-    //         // beforeSend: beforeSendHandler,
-    //         // success: completeHandler,
-    //         // error: errorHandler,
-    //         // Form data
-    //         data: formData.get('file'),
-    //         //Options to tell jQuery not to process data or worry about content-type.
-    //         cache: false,
-    //         contentType: false,
-    //         processData: false
-    //     });
-    // });
-    //
-    // function progressHandlingFunction(e){
-    //     if(e.lengthComputable){
-    //         $('progress').attr({value:e.loaded,max:e.total});
-    //     }
-    // }
+function progressHandlingFunction(e){
+    if(e.lengthComputable){
+        $('progress').attr({value:e.loaded,max:e.total});
+    }
+}
 
     //  $("#fileinput").click(function(){
     //     input = document.getElementById('fileinput');
@@ -463,7 +452,7 @@ $(document).ready(function() {
             alert('Invalid command');
             request = false;
         }
-        query_control_backend(request, 'POST', '/command', true);
+        query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
     });
 
     function ascii_to_dec(inc, out) {
@@ -522,42 +511,75 @@ $(document).ready(function() {
     }
 
     function encode_comms_tx_rf(status) {
-        var response = new Object();
-        var custom_cmd = new Object();
-        var comms_tx_rf = new Object();
-        if (status) {
-            custom_cmd.comms_tx_rf = 'comms_on';
-        } else {
-            custom_cmd.comms_tx_rf = 'comms_off';
-        }
-        response.custom_cmd = custom_cmd;
-        console.log(JSON.stringify(response));
-        var json_packet = JSON.stringify(response);
-        return json_packet;
+      var response = new Object();
+      var custom_cmd = new Object();
+      var comms_tx_rf = new Object();
+      if (status) {
+          custom_cmd.comms_tx_rf = 'comms_on';
+      } else {
+          custom_cmd.comms_tx_rf = 'comms_off';
+      }
+      response.custom_cmd = custom_cmd;
+      console.log(JSON.stringify(response));
+      var json_packet = JSON.stringify(response);
+      return json_packet;
     }
 
     function print_command_response(data) {
-      var response_panel = document.getElementById('response-panel-body');
+      var response_panel = $('#response-panel-body ul');
+      var data_type;
       if (data.hasOwnProperty('Response')) {
-        response_panel.innerHTML += '[' + moment().format().toString() + ']: ' + data['Response'];
+        data_type = 'cmd';
+        log_data = data['Response'];
       }
       else if (data.hasOwnProperty('ECSS_RX')) {
-        response_panel.innerHTML += '[' + moment().format().toString() + ']: ' + data['ECSS_RX'];
+        data_type = 'ecss';
+        log_data = data['ECSS_RX'];
       }
-      response_panel.innerHTML += '<br>';
+      else {
+        data_type = 'other';
+        log_data = 'Test Empty';
+      }
+      response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format().toString() + '] ' + log_data + '</li>');
       response_panel.scrollTop = response_panel.scrollHeight;
     }
 
-    function query_control_backend(JSONData, localMode, url, param) {
-        var localJSONData = JSONData;
-        var postMode = localMode;
+    $('#filter-section input').on('change', function() {
+        var itemsToFilter = $('#response-panel-body ul li');
+        for (var i = 0; i < itemsToFilter.length; i++) {
+          var currentItem = itemsToFilter[i];
+          if (currentItem.getAttribute("data-type") == $(this).val()) {
+            if ($(this).is(':checked')) {
+              currentItem.classList.remove('hide-log');
+              currentItem.classList.add('show-log');
+            }
+            else {
+              currentItem.classList.remove('show-log');
+              currentItem.classList.add('hide-log');
+            }
+          }
+        }
+    });
 
+    //A function that returns the appropriate class based on the applied filters
+    function apply_log_filter(log_data_type) {
+      var status = $('#filter-section :input[value=' + log_data_type +']').is(':checked');
+      if (status) {
+        return 'show-log';
+      }
+      else {
+        return 'hide-log';
+      }
+    }
+
+    function query_control_backend(data, post_mode, url, content_type, data_type, process_data) {
         $.ajax({
-            type: postMode,
+            type: post_mode,
             url: url,
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            data: JSONData,
+            contentType: content_type,
+            dataType: data_type,
+            data: data,
+            processData: process_data,
             success: function(data) {
                 print_command_response(data);
             },

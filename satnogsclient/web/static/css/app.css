@@ -84,11 +84,11 @@ body {
 }
 
 #response-panel {
-  margin-top: 10px;
+  height: 500px;
 }
 
 #response-panel-body {
-  height: 120px;
+  height: 400px;
   overflow-y: scroll;
   text-align: left;
 }
@@ -167,6 +167,10 @@ body {
   margin-top: 15px;
 }
 
+/**
+ *  UPLOAD BOX STYLE
+ */
+
 .box {
     font-size: 1.25rem;
     background-color: #fff;
@@ -221,4 +225,25 @@ body {
 
 .box.has-advanced-upload .box__dragndrop {
   display: inline;
+}
+
+/**
+ *  LOG BOX STYLE
+ */
+
+#filter-section {
+  font-size: 10px;
+  background-color: rgb(230, 230, 205);
+  margin-left: 0px;
+}
+
+#filter-section ul {
+  margin-left: 10px;
+}
+
+.show-log {
+    display: list-item;
+}
+.hide-log {
+    display: none;
 }

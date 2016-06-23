@@ -312,7 +312,7 @@
                     </svg>
                     <input type="file" name="files[]" id="file" class="box__file" data-multiple-caption="{count} files selected" multiple="">
                     <label for="file"><strong>Choose a file</strong></label>
-                    <button type="submit" class="btn btn-primary box__button">Upload</button>
+                    <button id="upload-btn" type="submit" class="btn btn-primary box__button">Upload</button>
                   </div>
                   <div class="box__uploading">Uploading…</div>
                   <div class="box__success">Done! <a href="https://css-tricks.com/examples/DragAndDropFileUploading//?submit-on-demand" class="box__restart" role="button">Upload more?</a></div>
@@ -328,7 +328,22 @@
       <div class="col-md-5">
         <div class="panel panel-primary" id="response-panel">
           <div class="panel-heading">Terminal</div>
+          <div id="filter-section">
+            <ul class="list-inline">
+              <li>
+                  <strong>Show:</strong>
+                  <input checked="true" type="checkbox" value="cmd"/>
+                  <label>Command</label>
+              </li>
+              <li>
+                  <input checked="true" type="checkbox" value="other"/>
+                  <label>Other</label>
+              </li>
+            </ul>
+          </div>
           <div class="panel-body" id="response-panel-body">
+            <ul class="list-unstyled" id="log-list">
+            </ul>
           </div>
         </div>
         <div class="panel panel-primary" id="response-panel-wod">
