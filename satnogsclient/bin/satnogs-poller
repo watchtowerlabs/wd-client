@@ -5,8 +5,8 @@ from satnogsclient.settings import (NETWORK_API_QUERY_INTERVAL,
                                     NETWORK_API_POST_INTERVAL)
 from satnogsclient.scheduler import scheduler
 from satnogsclient.scheduler.tasks import get_jobs, post_data, task_feeder , ecss_feeder
-from satnogsclient.observer.serial_handler import read_from_serial
-from satnogsclient.observer.gnuradio_handler import read_from_gnuradio
+from satnogsclient.upsat.serial_handler import read_from_serial
+from satnogsclient.upsat.gnuradio_handler import read_from_gnuradio
 from satnogsclient import settings as client_settings
 from satnogsclient.web.app import app
 import threading

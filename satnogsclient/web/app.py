@@ -4,11 +4,11 @@ from flask import Flask, render_template, request, json, jsonify
 from satnogsclient import settings as client_settings
 from satnogsclient import packet_settings
 from satnogsclient.scheduler import tasks
-from satnogsclient.observer import packet
+from satnogsclient.upsat import packet
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.observer import serial_handler
-from satnogsclient.observer import gnuradio_handler
+from satnogsclient.upsat import serial_handler
+from satnogsclient.upsat import gnuradio_handler
 import logging
 from flask.json import JSONDecoder
 import binascii

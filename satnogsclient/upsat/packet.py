@@ -7,7 +7,7 @@ import ctypes
 from satnogsclient import packet_settings
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.observer import hldlc 
+from satnogsclient.upsat import hldlc 
 
 logger = logging.getLogger('satnogsclient')
 

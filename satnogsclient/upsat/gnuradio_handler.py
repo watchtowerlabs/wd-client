@@ -7,8 +7,8 @@ import cPickle
 from satnogsclient import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.observer import hldlc
-from satnogsclient.observer import packet
+from satnogsclient.upsat import hldlc
+from satnogsclient.upsat import packet
 
 
 logger = logging.getLogger('satnogsclient')

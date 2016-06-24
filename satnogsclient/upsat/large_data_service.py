@@ -1,12 +1,12 @@
 import os
+import traceback
 
-from satnogsclient.observer import packet
 from satnogsclient import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.observer import hldlc
-from satnogsclient.observer import packet
-import traceback
+from satnogsclient.upsat import hldlc
+from satnogsclient.upsat import packet
+
 
 large_data_id = 0
 socket = Udpsocket(('0.0.0.0',client_settings.LD_UPLINK_LISTEN_PORT))

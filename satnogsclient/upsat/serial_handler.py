@@ -7,8 +7,8 @@ import cPickle
 from flask import Flask, render_template, request, json, jsonify
 from satnogsclient import packet_settings
 from satnogsclient import settings as client_settings
-from satnogsclient.observer import hldlc
-from satnogsclient.observer import packet
+from satnogsclient.upsat import hldlc
+from satnogsclient.upsat import packet
 from satnogsclient.observer.udpsocket import Udpsocket
 
 logger = logging.getLogger('satnogsclient')
