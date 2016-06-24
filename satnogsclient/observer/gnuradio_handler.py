@@ -25,7 +25,7 @@ def read_from_gnuradio():
         conn = udp_local_sock.recv()
         buf_in = conn[0]
         ecss_dict = []
-        ret = packet.deconstruct_packet(buf_in, ecss_dict)
+        ret = packet.deconstruct_packet(buf_in, ecss_dict, "gnuradio")
         ecss_dict = ret[0]
         pickled =  cPickle.dumps(ecss_dict)
         if ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:

@@ -167,7 +167,7 @@ def ecss_packetizer(ecss,buf):
     data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE -1
     packet_size_ms = data_w_headers  & 0xFF00
     packet_size_ls = data_w_headers  & 0x00FF
-    buf[4] = packet_size_ms
+    buf[4] = packet_size_ms >> 8
     buf[5] = packet_size_ls
     buf_pointer = buf_pointer + data_size
     for i in range(0,buf_pointer):
@@ -199,20 +199,29 @@ def comms_on():
     d = bytearray(data)
     sock.sendto(d,(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))   
 
-def construct_packet(ecss_dict):
-    out_buf = bytearray(0)
-    packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
-    ecssbuf = bytearray(packet_size)
-    ecss_packetizer(ecss_dict, ecssbuf)
-    hldlc.HLDLC_frame(ecssbuf,out_buf)
+def construct_packet(ecss_dict,backend):
+    print 'ecss to be sent ',ecss_dict
+    if backend == "serial":
+        out_buf = bytearray(0)
+        packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
+        ecssbuf = bytearray(packet_size)
+        ecss_packetizer(ecss_dict, ecssbuf)
+        hldlc.HLDLC_frame(ecssbuf,out_buf)
+    elif backend == "gnuradio":
+        packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
+        out_buf = bytearray(packet_size)
+        ecss_packetizer(ecss_dict, out_buf)
     return out_buf
 
-def deconstruct_packet(buf_in, ecss_dict):
-    hldlc_buf = bytearray(0)
-    hldlc.HLDLC_deframe(buf_in, hldlc_buf)
-    print "HLDLC ", ''.join('{:02x}'.format(x) for x in buf_in)  ," ", ''.join('{:02x}'.format(x) for x in hldlc_buf)
-    res = ecss_depacketizer(hldlc_buf,ecss_dict)
-    print "the result is ", res
+def deconstruct_packet(buf_in, ecss_dict , backend):
+    if backend == 'serial':
+        hldlc_buf = bytearray(0)
+        hldlc.HLDLC_deframe(buf_in, hldlc_buf)
+        print "HLDLC ", ''.join('{:02x}'.format(x) for x in buf_in)  ," ", ''.join('{:02x}'.format(x) for x in hldlc_buf)
+        res = ecss_depacketizer(hldlc_buf,ecss_dict)
+        print "the result is ", res
+    elif backend == 'gnuradio':
+        res = ecss_depacketizer(buf_in,ecss_dict)
     return res
     
     

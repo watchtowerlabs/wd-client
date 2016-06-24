@@ -32,7 +32,7 @@ def read_from_serial():
             elif len(buf_in) > 1 and buf_in[len(buf_in) - 1] == 0x7E:
                 print "From serial got pkt", ''.join('{:02x}'.format(x) for x in buf_in) 
                 ecss_dict = []
-                ret = packet.deconstruct_packet(buf_in, ecss_dict)
+                ret = packet.deconstruct_packet(buf_in, ecss_dict,"serial")
                 ecss_dict = ret[0]
                 pickled =  cPickle.dumps(ecss_dict)
                 if ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:

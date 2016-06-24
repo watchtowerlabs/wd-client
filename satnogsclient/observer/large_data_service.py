@@ -6,6 +6,7 @@ from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.observer import hldlc
 from satnogsclient.observer import packet
+import traceback
 
 large_data_id = 0
 """
@@ -13,19 +14,20 @@ All packets have at the first byte of data the large data id or only the first?
 """
 
 
-socket = Udpsocket(('127.0.0.1',client_settings.LD_UPLINK_LISTEN_PORT))
+socket = Udpsocket(('0.0.0.0',client_settings.LD_UPLINK_LISTEN_PORT))
 gnuradio_sock = Udpsocket([]) #Gnuradio's udp listen port
 
 def uplink(filename, info):
+    filename = "/home/sleepwalker/Documents/large.txt"
     buf = bytearray(0)
-    fo = open(filename, "wb")
-    available_data_len = packet_settings.MAX_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE
+    fo = open(filename, "rb")
+    available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE - 3
     file_size = os.stat(filename)[6]  # get size of file
     remaining_bytes = file_size
     total_packets = file_size +1 / available_data_len
     if file_size+1 % available_data_len >0:
         total_packets = total_packets + 1
-    packet_count = 0 
+    packet_count = 0
     data_size = 0
     while remaining_bytes > 0:
         if remaining_bytes >= available_data_len:
@@ -34,44 +36,57 @@ def uplink(filename, info):
         else:
             data_size = remaining_bytes
             remaining_bytes = 0
+        buf = bytearray(fo.read(data_size))
+        packet_count_ms = packet_count  & 0xFF00
+        packet_count_ls = packet_count  & 0x00FF
+        buf.insert(0,large_data_id)
+        buf.insert(0,packet_count_ls )
+        buf.insert(0,packet_count_ms >> 8)
+        
         if packet_count == 0:
-            ser_subtype = packet_settings.TC_LD_FIRST_UPLINK
-            data_size = data_size -1
-            remaining_bytes = remaining_bytes +1
-            buf = bytearray(fo.read(data_size))
-            buf.insert(0,large_data_id)
+            ser_subtype = packet_settings.TC_LD_FIRST_UPLINK     
         elif packet_count == total_packets - 1:
             ser_subtype = packet_settings.TC_LD_LAST_UPLINK
-            buf = bytearray(fo.read(data_size))
         else:
             ser_subtype = packet_settings.TC_LD_INT_UPLINK
-            buf = bytearray(fo.read(data_size))
         ecss ={'type': 1,
-             'app_id': info['app_id'],
+             'app_id': 4,
              'size': data_size,
              'ack': 1,
              'ser_type': packet_settings.TC_LARGE_DATA_SERVICE,
              'ser_subtype':ser_subtype,
-             'dest_id': info['dest_id'],
+             'dest_id': 6,
              'data': buf,
              'seq_count' : packet_count
              }
-        hldlc_buf = bytearray(0)
-        packet.construct_packet(ecss, hldlc_buf)
+        hldlc_buf = packet.construct_packet(ecss,'gnuradio')
         gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT))
         got_ack = 0
         retries = 0
-        while retries <3 or got_ack == 0:
+        while (retries < 30) and (got_ack == 0):
+            print ' retries = ',retries, 'got ack = ',got_ack
             try:
+                print 'WAITING TO RECEIVE ACK!!!!'
                 ack = socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
-                ecss_dict = []
-                packet.deconstruct_packet(buf_in, ecss_dict)
-                if ecss_dict['seq_count'] == packet_count:
-                    got_ack = 1
+                ret = packet.deconstruct_packet(bytearray(ack[0]), [],'gnuradio')
+                ecss_dict = ret[0]
+                print ecss_dict['data'][0], '    ', hex(packet_count)
+                if hex(ord(ecss_dict['data'][0])) == hex(large_data_id):
+                    print 'Seq count = ',(ecss_dict['data'][1] << 8) | ecss_dict['data'][2]
+                    if ((ecss_dict['data'][1] << 8) | ecss_dict['data'][2]) == packet_count:
+                        got_ack = 1
+                        print 'Got the right ack!!!!'
+                    else:
+                        gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT)) # Resend previous frame
+                        retries = retries + 1
+                        print ' Got wrong sequence number ack'
                 else:
-                    gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT)) # Resend previous frame
+                    print 'Wrond large data id'
                     retries = retries + 1
-            except:
+            except Exception,e: 
+                traceback.print_exc()
+                print str(e)
+                gnuradio_sock.sendto(hldlc_buf,(client_settings.GNURADIO_IP,client_settings.GNURADIO_UDP_PORT))
                 retries = retries + 1
                 print 'Timeout'
         if got_ack == 1:
