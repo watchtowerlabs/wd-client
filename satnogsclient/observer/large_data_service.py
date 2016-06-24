@@ -9,13 +9,9 @@ from satnogsclient.observer import packet
 import traceback
 
 large_data_id = 0
-"""
-All packets have at the first byte of data the large data id or only the first?
-"""
-
-
 socket = Udpsocket(('0.0.0.0',client_settings.LD_UPLINK_LISTEN_PORT))
 gnuradio_sock = Udpsocket([]) #Gnuradio's udp listen port
+
 
 def uplink(filename, info):
     filename = "/home/sleepwalker/Documents/large.txt"
@@ -24,8 +20,8 @@ def uplink(filename, info):
     available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE - 3
     file_size = os.stat(filename)[6]  # get size of file
     remaining_bytes = file_size
-    total_packets = file_size +1 / available_data_len
-    if file_size+1 % available_data_len >0:
+    total_packets = file_size / available_data_len
+    if file_size % available_data_len >0:
         total_packets = total_packets + 1
     packet_count = 0
     data_size = 0
@@ -71,9 +67,9 @@ def uplink(filename, info):
                 ret = packet.deconstruct_packet(bytearray(ack[0]), [],'gnuradio')
                 ecss_dict = ret[0]
                 print ecss_dict['data'][0], '    ', hex(packet_count)
-                if hex(ord(ecss_dict['data'][0])) == hex(large_data_id):
-                    print 'Seq count = ',(ecss_dict['data'][1] << 8) | ecss_dict['data'][2]
-                    if ((ecss_dict['data'][1] << 8) | ecss_dict['data'][2]) == packet_count:
+                if hex(ord(ecss_dict['data'][2])) == hex(large_data_id):
+                    print 'Seq count = ',(ecss_dict['data'][0] << 8) | ecss_dict['data'][1]
+                    if ((ecss_dict['data'][0] << 8) | ecss_dict['data'][1]) == packet_count:
                         got_ack = 1
                         print 'Got the right ack!!!!'
                     else:

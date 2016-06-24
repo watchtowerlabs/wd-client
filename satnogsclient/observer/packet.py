@@ -145,6 +145,7 @@ def ecss_packetizer(ecss,buf):
     app_id = ecss['app_id']
     app_id_ms = app_id & 0xFF00
     app_id_ls = app_id & 0x00FF
+    app_id_ms = app_id_ms >> 8
     buf[0] = ( packet_settings.ECSS_VER_NUMBER << 5 | ecss['type'] 
                << 4 | packet_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
     buf[1] = app_id_ls
@@ -152,6 +153,7 @@ def ecss_packetizer(ecss,buf):
     seq_count = ecss['seq_count']
     seq_count_ms = seq_count & 0xFF00
     seq_count_ls = seq_count & 0x00FF
+    seq_count_ms = seq_count >> 8 
     buf[2] = (seq_flags << 6 | seq_count_ms)
     buf[3] = seq_count_ls
     if ecss['type'] == 0 :
