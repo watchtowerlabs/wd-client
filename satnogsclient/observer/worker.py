@@ -37,6 +37,7 @@ class Worker:
 
     observer_dict = {}
     satellite_dict = {}
+
     def __init__(self, ip, port, time_to_stop=None, frequency=None):
         """Initialize worker class."""
         self._IP = ip
