@@ -10,7 +10,7 @@ from satnogsclient.upsat import packet
 
 large_data_id = 0
 socket = Udpsocket(('0.0.0.0', client_settings.LD_UPLINK_LISTEN_PORT))
-gnuradio_sock = Udpsocket([]) #Gnuradio's udp listen port
+gnuradio_sock = Udpsocket([])  # Gnuradio's udp listen port
 
 
 def uplink(filename, info):
@@ -73,7 +73,7 @@ def uplink(filename, info):
                         got_ack = 1
                         print 'Got the right ack!!!!'
                     else:
-                        gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT)) # Resend previous frame
+                        gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))  # Resend previous frame
                         retries = retries + 1
                         print ' Got wrong sequence number ack'
                 else:

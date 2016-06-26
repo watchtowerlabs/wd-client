@@ -27,9 +27,9 @@ def get_status_info():
     current_pass_json['tle0'] = 'NA'
     current_pass_json['tle1'] = 'NA'
     current_pass_json['tle2'] = 'NA'
-    #current_pass_json = jsonify(current_pass_json)
+    # current_pass_json = jsonify(current_pass_json)
     scheduled_pass_json['Info'] = 'There are no scheduled observations.'
-    #scheduled_pass_json = jsonify(scheduled_pass_json)
+    # scheduled_pass_json = jsonify(scheduled_pass_json)
 
     current_pass_sock = Commsocket('127.0.0.1', client_settings.CURRENT_PASS_TCP_PORT)
     scheduled_pass_sock = Commsocket('127.0.0.1', client_settings.TASK_FEEDER_TCP_PORT)
@@ -49,7 +49,7 @@ def get_status_info():
     else:
         print 'No observations currently'
 
-    #return current_pass_json
+    # return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
 
@@ -98,7 +98,7 @@ def get_command():
         print 'Command received';
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
-                #TODO: Handle the comms_tx_rf request
+                # TODO: Handle the comms_tx_rf request
                 if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
                     packet.comms_off();
                     response['log_message'] = 'COMMS_OFF command sent';
@@ -114,16 +114,16 @@ def get_command():
                     'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'seq_count': 0,
                     'ser_type': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
-                    'ser_subtype': 1,#int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
+                    'ser_subtype': 1,  # int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
                     'data': map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'dest_id': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
             print "CMD", requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']
 
-            #check if ui wants a specific seq count
+            # check if ui wants a specific seq count
             if 'SequenceCount' in requested_command['ecss_cmd']['PacketHeader']['PacketSequenceControl']:
                 print "seq count from ui"
-            #store packet for response check
+            # store packet for response check
             if ecss['ack'] == '1':
                 print "storing packet for verification"
 
@@ -135,7 +135,7 @@ def get_command():
                 serial_handler.write(buf)
             else:
                 gnuradio_handler.write(buf)
-            #else gnu radio
+            # else gnu radio
             return jsonify(response);
     return render_template('control.j2')
 

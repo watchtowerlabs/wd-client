@@ -13,9 +13,9 @@ from satnogsclient.upsat import packet
 
 logger = logging.getLogger('satnogsclient')
 
-backend_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_LISTENER_PORT)) # Port in which client listens for frames from gnuradio
+backend_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_LISTENER_PORT))  # Port in which client listens for frames from gnuradio
 ui_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_FEEDER_PORT))
-ecss_feeder_sock = Udpsocket([]) # The socket with which we communicate with the ecss feeder thread
+ecss_feeder_sock = Udpsocket([])  # The socket with which we communicate with the ecss feeder thread
 backend_feeder_sock = Udpsocket([])
 ld_socket = Udpsocket([])
 

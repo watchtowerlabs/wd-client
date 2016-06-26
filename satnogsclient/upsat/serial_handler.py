@@ -12,8 +12,8 @@ from satnogsclient.upsat import packet
 from satnogsclient.observer.udpsocket import Udpsocket
 
 logger = logging.getLogger('satnogsclient')
-#port = serial.Serial(client_settings.SERIAL_PORT, baudrate=9600, timeout=1.0)
-ecss_feeder_sock = Udpsocket([]) # The socket with which we communicate with the ecss feeder thread
+# port = serial.Serial(client_settings.SERIAL_PORT, baudrate=9600, timeout=1.0)
+ecss_feeder_sock = Udpsocket([])  # The socket with which we communicate with the ecss feeder thread
 ui_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_FEEDER_PORT))
 ld_socket = Udpsocket([])
 
@@ -31,7 +31,7 @@ def read_from_serial():
     buf_in = bytearray(0)
     while True:
         c = port.read()
-        #print "From serial port read"
+        # print "From serial port read"
         if len(c) != 0:
             buf_in.append(c)
             if len(buf_in) == 1 and buf_in[0] != 0x7E:

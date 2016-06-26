@@ -47,7 +47,7 @@ def ecss_depacketizer(buf, dict_out):
     t[0] = buf[2]
     t[1] = buf[3]
     t.reverse()
-    #pkt_seq_count = t & 0x3FFF;
+    # pkt_seq_count = t & 0x3FFF;
     pkt_seq_count = (((t[0] & 0x3FF) << 8) | (t[1] & 0xFF))
 
     pkt_len = (buf[4] << 8) | buf[5]

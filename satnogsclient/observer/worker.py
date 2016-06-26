@@ -114,7 +114,7 @@ class Worker:
 
     def _status_interface(self, port):
         sock = Commsocket('127.0.0.1', port)
-        #sock.get_sock().bind(('127.0.0.1',port))
+        # sock.get_sock().bind(('127.0.0.1',port))
         sock.bind()
         sock.listen()
         while self.is_alive:
