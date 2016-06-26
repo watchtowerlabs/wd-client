@@ -64,7 +64,7 @@ def ecss_depacketizer(buf, dict_out):
 
     pkt_verification_state = packet_settings.SATR_PKT_INIT
 
-    if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True) :
+    if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True):
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_APPID
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_APPID)
 
@@ -75,43 +75,43 @@ def ecss_depacketizer(buf, dict_out):
 
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1;
 
-    if not ((tmp_crc1 == tmp_crc2) == True) :
+    if not ((tmp_crc1 == tmp_crc2) == True):
         pkt_verification_state = packet_settings.SATR_PKT_INC_CRC
         return (dict_out, packet_settings.SATR_PKT_INC_CRC)
 
-    if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True) :
+    if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True):
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_PKT_TP
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_PKT_TP)
 
-    if not ((ver == packet_settings.ECSS_VER_NUMBER) == True) :
+    if not ((ver == packet_settings.ECSS_VER_NUMBER) == True):
         pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((tc_pus == packet_settings.ECSS_PUS_VER) == True) :
+    if not ((tc_pus == packet_settings.ECSS_PUS_VER) == True):
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == True) :
+    if not ((ccsds_sec_hdr == packet_settings.ECSS_SEC_HDR_FIELD_FLG) == True):
         print "INV HDR FIELD", ccsds_sec_hdr
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((pkt_type == packet_settings.TC or pkt_type == packet_settings.TM) == True) :
+    if not ((pkt_type == packet_settings.TC or pkt_type == packet_settings.TM) == True):
         print "INV TYPE", pkt_type
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True) :
+    if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True):
         pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == True) :
+    if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == True):
         pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
-    if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True) :
+    if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True):
         pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
     pkt_data = bytes(pkt_len)
 
-    pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size - 2]
+    pkt_data = buf[packet_settings.ECSS_DATA_OFFSET: size - 2]
     dict_out = {'type': pkt_type,
              'app_id': pkt_app_id,
              'size': pkt_len,
@@ -146,7 +146,7 @@ def ecss_packetizer(ecss, buf):
     app_id_ms = app_id & 0xFF00
     app_id_ls = app_id & 0x00FF
     app_id_ms = app_id_ms >> 8
-    buf[0] = ( packet_settings.ECSS_VER_NUMBER << 5 | ecss['type']
+    buf[0] = (packet_settings.ECSS_VER_NUMBER << 5 | ecss['type']
                << 4 | packet_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
     buf[1] = app_id_ls
     seq_flags = packet_settings.TC_TM_SEQ_SPACKET
@@ -156,10 +156,10 @@ def ecss_packetizer(ecss, buf):
     seq_count_ms = seq_count >> 8
     buf[2] = (seq_flags << 6 | seq_count_ms)
     buf[3] = seq_count_ls
-    if ecss['type'] == 0 :
-        buf[6] = packet_settings.ECSS_PUS_VER << 4 ;
-    elif ecss['type'] == 1 :
-        buf[6] = ( packet_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | packet_settings.ECSS_PUS_VER << 4 | ecss['ack']);
+    if ecss['type'] == 0:
+        buf[6] = packet_settings.ECSS_PUS_VER << 4;
+    elif ecss['type'] == 1:
+        buf[6] = (packet_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | packet_settings.ECSS_PUS_VER << 4 | ecss['ack']);
     buf[7] = ecss['ser_type']
     buf[8] = ecss['ser_subtype']
     buf[9] = ecss['dest_id']

@@ -96,11 +96,11 @@ def get_command():
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
                 #TODO: Handle the comms_tx_rf request
-                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off' :
+                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
                     packet.comms_off();
                     response['log_message'] = 'COMMS_OFF command sent';
                     response['id'] = 1;
-                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on' :
+                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
                     packet.comms_on();
                     response['log_message'] = 'COMMS_ON command sent';
                     response['id'] = 1;
@@ -108,12 +108,12 @@ def get_command():
         elif 'ecss_cmd' in requested_command:
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
-                    'size' : len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
-                    'seq_count' : 0,
-                    'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
-                    'ser_subtype' : 1,#int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
-                    'data' : map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
-                    'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
+                    'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
+                    'seq_count': 0,
+                    'ser_type': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
+                    'ser_subtype': 1,#int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
+                    'data': map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
+                    'dest_id': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
             print "CMD", requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']
 

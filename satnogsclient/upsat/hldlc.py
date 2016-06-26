@@ -9,7 +9,7 @@ def HLDLC_deframe(buf_in, buf_out):
     assert(len(buf_in) <= packet_settings.UART_BUF_SIZE)
     size = len(buf_in)
     cnt = 0
-    for i in range(1, size) :
+    for i in range(1, size):
         if hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_START_FLAG):
             return packet_settings.SATR_EOT;
         elif hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_CONTROL_FLAG):
@@ -37,8 +37,8 @@ def HLDLC_frame(buf_in, buf_out):
     cnt = 2;
     size = len(buf_in)
 
-    for i in range(0, size) :
-        if i == 0 :
+    for i in range(0, size):
+        if i == 0:
             buf_out.append(packet_settings.HLDLC_START_FLAG)
             buf_out.append(buf_in[0])
         elif i == size - 1:

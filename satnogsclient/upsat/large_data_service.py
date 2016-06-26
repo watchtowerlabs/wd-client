@@ -53,7 +53,7 @@ def uplink(filename, info):
              'ser_subtype': ser_subtype,
              'dest_id': 6,
              'data': buf,
-             'seq_count' : packet_count
+             'seq_count': packet_count
              }
         hldlc_buf = packet.construct_packet(ecss, 'gnuradio')
         gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))

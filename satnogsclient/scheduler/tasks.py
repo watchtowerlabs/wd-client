@@ -307,7 +307,7 @@ def kill_cmd_ctrl_proc():
         status.BACKEND_RX_PID = 0
 
 def kill_netw_proc():
-    if status.TASK_FEEDER_PID != 0 :
+    if status.TASK_FEEDER_PID != 0:
         os.kill(status.TASK_FEEDER_PID, signal.SIGTERM)
         status.TASK_FEEDER_PID = 0
     scheduler.remove_all_jobs()
