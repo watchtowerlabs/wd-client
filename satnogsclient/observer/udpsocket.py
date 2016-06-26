@@ -9,7 +9,7 @@ logger = logging.getLogger('satnogsclient')
 class Udpsocket:
     """
     Class for handling udp sockets
-    
+
     """
 
     _BUFFER_SIZE = 2048
