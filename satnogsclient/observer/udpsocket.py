@@ -27,8 +27,6 @@ class Udpsocket:
             self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
             self.s.bind((self._UDP_IP, self._UDP_PORT))
 
-
-
     @property
     def ip(self):
         return self._UDP_IP

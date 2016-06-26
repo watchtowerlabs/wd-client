@@ -141,7 +141,6 @@ class Worker:
             self.trackstop()
 
 
-
 class WorkerTrack(Worker):
     def send_to_socket(self, p, sock):
         # Read az/alt and convert to radians

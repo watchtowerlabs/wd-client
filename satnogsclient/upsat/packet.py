@@ -12,7 +12,6 @@ from satnogsclient.upsat import hldlc
 logger = logging.getLogger('satnogsclient')
 
 
-
 def ecss_encoder(port):
     logger.info('Started ecss encoder')
     sock = Commsocket('127.0.0.1', port)
@@ -67,7 +66,6 @@ def ecss_depacketizer(buf, dict_out):
     if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True):
         pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_APPID
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_APPID)
-
 
     if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
         print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1
@@ -134,7 +132,6 @@ def ecss_decoder(port):
         if conn:
             data = conn.recv(sock.tasks_buffer_size)
             ecss_depacketizer(data)
-
 
 
 def ecss_packetizer(ecss, buf):

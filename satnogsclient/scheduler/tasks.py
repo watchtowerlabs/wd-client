@@ -26,7 +26,6 @@ from satnogsclient.upsat.gnuradio_handler import write_to_gnuradio, read_from_gn
 from time import sleep
 
 
-
 logger = logging.getLogger('satnogsclient')
 
 
@@ -123,7 +122,6 @@ def get_jobs():
     logger.debug('Headers: {0}'.format(headers))
     logger.info('Trying to GET observation jobs from the network')
     response = requests.get(url, params=params, headers=headers, verify=settings.VERIFY_SSL)
-
 
     if not response.status_code == 200:
         raise Exception('Status code: {0} on request: {1}'.format(response.status_code, url))
