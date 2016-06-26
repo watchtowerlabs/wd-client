@@ -85,29 +85,29 @@ def get_control_rx():
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
     with open('/home/ctriant/hope', 'wb') as file_:
-        file_.write(request.get_data());
-    return request.get_data();
+        file_.write(request.get_data())
+    return request.get_data()
 
 
 @app.route('/command', methods=['GET', 'POST'])
 def get_command():
-    requested_command = request.get_json();
+    requested_command = request.get_json()
     response = {}
     response['log_message'] = 'This is a test response'
     if requested_command is not None:
-        print 'Command received';
+        print 'Command received'
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
                 # TODO: Handle the comms_tx_rf request
                 if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
-                    packet.comms_off();
-                    response['log_message'] = 'COMMS_OFF command sent';
-                    response['id'] = 1;
+                    packet.comms_off()
+                    response['log_message'] = 'COMMS_OFF command sent'
+                    response['id'] = 1
                 elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
-                    packet.comms_on();
-                    response['log_message'] = 'COMMS_ON command sent';
-                    response['id'] = 1;
-                return jsonify(response);
+                    packet.comms_on()
+                    response['log_message'] = 'COMMS_ON command sent'
+                    response['id'] = 1
+                return jsonify(response)
         elif 'ecss_cmd' in requested_command:
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
@@ -128,15 +128,15 @@ def get_command():
                 print "storing packet for verification"
 
             buf = packet.construct_packet(ecss)
-            response['log_message'] = 'ECSS command send';
-            response['id'] = 1;
+            response['log_message'] = 'ECSS command send'
+            response['id'] = 1
             if requested_command['backend'] == 'serial':
                 print "CMD to Serial"
                 serial_handler.write(buf)
             else:
                 gnuradio_handler.write(buf)
             # else gnu radio
-            return jsonify(response);
+            return jsonify(response)
     return render_template('control.j2')
 
 

@@ -12,7 +12,7 @@ def HLDLC_deframe(buf_in, buf_out):
     cnt = 0
     for i in range(1, size):
         if hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_START_FLAG):
-            return packet_settings.SATR_EOT;
+            return packet_settings.SATR_EOT
         elif hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_CONTROL_FLAG):
             i = i + 1
             if not (i < size - 1) == True:
@@ -26,9 +26,9 @@ def HLDLC_deframe(buf_in, buf_out):
             else:
                 return packet_settings.SATR_ERROR
         else:
-            buf_out.append(buf_in[i]);
+            buf_out.append(buf_in[i])
             cnt = cnt + 1
-    return packet_settings.SATR_ERROR;
+    return packet_settings.SATR_ERROR
 
 
 def HLDLC_frame(buf_in, buf_out):
@@ -36,7 +36,7 @@ def HLDLC_frame(buf_in, buf_out):
     assert((buf_in != 0) and (buf_out != 0))
     assert(len(buf_in) <= packet_settings.MAX_PKT_SIZE)
 
-    cnt = 2;
+    cnt = 2
     size = len(buf_in)
 
     for i in range(0, size):
@@ -46,7 +46,7 @@ def HLDLC_frame(buf_in, buf_out):
         elif i == size - 1:
             if buf_in[i] == packet_settings.HLDLC_START_FLAG:
                 buf_out.append(packet_settings.HLDLC_CONTROL_FLAG)
-                buf_out.append(0x5E);
+                buf_out.append(0x5E)
             elif buf_in[i] == packet_settings.HLDLC_CONTROL_FLAG:
                 buf_out.append(packet_settings.HLDLC_CONTROL_FLAG)
                 buf_out.append(0x5D)
@@ -62,4 +62,4 @@ def HLDLC_frame(buf_in, buf_out):
             buf_out.append(0x5D)
         else:
             buf_out.append(buf_in[i])
-    return packet_settings.SATR_ERROR;
+    return packet_settings.SATR_ERROR

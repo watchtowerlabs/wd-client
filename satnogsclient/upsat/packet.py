@@ -30,19 +30,19 @@ def ecss_depacketizer(buf, dict_out):
     assert((buf != 0) == True)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     print "I should see that"
-    tmp_crc1 = buf[size - 1];
+    tmp_crc1 = buf[size - 1]
     tmp_crc2 = 0
     for i in range(0, size - 2):
         tmp_crc2 = tmp_crc2 ^ buf[i]
 
-    ver = buf[0] >> 5;
+    ver = buf[0] >> 5
 
-    pkt_type = (buf[0] >> 4) & 0x01;
-    dfield_hdr = (buf[0] >> 3) & 0x01;
+    pkt_type = (buf[0] >> 4) & 0x01
+    dfield_hdr = (buf[0] >> 3) & 0x01
 
-    pkt_app_id = buf[1];
+    pkt_app_id = buf[1]
 
-    pkt_seq_flags = buf[2] >> 6;
+    pkt_seq_flags = buf[2] >> 6
     t = bytearray(2)
     t[0] = buf[2]
     t[1] = buf[3]
@@ -52,15 +52,15 @@ def ecss_depacketizer(buf, dict_out):
 
     pkt_len = (buf[4] << 8) | buf[5]
 
-    ccsds_sec_hdr = buf[6] >> 7;
+    ccsds_sec_hdr = buf[6] >> 7
 
-    tc_pus = buf[6] >> 4;
+    tc_pus = buf[6] >> 4
 
-    pkt_ack = 0x07 & buf[6];
+    pkt_ack = 0x07 & buf[6]
 
-    pkt_ser_type = buf[7];
-    pkt_ser_subtype = buf[8];
-    pkt_dest_id = buf[9];
+    pkt_ser_type = buf[7]
+    pkt_ser_subtype = buf[8]
+    pkt_dest_id = buf[9]
 
     pkt_verification_state = packet_settings.SATR_PKT_INIT
 
@@ -72,7 +72,7 @@ def ecss_depacketizer(buf, dict_out):
         print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1
         return (dict_out, packet_settings.SATR_PKT_INV_LEN)
 
-    pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1;
+    pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1
 
     if not ((tmp_crc1 == tmp_crc2) == True):
         pkt_verification_state = packet_settings.SATR_PKT_INC_CRC
@@ -146,7 +146,7 @@ def ecss_packetizer(ecss, buf):
     app_id_ls = app_id & 0x00FF
     app_id_ms = app_id_ms >> 8
     buf[0] = (packet_settings.ECSS_VER_NUMBER << 5 | ecss['type']
-               << 4 | packet_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms);
+               << 4 | packet_settings.ECSS_DATA_FIELD_HDR_FLG << 3 | app_id_ms)
     buf[1] = app_id_ls
     seq_flags = packet_settings.TC_TM_SEQ_SPACKET
     seq_count = ecss['seq_count']
@@ -156,9 +156,9 @@ def ecss_packetizer(ecss, buf):
     buf[2] = (seq_flags << 6 | seq_count_ms)
     buf[3] = seq_count_ls
     if ecss['type'] == 0:
-        buf[6] = packet_settings.ECSS_PUS_VER << 4;
+        buf[6] = packet_settings.ECSS_PUS_VER << 4
     elif ecss['type'] == 1:
-        buf[6] = (packet_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | packet_settings.ECSS_PUS_VER << 4 | ecss['ack']);
+        buf[6] = (packet_settings.ECSS_SEC_HDR_FIELD_FLG << 7 | packet_settings.ECSS_PUS_VER << 4 | ecss['ack'])
     buf[7] = ecss['ser_type']
     buf[8] = ecss['ser_subtype']
     buf[9] = ecss['dest_id']
