@@ -36,7 +36,7 @@ def read_from_gnuradio():
         ecss_dict = []
         ret = packet.deconstruct_packet(buf_in, ecss_dict, "gnuradio")
         ecss_dict = ret[0]
-        pickled =  cPickle.dumps(ecss_dict)
+        pickled = cPickle.dumps(ecss_dict)
         if ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:
             ld_socket.sendto(pickled, ('127.0.0.1', client_settings.LD_UPLINK_LISTEN_PORT))
         else:
