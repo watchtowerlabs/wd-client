@@ -18,8 +18,8 @@ def HLDLC_deframe(buf_in, buf_out):
             if not (i < size - 1) == True:
                 return packet_settings.SATR_ERROR
             if hex(ord(buf_in[i])) == hex(0x5E):
-                 buf_out.append(0x7E)
-                 cnt = cnt + 1
+                buf_out.append(0x7E)
+                cnt = cnt + 1
             elif hex(ord(buf_in[i])) == hex(0x5D):
                 buf_out.append(0x7D)
                 cnt = cnt + 1

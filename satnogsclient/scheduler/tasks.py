@@ -225,12 +225,12 @@ def ecss_listener(port, queue):
     logger.info('Started ecss listener')
     sock = Udpsocket(('127.0.0.1', port))
     while 1:
-            conn = sock.recv()
-            data = conn[0]
-            if not queue.empty():
-                queue.put(data)
-            else:
-                queue.put(data)
+        conn = sock.recv()
+        data = conn[0]
+        if not queue.empty():
+            queue.put(data)
+        else:
+            queue.put(data)
 
 
 def status_listener():
