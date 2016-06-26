@@ -23,6 +23,7 @@ def ecss_encoder(port):
             data = conn.recv(sock.tasks_buffer_size)
             ecss_packetizer(data)
 
+
 def ecss_depacketizer(buf, dict_out):
     size = len(buf)
     print binascii.hexlify(buf)
@@ -122,6 +123,7 @@ def ecss_depacketizer(buf, dict_out):
     print "I should see that also", dict_out
     return (dict_out, packet_settings.SATR_OK)
 
+
 def ecss_decoder(port):
     logger.info('Started ecss decoder')
     sock = Commsocket('127.0.0.1', port)
@@ -176,6 +178,7 @@ def ecss_packetizer(ecss, buf):
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     return packet_settings.SATR_OK
 
+
 def comms_off():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
@@ -187,6 +190,7 @@ def comms_off():
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
+
 def comms_on():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
@@ -197,6 +201,7 @@ def comms_on():
     struct.pack_into("<I", data, 21, 0xa94ee2d3)
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
+
 
 def construct_packet(ecss_dict, backend):
     print 'ecss to be sent ', ecss_dict
@@ -211,6 +216,7 @@ def construct_packet(ecss_dict, backend):
         out_buf = bytearray(packet_size)
         ecss_packetizer(ecss_dict, out_buf)
     return out_buf
+
 
 def deconstruct_packet(buf_in, ecss_dict, backend):
     if backend == 'serial':

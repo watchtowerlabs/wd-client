@@ -201,6 +201,7 @@ def task_listener(port, queue):
             else:
                 queue.put(data)
 
+
 def ecss_feeder(port1, port2):
     sleep(1)
     logger.info('Started ecss feeder')
@@ -230,6 +231,7 @@ def ecss_listener(port, queue):
                 queue.put(data)
             else:
                 queue.put(data)
+
 
 def status_listener():
     logger.info('Started upsat status listener')
@@ -295,6 +297,7 @@ def status_listener():
                 tf.start()
                 status.TASK_FEEDER_PID = tf.pid
 
+
 def kill_cmd_ctrl_proc():
     if status.BACKEND_TX_PID != 0:
         os.kill(status.BACKEND_TX_PID, signal.SIGTERM)
@@ -304,11 +307,13 @@ def kill_cmd_ctrl_proc():
         os.kill(status.BACKEND_RX_PID, signal.SIGTERM)
         status.BACKEND_RX_PID = 0
 
+
 def kill_netw_proc():
     if status.TASK_FEEDER_PID != 0:
         os.kill(status.TASK_FEEDER_PID, signal.SIGTERM)
         status.TASK_FEEDER_PID = 0
     scheduler.remove_all_jobs()
+
 
 def add_observation(obj):
     start = parser.parse(obj['start'])

@@ -17,12 +17,14 @@ ecss_feeder_sock = Udpsocket([]) # The socket with which we communicate with the
 ui_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_FEEDER_PORT))
 ld_socket = Udpsocket([])
 
+
 def write_to_serial():
     logger = logging.info('Started serial ui listener process')
     while True:
         conn = ui_listener_sock.recv()
         buf = conn[0]
         port.write(buf)
+
 
 def read_from_serial():
     print 'Started serial listener process'

@@ -3,6 +3,7 @@ from satnogsclient.upsat import packet_settings
 import socket
 import binascii
 
+
 def HLDLC_deframe(buf_in, buf_out):
     assert((buf_in != 0) and (buf_out != 0))
     assert(hex(ord(buf_in[0])) == hex(packet_settings.HLDLC_START_FLAG))
@@ -28,6 +29,7 @@ def HLDLC_deframe(buf_in, buf_out):
             buf_out.append(buf_in[i]);
             cnt = cnt + 1
     return packet_settings.SATR_ERROR;
+
 
 def HLDLC_frame(buf_in, buf_out):
 

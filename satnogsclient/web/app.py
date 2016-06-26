@@ -52,6 +52,7 @@ def get_status_info():
     #return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
+
 @app.route('/control_rx', methods=['GET', 'POST'])
 def get_control_rx():
     sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
@@ -80,11 +81,13 @@ def get_control_rx():
         tmp['log_message'] = 'This is a test'
         return jsonify(tmp)
 
+
 @app.route('/raw', methods=['GET', 'POST'])
 def get_raw():
     with open('/home/ctriant/hope', 'wb') as file_:
         file_.write(request.get_data());
     return request.get_data();
+
 
 @app.route('/command', methods=['GET', 'POST'])
 def get_command():
@@ -141,6 +144,7 @@ def get_command():
 def status():
     '''View status satnogs-client.'''
     return render_template('status.j2')
+
 
 @app.route('/control/')
 def control():
