@@ -17,7 +17,6 @@ import requests
 from satnogsclient import settings
 from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
-from satnogsclient.scheduler import scheduler
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import upsat_status_settings as status
@@ -130,7 +129,7 @@ def get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
 
-    sock = Commsocket('127.0.0.1', client_settings.TASK_LISTENER_TCP_PORT)
+    sock = Commsocket('127.0.0.1', settings.TASK_LISTENER_TCP_PORT)
 
     tasks = []
     for obj in response.json():
@@ -177,7 +176,7 @@ def task_feeder(port1, port2):
     while 1:
         conn = sock.accept()
         if conn:
-            data = conn.recv(sock.tasks_buffer_size)
+            conn.recv(sock.tasks_buffer_size)
             if not q.empty():
                 conn.send(q.get())
             else:
@@ -319,7 +318,6 @@ def add_observation(obj):
     start = parser.parse(obj['start'])
     job_id = str(obj['id'])
     kwargs = {'obj': obj}
-    receiver_start = start - timedelta(seconds=settings.DEMODULATOR_INIT_TIME)
     logger.info('Adding new job: {0}'.format(job_id))
     logger.debug('Observation obj: {0}'.format(obj))
     scheduler.add_job(spawn_observer,

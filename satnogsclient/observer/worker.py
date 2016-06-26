@@ -120,7 +120,7 @@ class Worker:
         while self.is_alive:
             conn = sock.accept()
             if conn:
-                data = conn.recv(sock.buffer_size)
+                conn.recv(sock.buffer_size)
                 dict = {'azimuth': "{0:.2f}".format(self._azimuth),
                   'altitude': "{0:.2f}".format(self._altitude),
                   'frequency': self._frequency,

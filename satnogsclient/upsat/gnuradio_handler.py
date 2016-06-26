@@ -17,7 +17,7 @@ ld_socket = Udpsocket([])
 
 
 def write_to_gnuradio():
-    logger = logging.info('Started gnuradio ui listener process')
+    logging.info('Started gnuradio ui listener process')
     while True:
         conn = ui_listener_sock.recv()
         buf = conn[0]

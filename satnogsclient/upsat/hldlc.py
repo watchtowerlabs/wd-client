@@ -33,7 +33,6 @@ def HLDLC_frame(buf_in, buf_out):
     assert((buf_in != 0) and (buf_out != 0))
     assert(len(buf_in) <= packet_settings.MAX_PKT_SIZE)
 
-    cnt = 2
     size = len(buf_in)
 
     for i in range(0, size):

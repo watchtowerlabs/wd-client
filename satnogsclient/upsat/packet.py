@@ -46,25 +46,16 @@ def ecss_depacketizer(buf, dict_out):
     t[0] = buf[2]
     t[1] = buf[3]
     t.reverse()
-    # pkt_seq_count = t & 0x3FFF;
-    pkt_seq_count = (((t[0] & 0x3FF) << 8) | (t[1] & 0xFF))
 
     pkt_len = (buf[4] << 8) | buf[5]
-
     ccsds_sec_hdr = buf[6] >> 7
-
     tc_pus = buf[6] >> 4
-
     pkt_ack = 0x07 & buf[6]
-
     pkt_ser_type = buf[7]
     pkt_ser_subtype = buf[8]
     pkt_dest_id = buf[9]
 
-    pkt_verification_state = packet_settings.SATR_PKT_INIT
-
     if not ((pkt_app_id < packet_settings.LAST_APP_ID) == True):
-        pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_APPID
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_APPID)
 
     if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
@@ -74,15 +65,12 @@ def ecss_depacketizer(buf, dict_out):
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1
 
     if not ((tmp_crc1 == tmp_crc2) == True):
-        pkt_verification_state = packet_settings.SATR_PKT_INC_CRC
         return (dict_out, packet_settings.SATR_PKT_INC_CRC)
 
     if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True):
-        pkt_verification_state = packet_settings.SATR_PKT_ILLEGAL_PKT_TP
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_PKT_TP)
 
     if not ((ver == packet_settings.ECSS_VER_NUMBER) == True):
-        pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((tc_pus == packet_settings.ECSS_PUS_VER) == True):
@@ -97,15 +85,12 @@ def ecss_depacketizer(buf, dict_out):
         return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((dfield_hdr == packet_settings.ECSS_DATA_FIELD_HDR_FLG) == True):
-        pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((pkt_ack == packet_settings.TC_ACK_NO or pkt_ack == packet_settings.TC_ACK_ACC) == True):
-        pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
 
     if not ((pkt_seq_flags == packet_settings.TC_TM_SEQ_SPACKET) == True):
-        pkt_verification_state = packet_settings.SATR_ERROR
         return (dict_out, packet_settings.SATR_ERROR)
     pkt_data = bytes(pkt_len)
 
@@ -136,7 +121,7 @@ def ecss_decoder(port):
 
 
 def ecss_packetizer(ecss, buf):
-    sock = Commsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
+    Commsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
     assert(((ecss['type'] == 0) or (ecss['type'] == 1)) == True)
     assert((ecss['app_id'] < packet_settings.LAST_APP_ID) == True)
     data_size = ecss['size']
