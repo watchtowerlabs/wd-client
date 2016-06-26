@@ -166,8 +166,8 @@ def ecss_packetizer(ecss, buf):
     for i in range(0, data_size):
         buf[buf_pointer + i] = ecss['data'][i]
     data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE - 1
-    packet_size_ms = data_w_headers  & 0xFF00
-    packet_size_ls = data_w_headers  & 0x00FF
+    packet_size_ms = data_w_headers & 0xFF00
+    packet_size_ls = data_w_headers & 0x00FF
     buf[4] = packet_size_ms >> 8
     buf[5] = packet_size_ls
     buf_pointer = buf_pointer + data_size
