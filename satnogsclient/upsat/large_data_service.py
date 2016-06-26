@@ -93,7 +93,3 @@ def uplink(filename, info):
         else:
             print 'Abort'
             return
-
-
-
-

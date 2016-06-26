@@ -61,5 +61,3 @@ def HLDLC_frame(buf_in, buf_out):
         else:
             buf_out.append(buf_in[i])
     return packet_settings.SATR_ERROR;
-
-

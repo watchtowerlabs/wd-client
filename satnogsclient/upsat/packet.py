@@ -225,9 +225,3 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     elif backend == 'gnuradio':
         res = ecss_depacketizer(buf_in, ecss_dict)
     return res
-
-
-
-
-
-

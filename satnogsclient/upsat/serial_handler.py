@@ -45,5 +45,3 @@ def read_from_serial():
                 else:
                     ecss_feeder_sock.sendto(pickled, ('127.0.0.1', client_settings.ECSS_LISTENER_UDP_PORT))
                 buf_in = bytearray(0)
-
-
