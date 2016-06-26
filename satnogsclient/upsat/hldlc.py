@@ -13,20 +13,20 @@ def HLDLC_deframe(buf_in, buf_out):
         if hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_START_FLAG):
             return packet_settings.SATR_EOT;
         elif hex(ord(buf_in[i])) == hex(packet_settings.HLDLC_CONTROL_FLAG):
-            i = i+1
+            i = i + 1
             if not (i < size - 1) == True:
                 return packet_settings.SATR_ERROR
             if hex(ord(buf_in[i])) == hex(0x5E):
                  buf_out.append(0x7E)
-                 cnt = cnt+1
+                 cnt = cnt + 1
             elif hex(ord(buf_in[i])) == hex(0x5D):
                 buf_out.append(0x7D)
-                cnt = cnt+1
+                cnt = cnt + 1
             else:
                 return packet_settings.SATR_ERROR
         else:
             buf_out.append(buf_in[i]);
-            cnt = cnt+1
+            cnt = cnt + 1
     return packet_settings.SATR_ERROR;
 
 def HLDLC_frame(buf_in, buf_out):
