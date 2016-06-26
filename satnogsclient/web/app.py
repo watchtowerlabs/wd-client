@@ -31,8 +31,8 @@ def get_status_info():
     scheduled_pass_json['Info'] = 'There are no scheduled observations.'
     #scheduled_pass_json = jsonify(scheduled_pass_json)
 
-    current_pass_sock = Commsocket('127.0.0.1',client_settings.CURRENT_PASS_TCP_PORT)
-    scheduled_pass_sock = Commsocket('127.0.0.1',client_settings.TASK_FEEDER_TCP_PORT)
+    current_pass_sock = Commsocket('127.0.0.1', client_settings.CURRENT_PASS_TCP_PORT)
+    scheduled_pass_sock = Commsocket('127.0.0.1', client_settings.TASK_FEEDER_TCP_PORT)
 
     current_pass_check = current_pass_sock.connect()
     scheduled_pass_check = scheduled_pass_sock.connect()
@@ -54,10 +54,10 @@ def get_status_info():
 
 @app.route('/control_rx', methods=['GET', 'POST'])
 def get_control_rx():
-    sock = Udpsocket(('127.0.0.1',client_settings.CLIENT_LISTENER_UDP_PORT))
+    sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
     packet_list = ""
     try:
-        conn = sock.send_listen("Requesting received packets", ('127.0.0.1',client_settings.ECSS_FEEDER_UDP_PORT))
+        conn = sock.send_listen("Requesting received packets", ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
     except:
         logger.error("An error with the ECSS feeder occured")
     data = conn[0]
@@ -112,7 +112,7 @@ def get_command():
                     'seq_count' : 0,
                     'ser_type' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
                     'ser_subtype' : 1,#int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
-                    'data' : map(int,requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
+                    'data' : map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'dest_id' : int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
             print "CMD", requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack']

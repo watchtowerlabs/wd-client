@@ -132,7 +132,7 @@ def get_jobs():
         if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
             job.remove()
 
-    sock = Commsocket('127.0.0.1',client_settings.TASK_LISTENER_TCP_PORT)
+    sock = Commsocket('127.0.0.1', client_settings.TASK_LISTENER_TCP_PORT)
 
     tasks = []
     for obj in response.json():
@@ -165,14 +165,14 @@ def get_jobs():
         print 'Task listener thread not online'
 
 
-def task_feeder(port1,port2):
+def task_feeder(port1, port2):
     sleep(1)
     logger.info('Started task feeder')
-    print port1,' ',port2
-    sock = Commsocket('127.0.0.1',port1)
+    print port1, ' ', port2
+    sock = Commsocket('127.0.0.1', port1)
     sock.bind()
     q = Queue(maxsize=1)
-    p = Process(target=task_listener, args=(port2,q))
+    p = Process(target=task_listener, args=(port2, q))
     p.daemon = True
     p.start()
     sock.listen()
@@ -187,10 +187,10 @@ def task_feeder(port1,port2):
     p.join()
 
 
-def task_listener(port,queue):
+def task_listener(port, queue):
     logger.info('Started task listener')
     print port
-    sock = Commsocket('127.0.0.1',port)
+    sock = Commsocket('127.0.0.1', port)
     sock.bind()
     sock.listen()
     while 1:
@@ -203,13 +203,13 @@ def task_listener(port,queue):
             else:
                 queue.put(data)
 
-def ecss_feeder(port1,port2):
+def ecss_feeder(port1, port2):
     sleep(1)
     logger.info('Started ecss feeder')
-    print port1,' ',port2
-    sock = Udpsocket(('127.0.0.1',port1))
+    print port1, ' ', port2
+    sock = Udpsocket(('127.0.0.1', port1))
     qu = Queue(maxsize=10)
-    pr = Process(target=ecss_listener, args=(port2,qu))
+    pr = Process(target=ecss_listener, args=(port2, qu))
     pr.daemon = True
     pr.start()
     while 1:
@@ -218,13 +218,13 @@ def ecss_feeder(port1,port2):
         while not qu.empty():
             a = qu.get()
             list.append(a)
-        sock.sendto(json.dumps(list),conn[1])
+        sock.sendto(json.dumps(list), conn[1])
     pr.join()
 
 
-def ecss_listener(port,queue):
+def ecss_listener(port, queue):
     logger.info('Started ecss listener')
-    sock = Udpsocket(('127.0.0.1',port))
+    sock = Udpsocket(('127.0.0.1', port))
     while 1:
             conn = sock.recv()
             data = conn[0]
@@ -235,9 +235,9 @@ def ecss_listener(port,queue):
 
 def status_listener():
     logger.info('Started upsat status listener')
-    sock = Udpsocket(('127.0.0.1',settings.STATUS_LISTENER_PORT))
+    sock = Udpsocket(('127.0.0.1', settings.STATUS_LISTENER_PORT))
     while 1:
-        print 'Listening status, ',settings.STATUS_LISTENER_PORT
+        print 'Listening status, ', settings.STATUS_LISTENER_PORT
         conn = sock.recv()
         dict = json.loads(conn[0])
         if 'switch_backend' in dict.keys() and dict['switch_backend']:
@@ -275,7 +275,7 @@ def status_listener():
                 print 'Starting ecss feeder thread...'
                 status.MODE = 'cmd_ctrl'
                 kill_netw_proc()
-                ef = Process(target=ecss_feeder,args=(settings.ECSS_FEEDER_UDP_PORT,settings.ECSS_LISTENER_UDP_PORT,))
+                ef = Process(target=ecss_feeder, args=(settings.ECSS_FEEDER_UDP_PORT, settings.ECSS_LISTENER_UDP_PORT,))
                 ef.start()
                 status.ECSS_FEEDER_PID = ef.pid
             elif dict['mode'] == 'network':
@@ -293,7 +293,7 @@ def status_listener():
                 print msg
                 scheduler.add_job(post_data, 'interval', minutes=interval)
                 scheduler.print_jobs()
-                tf = Process(target=task_feeder,args=(settings.TASK_FEEDER_TCP_PORT,settings.TASK_LISTENER_TCP_PORT,))
+                tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
                 tf.start()
                 status.TASK_FEEDER_PID = tf.pid
 

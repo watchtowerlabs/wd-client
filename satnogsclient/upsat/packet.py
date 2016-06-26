@@ -15,7 +15,7 @@ logger = logging.getLogger('satnogsclient')
 
 def ecss_encoder(port):
     logger.info('Started ecss encoder')
-    sock = Commsocket('127.0.0.1',port)
+    sock = Commsocket('127.0.0.1', port)
     sock.bind()
     sock.listen()
     while 1:
@@ -24,7 +24,7 @@ def ecss_encoder(port):
             data = conn.recv(sock.tasks_buffer_size)
             ecss_packetizer(data)
 
-def ecss_depacketizer(buf,dict_out):
+def ecss_depacketizer(buf, dict_out):
     size = len(buf)
     print binascii.hexlify(buf)
     assert((buf != 0) == True)
@@ -32,7 +32,7 @@ def ecss_depacketizer(buf,dict_out):
     print "I should see that"
     tmp_crc1 = buf[size - 1];
     tmp_crc2 = 0
-    for i in range(0,size -2):
+    for i in range(0, size -2):
         tmp_crc2 = tmp_crc2 ^ buf[i]
 
     ver = buf[0] >> 5;
@@ -112,21 +112,21 @@ def ecss_depacketizer(buf,dict_out):
     pkt_data = bytes(pkt_len)
 
     pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
-    dict_out={'type':pkt_type,
-             'app_id':pkt_app_id,
-             'size':pkt_len,
-             'ack':pkt_ack,
-             'ser_type':pkt_ser_type,
-             'ser_subtype':pkt_ser_subtype,
-             'dest_id':pkt_dest_id,
-             'data':pkt_data
+    dict_out={'type': pkt_type,
+             'app_id': pkt_app_id,
+             'size': pkt_len,
+             'ack': pkt_ack,
+             'ser_type': pkt_ser_type,
+             'ser_subtype': pkt_ser_subtype,
+             'dest_id': pkt_dest_id,
+             'data': pkt_data
              }
-    print "I should see that also" , dict_out
+    print "I should see that also", dict_out
     return (dict_out, packet_settings.SATR_OK)
 
 def ecss_decoder(port):
     logger.info('Started ecss decoder')
-    sock = Commsocket('127.0.0.1',port)
+    sock = Commsocket('127.0.0.1', port)
     sock.bind()
     sock.listen()
     while 1:
@@ -137,7 +137,7 @@ def ecss_decoder(port):
 
 
 
-def ecss_packetizer(ecss,buf):
+def ecss_packetizer(ecss, buf):
     sock = Commsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
     assert(((ecss['type'] == 0) or (ecss['type'] == 1)) == True )
     assert((ecss['app_id'] < packet_settings.LAST_APP_ID) == True)
@@ -164,7 +164,7 @@ def ecss_packetizer(ecss,buf):
     buf[8] = ecss['ser_subtype']
     buf[9] = ecss['dest_id']
     buf_pointer = packet_settings.ECSS_DATA_OFFSET
-    for i in range(0,data_size):
+    for i in range(0, data_size):
         buf[buf_pointer + i] = ecss['data'][i]
     data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE -1
     packet_size_ms = data_w_headers  & 0xFF00
@@ -172,7 +172,7 @@ def ecss_packetizer(ecss,buf):
     buf[4] = packet_size_ms >> 8
     buf[5] = packet_size_ls
     buf_pointer = buf_pointer + data_size
-    for i in range(0,buf_pointer):
+    for i in range(0, buf_pointer):
         buf[buf_pointer + 1] = buf[buf_pointer + 1] ^ buf[i]
 
     size = buf_pointer + 2
@@ -183,47 +183,47 @@ def comms_off():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I",data,9,0x593d55df)
-    struct.pack_into("<I",data,13,0x4d2f84c0)
-    struct.pack_into("<I",data,17,0x24d60191)
-    struct.pack_into("<I",data,21,0x9287b5fd)
+    struct.pack_into("<I", data, 9, 0x593d55df)
+    struct.pack_into("<I", data, 13, 0x4d2f84c0)
+    struct.pack_into("<I", data, 17, 0x24d60191)
+    struct.pack_into("<I", data, 21, 0x9287b5fd)
     d = bytearray(data)
-    sock.sendto(d,(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
+    sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
 def comms_on():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I",data,9,0xda4942a9)
-    struct.pack_into("<I",data,13,0xa7a45d61)
-    struct.pack_into("<I",data,17,0x413981b)
-    struct.pack_into("<I",data,21,0xa94ee2d3)
+    struct.pack_into("<I", data, 9, 0xda4942a9)
+    struct.pack_into("<I", data, 13, 0xa7a45d61)
+    struct.pack_into("<I", data, 17, 0x413981b)
+    struct.pack_into("<I", data, 21, 0xa94ee2d3)
     d = bytearray(data)
-    sock.sendto(d,(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
+    sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
-def construct_packet(ecss_dict,backend):
-    print 'ecss to be sent ',ecss_dict
+def construct_packet(ecss_dict, backend):
+    print 'ecss to be sent ', ecss_dict
     if backend == "serial":
         out_buf = bytearray(0)
         packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
         ecssbuf = bytearray(packet_size)
         ecss_packetizer(ecss_dict, ecssbuf)
-        hldlc.HLDLC_frame(ecssbuf,out_buf)
+        hldlc.HLDLC_frame(ecssbuf, out_buf)
     elif backend == "gnuradio":
         packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
         out_buf = bytearray(packet_size)
         ecss_packetizer(ecss_dict, out_buf)
     return out_buf
 
-def deconstruct_packet(buf_in, ecss_dict , backend):
+def deconstruct_packet(buf_in, ecss_dict, backend):
     if backend == 'serial':
         hldlc_buf = bytearray(0)
         hldlc.HLDLC_deframe(buf_in, hldlc_buf)
-        print "HLDLC ", ''.join('{:02x}'.format(x) for x in buf_in)  ," ", ''.join('{:02x}'.format(x) for x in hldlc_buf)
-        res = ecss_depacketizer(hldlc_buf,ecss_dict)
+        print "HLDLC ", ''.join('{:02x}'.format(x) for x in buf_in), " ", ''.join('{:02x}'.format(x) for x in hldlc_buf)
+        res = ecss_depacketizer(hldlc_buf, ecss_dict)
         print "the result is ", res
     elif backend == 'gnuradio':
-        res = ecss_depacketizer(buf_in,ecss_dict)
+        res = ecss_depacketizer(buf_in, ecss_dict)
     return res
 
 

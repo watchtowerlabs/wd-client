@@ -79,7 +79,7 @@ class Worker:
         self.t.start()
 
         if start_thread:
-            self.r = threading.Thread(target=self._status_interface,args=(port,))
+            self.r = threading.Thread(target=self._status_interface, args=(port,))
             self.r.daemon = True
             self.r.start()
 
@@ -111,8 +111,8 @@ class Worker:
 
         sock.disconnect()
 
-    def _status_interface(self,port):
-        sock = Commsocket('127.0.0.1',port)
+    def _status_interface(self, port):
+        sock = Commsocket('127.0.0.1', port)
         #sock.get_sock().bind(('127.0.0.1',port))
         sock.bind()
         sock.listen()
