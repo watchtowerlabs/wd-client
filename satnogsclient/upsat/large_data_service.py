@@ -36,7 +36,7 @@ def uplink(filename, info):
         packet_count_ms = packet_count  & 0xFF00
         packet_count_ls = packet_count  & 0x00FF
         buf.insert(0, large_data_id)
-        buf.insert(0, packet_count_ls )
+        buf.insert(0, packet_count_ls)
         buf.insert(0, packet_count_ms >> 8)
 
         if packet_count == 0:

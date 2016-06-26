@@ -139,7 +139,7 @@ def ecss_decoder(port):
 
 def ecss_packetizer(ecss, buf):
     sock = Commsocket(packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT)
-    assert(((ecss['type'] == 0) or (ecss['type'] == 1)) == True )
+    assert(((ecss['type'] == 0) or (ecss['type'] == 1)) == True)
     assert((ecss['app_id'] < packet_settings.LAST_APP_ID) == True)
     data_size = ecss['size']
     app_id = ecss['app_id']
