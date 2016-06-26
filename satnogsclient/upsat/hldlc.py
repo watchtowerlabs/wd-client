@@ -5,7 +5,7 @@ import binascii
 
 def HLDLC_deframe(buf_in, buf_out):
     assert((buf_in != 0) and (buf_out != 0))
-    assert(hex(ord(buf_in[0])) ==hex(packet_settings.HLDLC_START_FLAG))
+    assert(hex(ord(buf_in[0])) == hex(packet_settings.HLDLC_START_FLAG))
     assert(len(buf_in) <= packet_settings.UART_BUF_SIZE)
     size = len(buf_in)
     cnt = 0
@@ -26,7 +26,7 @@ def HLDLC_deframe(buf_in, buf_out):
                 return packet_settings.SATR_ERROR
         else:
             buf_out.append(buf_in[i]);
-            cnt=cnt+1
+            cnt = cnt+1
     return packet_settings.SATR_ERROR;
 
 def HLDLC_frame(buf_in, buf_out):

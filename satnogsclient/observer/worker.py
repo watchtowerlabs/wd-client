@@ -120,7 +120,7 @@ class Worker:
             conn = sock.accept()
             if conn:
                 data = conn.recv(sock.buffer_size)
-                dict={'azimuth': "{0:.2f}".format(self._azimuth),
+                dict = {'azimuth': "{0:.2f}".format(self._azimuth),
                   'altitude': "{0:.2f}".format(self._altitude),
                   'frequency': self._frequency,
                   'tle0': self.satellite_dict['tle0'],

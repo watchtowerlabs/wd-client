@@ -32,7 +32,7 @@ def ecss_depacketizer(buf, dict_out):
     print "I should see that"
     tmp_crc1 = buf[size - 1];
     tmp_crc2 = 0
-    for i in range(0, size -2):
+    for i in range(0, size - 2):
         tmp_crc2 = tmp_crc2 ^ buf[i]
 
     ver = buf[0] >> 5;
@@ -111,8 +111,8 @@ def ecss_depacketizer(buf, dict_out):
         return (dict_out, packet_settings.SATR_ERROR)
     pkt_data = bytes(pkt_len)
 
-    pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size -2]
-    dict_out={'type': pkt_type,
+    pkt_data = buf[packet_settings.ECSS_DATA_OFFSET : size - 2]
+    dict_out = {'type': pkt_type,
              'app_id': pkt_app_id,
              'size': pkt_len,
              'ack': pkt_ack,
@@ -166,7 +166,7 @@ def ecss_packetizer(ecss, buf):
     buf_pointer = packet_settings.ECSS_DATA_OFFSET
     for i in range(0, data_size):
         buf[buf_pointer + i] = ecss['data'][i]
-    data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE -1
+    data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE - 1
     packet_size_ms = data_w_headers  & 0xFF00
     packet_size_ls = data_w_headers  & 0x00FF
     buf[4] = packet_size_ms >> 8

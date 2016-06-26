@@ -214,7 +214,7 @@ def ecss_feeder(port1, port2):
     pr.start()
     while 1:
         conn = sock.recv()
-        list= []
+        list = []
         while not qu.empty():
             a = qu.get()
             list.append(a)
@@ -283,7 +283,7 @@ def status_listener():
                 kill_cmd_ctrl_proc()
                 if status.ECSS_FEEDER_PID != 0:
                     os.kill(status.ECSS_FEEDER_PID, signal.SIGTERM)
-                    status.ECSS_FEEDER_PID =0
+                    status.ECSS_FEEDER_PID = 0
                 interval = settings.NETWORK_API_QUERY_INTERVAL
                 msg = 'Registering `get_jobs` periodic task ({0} min. interval)'.format(interval)
                 print msg
@@ -300,16 +300,16 @@ def status_listener():
 def kill_cmd_ctrl_proc():
     if status.BACKEND_TX_PID != 0:
         os.kill(status.BACKEND_TX_PID, signal.SIGTERM)
-        status.BACKEND_TX_PID =0
+        status.BACKEND_TX_PID = 0
 
     if status.BACKEND_RX_PID != 0:
         os.kill(status.BACKEND_RX_PID, signal.SIGTERM)
-        status.BACKEND_RX_PID =0
+        status.BACKEND_RX_PID = 0
 
 def kill_netw_proc():
     if status.TASK_FEEDER_PID != 0 :
         os.kill(status.TASK_FEEDER_PID, signal.SIGTERM)
-        status.TASK_FEEDER_PID =0
+        status.TASK_FEEDER_PID = 0
     scheduler.remove_all_jobs()
 
 def add_observation(obj):

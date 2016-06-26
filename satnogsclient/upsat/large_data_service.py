@@ -21,7 +21,7 @@ def uplink(filename, info):
     file_size = os.stat(filename)[6]  # get size of file
     remaining_bytes = file_size
     total_packets = file_size / available_data_len
-    if file_size % available_data_len >0:
+    if file_size % available_data_len > 0:
         total_packets = total_packets + 1
     packet_count = 0
     data_size = 0
@@ -45,7 +45,7 @@ def uplink(filename, info):
             ser_subtype = packet_settings.TC_LD_LAST_UPLINK
         else:
             ser_subtype = packet_settings.TC_LD_INT_UPLINK
-        ecss ={'type': 1,
+        ecss = {'type': 1,
              'app_id': 4,
              'size': data_size,
              'ack': 1,
@@ -88,7 +88,7 @@ def uplink(filename, info):
         if got_ack == 1:
             if ser_subtype == packet_settings.TC_LD_LAST_UPLINK:
                 global large_data_id
-                large_data_id = large_data_id +1
+                large_data_id = large_data_id + 1
             packet_count = packet_count + 1
         else:
             print 'Abort'
