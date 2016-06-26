@@ -1,5 +1,4 @@
 import logging
-import socket
 import binascii
 import struct
 import ctypes

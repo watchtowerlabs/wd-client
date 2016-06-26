@@ -1,13 +1,9 @@
-import array
-import time
 import logging
-import json
 import cPickle
 
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.upsat import hldlc
 from satnogsclient.upsat import packet
 
 

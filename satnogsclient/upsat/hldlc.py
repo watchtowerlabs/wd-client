@@ -1,8 +1,5 @@
 from satnogsclient.upsat import packet_settings
 
-import socket
-import binascii
-
 
 def HLDLC_deframe(buf_in, buf_out):
     assert((buf_in != 0) and (buf_out != 0))

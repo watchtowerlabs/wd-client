@@ -4,7 +4,6 @@ import traceback
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.upsat import hldlc
 from satnogsclient.upsat import packet
 
 

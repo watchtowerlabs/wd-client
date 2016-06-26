@@ -1,13 +1,8 @@
-import serial
-import array
-import time
 import logging
 import cPickle
 
-from flask import Flask, render_template, request, json, jsonify
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
-from satnogsclient.upsat import hldlc
 from satnogsclient.upsat import packet
 from satnogsclient.observer.udpsocket import Udpsocket
 

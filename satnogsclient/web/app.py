@@ -2,15 +2,12 @@ from flask import Flask, render_template, request, json, jsonify
 
 
 from satnogsclient import settings as client_settings
-from satnogsclient.scheduler import tasks
 from satnogsclient.upsat import packet
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import serial_handler
 from satnogsclient.upsat import gnuradio_handler
 import logging
-from flask.json import JSONDecoder
-import binascii
 import cPickle
 
 logger = logging.getLogger('satnogsclient')
