@@ -55,15 +55,19 @@ def get_status_info():
 def get_control_rx():
     if int(os.environ['ECSS_FEEDER_PID']) == 0:
         tmp = {}
-        tmp['log_message'] = 'This is a test'
+        tmp['log_message'] = 'Ecss feeder thread not online'
         return jsonify(tmp)
     sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
     packet_list = ""
     try:
         conn = sock.send_listen("Requesting received packets", ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
         data = conn[0]
-    except:
+    except Exception as e:
         logger.error("An error with the ECSS feeder occured")
+        logger.error(e)
+        tmp = {}
+        tmp['log_message'] = e
+        return jsonify(tmp)
     packet_list = json.loads(data)
     """
     The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
