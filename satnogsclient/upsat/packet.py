@@ -224,7 +224,7 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     return res
     
     
- def ecss_logic(ecss_dict):   
+def ecss_logic(ecss_dict):
 
     id = 0 
     text = "Nothing found"
@@ -240,33 +240,80 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
 
         text +=  "ACK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_HOUSEKEEPING_SERVICE:
+    elif ecss_dict['ser_type'] == TC_HOUSEKEEPING_SERVICE and ecss_dict['ser_subtype'] == TM_HK_PARAMETERS_REPORT:
 
-        if ecss_dict['ser_subtype'] == TM_HK_PARAMETERS_REPORT:
+        struct_id = ecss_dict['data'][0]
 
-    elif ecss_dict['ser_type'] == TC_EVENT_SERVICE:
+        if ecss_dict['app_id'] == EPS_APP_ID and struct_id == HEALTH_REP:
+            
+            report = "data "
 
-        if ecss_dict['ser_subtype'] == TM_EV_NORMAL_REPORT:
+        elif ecss_dict['app_id'] == EPS_APP_ID and struct_id == EX_HEALTH_REP:
+
+            report = "data "
+
+        elif ecss_dict['app_id'] == COMMS_APP_ID and struct_id == HEALTH_REP:
+
+            report = "data "
+
+        elif ecss_dict['app_id'] == COMMS_APP_ID and struct_id == EX_HEALTH_REP:
+
+            report = "data "
+
+        elif ecss_dict['app_id'] == ADCS_APP_ID and struct_id == EX_HEALTH_REP:
+
+            report = "data "
+
+        elif ecss_dict['app_id'] == ADCS_APP_ID and struct_id == SU_SCI_HDR_REP:
+
+            report = "data "
+
+        elif ecss_dict['app_id'] == OBC_APP_ID and struct_id == EX_HEALTH_REP:
+
+            report = "data "
+
+        text +=  "HK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+
+    elif ecss_dict['ser_type'] == TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == TM_EV_NORMAL_REPORT:
+
+        event_id = ecss_dict['data'][0]
+        if event_id == HEALTH_REP:
+            report = "data "
+
+        text +=  "EVENT {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
     elif ecss_dict['ser_type'] == TC_FUNCTION_MANAGEMENT_SERVICE:
          #nothing to do here
+         text +=  "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
+
     elif ecss_dict['ser_type'] == TC_TIME_MANAGEMENT_SERVICE:
 
         #check https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
         if ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_UTC:
-            utc = timedelta(weeks=40, days=84, hours=23, minutes=50, seconds=600).strftime("%A, %d. %B %Y %I:%M%p")
-            report = "UTC:"
+
+            day = ecss_dict['data'][0]
+            mon = ecss_dict['data'][1]
+            year = ecss_dict['data'][2]
+            hour = ecss_dict['data'][3]
+            mins = ecss_dict['data'][4]
+            sec = ecss_dict['data'][5]
+
+            utc = timedelta(years = year, months = mon, days = day, hours = hour, minutes = mins, seconds = sec).strftime("%A, %d. %B %Y %I:%M%p")
+            report = "UTC: " + utc
+
         elif ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_QB50:
 
-            qb50 =
+            qb50 = cnv8_32(ecss_dict['data'])
             utc = datetime.datetime.fromtimestamp(qb50 + 946684800).strftime("%A, %d. %B %Y %I:%M%p")
             report = "QB50 " +  + " UTC: " + utc
 
         text +=  "TIME {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
     elif ecss_dict['ser_type'] == TC_SCHEDULING_SERVICE:
+        text +=  "APO, DO LET US KNOW WHAT TO DO HERE"
     elif ecss_dict['ser_type'] == TC_LARGE_DATA_SERVICE:
         #nothing to do here
+        text +=  "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
     elif ecss_dict['ser_type'] == TC_MASS_STORAGE_SERVICE:
 
         if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_REPORT:
@@ -278,17 +325,28 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     elif ecss_dict['ser_type'] == TC_TEST_SERVICE:
         text +=  "TEST Service from{0}".format(upsat_app_id[ecss_dict['app_id']])
     elif ecss_dict['ser_type'] == TC_SU_MNLP_SERVICE:
+        text +=  "APO, DO LET US KNOW WHAT TO DO HERE"
 
-    dict_out={'type':pkt_type,
-             'app_id':pkt_app_id,
-             'size':pkt_len,
-             'ack':pkt_ack,
-             'ser_type':pkt_ser_type,
-             'ser_subtype':pkt_ser_subtype,
-             'dest_id':pkt_dest_id,
-             'data':pkt_data
-             }
+def cnv32_8(inc):
 
-    
+    ret = [0] * 4
 
+    ret[0] = inc & 0x000000FF;
+    ret[1] = (inc >> 8) & 0x000000FF;
+    ret[2] = (inc >> 16) & 0x000000FF;
+    ret[3] = (inc >> 24) & 0x000000FF;
+    return ret
 
+def cnv16_8(inc):
+
+    ret = [0] * 2
+
+    ret[0] = inc & 0x00FF;
+    ret[1] = (inc >> 8) & 0x00FF;
+    return ret
+
+def cnv8_32(inc):
+    return ((inc[3] << 24) | (inc[2] << 16) | (inc[1] << 8) | (inc[0]))
+
+def cnv8_16(inc):
+    return ((inc[0] << 8) | (inc[1]))
