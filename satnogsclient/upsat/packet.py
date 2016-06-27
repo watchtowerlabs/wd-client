@@ -318,14 +318,21 @@ def ecss_logic(ecss_dict):
 
         if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_REPORT:
             report = "MS " +  + " UTC: " + utc
-        if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_LIST:
+        elif ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_LIST:
             id = 1
+        if ecss_dict['ser_subtype'] == TM_MS_CONTENT:
+            report = "MS " +  + " UTC: " + utc
 
         text +=  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
     elif ecss_dict['ser_type'] == TC_TEST_SERVICE:
         text +=  "TEST Service from{0}".format(upsat_app_id[ecss_dict['app_id']])
     elif ecss_dict['ser_type'] == TC_SU_MNLP_SERVICE:
         text +=  "APO, DO LET US KNOW WHAT TO DO HERE"
+
+    ecss_dict['id'] = id
+    ecss_dict['log_message'] = text
+    #ecss_dict['files'] = 
+    return ecss_dict
 
 def cnv32_8(inc):
 
