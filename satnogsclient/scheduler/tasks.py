@@ -23,8 +23,15 @@ from satnogsclient.upsat import serial_handler
 from satnogsclient.upsat.gnuradio_handler import write_to_gnuradio, read_from_gnuradio
 from time import sleep
 
-
 logger = logging.getLogger('satnogsclient')
+
+
+def signal_term_handler(signal, frame):
+    dict = frame.f_locals
+    if 'child_pid' in dict:
+        os.kill(dict['child_pid'], signal.SIGKILL)
+
+signal.signal(signal.SIGTERM, signal_term_handler)
 
 
 def spawn_observer(*args, **kwargs):
@@ -186,7 +193,8 @@ def task_feeder(port1, port2):
         p.join()
     except:
         if child_pid != 0:
-            os.kill(child_pid, signal.SIGINT)
+            print 'Killing task_listener pid ', child_pid
+            os.kill(child_pid, signal.SIGKILL)
 
 
 def task_listener(port, queue):
@@ -227,7 +235,8 @@ def ecss_feeder(port1, port2):
             sock.sendto(json.dumps(list), conn[1])
         pr.join()
     except:
-        os.kill(child_pid, signal.SIGINT)
+        print 'Killing ecss listener pid ', child_pid
+        os.kill(child_pid, signal.SIGKILL)
 
 
 def ecss_listener(port, queue):
@@ -254,6 +263,7 @@ def status_listener():
     msg = 'Registering `post_data` periodic task ({0} min. interval)'.format(interval)
     print msg
     scheduler.add_job(post_data, 'interval', minutes=interval)
+    print 'Scheduler jobs are ', scheduler.print_jobs()
     tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
     tf.start()
     os.environ['TASK_FEEDER_PID'] = str(tf.pid)
@@ -265,10 +275,9 @@ def status_listener():
     os.environ['ECSS_FEEDER_PID'] = '0'
     os.environ['SCHEDULER'] = 'ON'
     while 1:
-        print 'Listening status, ', settings.STATUS_LISTENER_PORT
         conn = sock.recv()
         dict = json.loads(conn[0])
-        if 'switch_backend' in dict.keys() and dict['switch_backend']:
+        if 'backend' in dict.keys():
             if dict['backend'] == os.environ['BACKEND']:
                 continue
             kill_cmd_ctrl_proc()
@@ -294,10 +303,10 @@ def status_listener():
                 rx.daemon = True
                 rx.start()
                 os.environ['BACKEND_RX_PID'] = str(rx.pid)
-        if 'switch_mode' in dict.keys() and dict['switch_mode']:
-            print 'Changing mode'
+        if 'mode' in dict.keys():
             if dict['mode'] == os.environ['MODE']:
                 continue
+            print 'Changing mode'
             if dict['mode'] == 'cmd_ctrl':
                 print 'Starting ecss feeder thread...'
                 os.environ['MODE'] = 'cmd_ctrl'
@@ -305,34 +314,38 @@ def status_listener():
                 ef = Process(target=ecss_feeder, args=(settings.ECSS_FEEDER_UDP_PORT, settings.ECSS_LISTENER_UDP_PORT,))
                 ef.start()
                 os.environ['ECSS_FEEDER_PID'] = str(ef.pid)
+                print 'Started ecss_feeder process ', ef.pid
             elif dict['mode'] == 'network':
                 os.environ['MODE'] = 'network'
                 kill_cmd_ctrl_proc()
                 if int(os.environ['ECSS_FEEDER_PID']) != 0:
                     os.kill(int(os.environ['ECSS_FEEDER_PID']), signal.SIGTERM)
-                    os.environ['ECSS_FEEDER_PID'] = 'O'
+                    os.environ['ECSS_FEEDER_PID'] = '0'
                 os.environ['SCHEDULER'] = 'ON'
                 scheduler.start()
                 tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
                 tf.start()
-                os.environ['TASK_FEEDER_PID'] = tf.pid
+                os.environ['TASK_FEEDER_PID'] = str(tf.pid)
+                print 'Started task feeder process ', tf.pid
 
 
 def kill_cmd_ctrl_proc():
     if int(os.environ['BACKEND_TX_PID']) != 0:
-        os.kill(int(os.environ['BACKEND_TX_PID']), signal.SIGTERM)
+        os.kill(int(os.environ['BACKEND_TX_PID']), signal.SIGKILL)
         os.environ['BACKEND_TX_PID'] = '0'
 
     if int(os.environ['BACKEND_RX_PID']) != 0:
-        os.kill(int(os.environ['BACKEND_RX_PID']), signal.SIGTERM)
+        os.kill(int(os.environ['BACKEND_RX_PID']), signal.SIGKILL)
         os.environ['BACKEND_RX_PID'] = '0'
 
 
 def kill_netw_proc():
     if int(os.environ['TASK_FEEDER_PID']) != 0:
+        print 'Killing feeder ', int(os.environ['TASK_FEEDER_PID'])
         os.kill(int(os.environ['TASK_FEEDER_PID']), signal.SIGTERM)
         os.environ['TASK_FEEDER_PID'] = '0'
     scheduler.shutdown()
+    print 'Scheduler shutting down!!!!!!!'
 
 
 def add_observation(obj):
