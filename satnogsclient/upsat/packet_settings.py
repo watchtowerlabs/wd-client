@@ -181,7 +181,7 @@ TM_LD_ABORT_RE_UPLINK          = 16
 
 TC_MS_ENABLE                   = 1
 TC_MS_DISABLE                  = 2
-TC_MS_CONTENT                  = 8
+TM_MS_CONTENT                  = 8
 TC_MS_DOWNLINK                 = 9
 TC_MS_DELETE                   = 11
 TC_MS_REPORT                   = 12
