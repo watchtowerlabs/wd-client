@@ -2,6 +2,7 @@ import logging
 import binascii
 import struct
 import ctypes
+import datetime
 
 from satnogsclient import settings
 from satnogsclient.upsat import packet_settings
@@ -221,3 +222,73 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     elif backend == 'gnuradio':
         res = ecss_depacketizer(buf_in, ecss_dict)
     return res
+    
+    
+ def ecss_logic(ecss_dict):   
+
+    id = 0 
+    text = "Nothing found"
+
+    if ecss_dict['ser_type'] == TC_VERIFICATION_SERVICE:
+
+        #we should have a list of packets with ack in order to return it        
+        report = "Wrong sub type"
+        if ecss_dict['ser_subtype'] == TM_VR_ACCEPTANCE_SUCCESS:
+            report = "OK"
+        elif ecss_dict['ser_subtype'] == TM_VR_ACCEPTANCE_FAILURE:
+            report = "Error " + SAT_RETURN_STATE[ecss_dict['data'][4]]
+
+        text +=  "ACK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+
+    elif ecss_dict['ser_type'] == TC_HOUSEKEEPING_SERVICE:
+
+        if ecss_dict['ser_subtype'] == TM_HK_PARAMETERS_REPORT:
+
+    elif ecss_dict['ser_type'] == TC_EVENT_SERVICE:
+
+        if ecss_dict['ser_subtype'] == TM_EV_NORMAL_REPORT:
+
+    elif ecss_dict['ser_type'] == TC_FUNCTION_MANAGEMENT_SERVICE:
+         #nothing to do here
+    elif ecss_dict['ser_type'] == TC_TIME_MANAGEMENT_SERVICE:
+
+        #check https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
+        if ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_UTC:
+            utc = timedelta(weeks=40, days=84, hours=23, minutes=50, seconds=600).strftime("%A, %d. %B %Y %I:%M%p")
+            report = "UTC:"
+        elif ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_QB50:
+
+            qb50 =
+            utc = datetime.datetime.fromtimestamp(qb50 + 946684800).strftime("%A, %d. %B %Y %I:%M%p")
+            report = "QB50 " +  + " UTC: " + utc
+
+        text +=  "TIME {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+
+    elif ecss_dict['ser_type'] == TC_SCHEDULING_SERVICE:
+    elif ecss_dict['ser_type'] == TC_LARGE_DATA_SERVICE:
+        #nothing to do here
+    elif ecss_dict['ser_type'] == TC_MASS_STORAGE_SERVICE:
+
+        if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_REPORT:
+            report = "MS " +  + " UTC: " + utc
+        if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_LIST:
+            id = 1
+
+        text +=  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+    elif ecss_dict['ser_type'] == TC_TEST_SERVICE:
+        text +=  "TEST Service from{0}".format(upsat_app_id[ecss_dict['app_id']])
+    elif ecss_dict['ser_type'] == TC_SU_MNLP_SERVICE:
+
+    dict_out={'type':pkt_type,
+             'app_id':pkt_app_id,
+             'size':pkt_len,
+             'ack':pkt_ack,
+             'ser_type':pkt_ser_type,
+             'ser_subtype':pkt_ser_subtype,
+             'dest_id':pkt_dest_id,
+             'data':pkt_data
+             }
+
+    
+
+
