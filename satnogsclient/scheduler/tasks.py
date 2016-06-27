@@ -254,14 +254,16 @@ def status_listener():
     msg = 'Registering `post_data` periodic task ({0} min. interval)'.format(interval)
     print msg
     scheduler.add_job(post_data, 'interval', minutes=interval)
+    tf = Process(target=task_feeder,args=(settings.TASK_FEEDER_TCP_PORT,settings.TASK_LISTENER_TCP_PORT,))
+    tf.start()
+    os.environ['TASK_FEEDER_PID'] = tf.pid
     sock = Udpsocket(('127.0.0.1', settings.STATUS_LISTENER_PORT))
     os.environ['BACKEND_TX_PID'] = '0'
     os.environ['BACKEND_RX_PID'] = '0'
     os.environ['BACKEND'] = ""
-    os.environ['MODE'] = ""
+    os.environ['MODE'] = "network"
     os.environ['ECSS_FEEDER_PID'] = '0'
-    os.environ['TASK_FEEDER_PID'] = '0'
-    os.environ['SCHEDULER'] = 'OFF'
+    os.environ['SCHEDULER'] = 'ON'
     while 1:
         print 'Listening status, ', settings.STATUS_LISTENER_PORT
         conn = sock.recv()
