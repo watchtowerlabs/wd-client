@@ -186,7 +186,7 @@ def task_feeder(port1, port2):
         p.join()
     except:
         if child_pid != 0:
-            os.kill(child_pid,signal.SIGINT)
+            os.kill(child_pid, signal.SIGINT)
 
 
 def task_listener(port, queue):
@@ -227,7 +227,7 @@ def ecss_feeder(port1, port2):
             sock.sendto(json.dumps(list), conn[1])
         pr.join()
     except:
-        os.kill(child_pid,signal.SIGINT)
+        os.kill(child_pid, signal.SIGINT)
 
 
 def ecss_listener(port, queue):
@@ -254,7 +254,7 @@ def status_listener():
     msg = 'Registering `post_data` periodic task ({0} min. interval)'.format(interval)
     print msg
     scheduler.add_job(post_data, 'interval', minutes=interval)
-    tf = Process(target=task_feeder,args=(settings.TASK_FEEDER_TCP_PORT,settings.TASK_LISTENER_TCP_PORT,))
+    tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
     tf.start()
     os.environ['TASK_FEEDER_PID'] = tf.pid
     sock = Udpsocket(('127.0.0.1', settings.STATUS_LISTENER_PORT))
@@ -277,12 +277,12 @@ def status_listener():
                 tx = Process(target=write_to_gnuradio, args=())
                 tx.daemon = True
                 tx.start()
-                print 'Started gnuradio tx process ',tx.pid
+                print 'Started gnuradio tx process ', tx.pid
                 os.environ['BACKEND_TX_PID'] = str(tx.pid)
                 rx = Process(target=read_from_gnuradio, args=())
                 rx.daemon = True
                 rx.start()
-                print 'Started gnuradio rx process ',rx.pid
+                print 'Started gnuradio rx process ', rx.pid
                 os.environ['BACKEND_RX_PID'] = str(rx.pid)
             elif dict['backend'] == 'serial':
                 os.environ['BACKEND'] = 'serial'
@@ -329,7 +329,7 @@ def kill_cmd_ctrl_proc():
 
 
 def kill_netw_proc():
-    if int(os.environ['TASK_FEEDER_PID']) != 0 :
+    if int(os.environ['TASK_FEEDER_PID']) != 0:
         os.kill(int(os.environ['TASK_FEEDER_PID']), signal.SIGTERM)
         os.environ['TASK_FEEDER_PID'] = '0'
     scheduler.shutdown()
