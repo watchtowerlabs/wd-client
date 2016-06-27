@@ -256,7 +256,7 @@ def status_listener():
     scheduler.add_job(post_data, 'interval', minutes=interval)
     tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
     tf.start()
-    os.environ['TASK_FEEDER_PID'] = tf.pid
+    os.environ['TASK_FEEDER_PID'] = str(tf.pid)
     sock = Udpsocket(('127.0.0.1', settings.STATUS_LISTENER_PORT))
     os.environ['BACKEND_TX_PID'] = '0'
     os.environ['BACKEND_RX_PID'] = '0'
