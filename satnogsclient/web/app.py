@@ -5,8 +5,6 @@ from satnogsclient import settings as client_settings
 from satnogsclient.upsat import packet, tx_handler
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.upsat import serial_handler
-from satnogsclient.upsat import gnuradio_handler
 import logging
 import cPickle
 import os
