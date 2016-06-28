@@ -222,7 +222,7 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     elif backend == 'gnuradio':
         res = ecss_depacketizer(buf_in, ecss_dict)
     return res
-    
+ 
     
 def ecss_logic(ecss_dict):
 
@@ -304,8 +304,8 @@ def ecss_logic(ecss_dict):
         elif ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_QB50:
 
             qb50 = cnv8_32(ecss_dict['data'])
-            utc = datetime.datetime.fromtimestamp(qb50 + 946684800).strftime("%A, %d. %B %Y %I:%M%p")
-            report = "QB50 " +  + " UTC: " + utc
+            utc = qb50_to_utc(qb50)
+            report = "QB50 " +  qb50 + " UTC: " + utc
 
         text +=  "TIME {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
@@ -316,14 +316,72 @@ def ecss_logic(ecss_dict):
         text +=  "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
     elif ecss_dict['ser_type'] == TC_MASS_STORAGE_SERVICE:
 
+        report = ""
         if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_REPORT:
-            report = "MS " +  + " UTC: " + utc
+
+            for i in range(0, 7):
+
+                valid = ecss_dict['data'][(i * SCRIPT_REPORT_SIZE)]
+                size = cnv8_32(ecss_dict['data'][1 + (i * SCRIPT_REPORT_SIZE)])
+                fatfs = cnv8_32(ecss_dict['data'][5 + (i * SCRIPT_REPORT_SIZE)])
+                time_modfied = fatfs_to_utc(qb50)
+
+                report += "su script " + i + " valid: " + valid + " size: " + size + " time_modfied: " + time_modfied
+
+            for i in range(0, 7):
+
+                valid = ecss_dict['data'][(i * SCRIPT_REPORT_SIZE)]
+                size = cnv8_32(ecss_dict['data'][1 + (i * SCRIPT_REPORT_SIZE)])
+                fatfs = cnv8_32(ecss_dict['data'][5 + (i * SCRIPT_REPORT_SIZE)])
+                time_modfied = fatfs_to_utc(qb50)
+
+                report += "su script " + i + " valid: " + valid + " size: " + size + " time_modfied: " + time_modfied
+
         elif ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_LIST:
-            id = 1
-        if ecss_dict['ser_subtype'] == TM_MS_CONTENT:
-            report = "MS " +  + " UTC: " + utc
+
+            sid = ecss_dict['data'][0]
+
+            if sid == SU_LOG or sid == WOD_LOG or sid == EXT_WOD_LOG or sid == EVENT_LOG or sid == FOTOS:
+
+                files = (ecss_dict['size'] - 1) / LOGS_LIST_SIZE
+
+                #if su_logs > MAX_DOWNLINK_SU_LOGS:
+                    #error
+
+                ecss_dict['files'] = [0] * files
+
+                for i in range(0, files):
+                    filename = cnv8_16(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
+                    fatfs = cnv8_32(ecss_dict['data'][3 + (i * SU_LOG_SIZE)])
+                    time_modfied = fatfs_to_utc(qb50)
+                    size = cnv8_32(ecss_dict['data'][7 + (i * SU_LOG_SIZE)])
+
+                    ecss_dict['files'][i]['filename'] = filename
+                    ecss_dict['files'][i]['time_modfied'] = time_modfied
+                    ecss_dict['files'][i]['size'] = size
+
+                report = "received file list, with " + files + " files"
+
+        elif ecss_dict['ser_subtype'] == TM_MS_CONTENT:
+
+            sid = ecss_dict['data'][0]
+
+            if sid == SU_LOG:
+
+                su_logs = (ecss_dict['size'] - 1) / SU_LOG_SIZE
+
+                #if su_logs > MAX_DOWNLINK_SU_LOGS:
+                    #error
+
+                report = "received " + su_logs + " su logs " 
+                for i in range(0, su_logs):
+                    qb50 = cnv8_32(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
+                    utc = qb50_to_utc(qb50)
+                    report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
+                    #write log to a file and or in DB
 
         text +=  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+
     elif ecss_dict['ser_type'] == TC_TEST_SERVICE:
         text +=  "TEST Service from{0}".format(upsat_app_id[ecss_dict['app_id']])
     elif ecss_dict['ser_type'] == TC_SU_MNLP_SERVICE:
@@ -331,8 +389,15 @@ def ecss_logic(ecss_dict):
 
     ecss_dict['id'] = id
     ecss_dict['log_message'] = text
-    #ecss_dict['files'] = 
+    ecss_dict['files'] = []
     return ecss_dict
+
+def fatfs_to_utc(fatfs):
+    return fatfs
+
+def qb50_to_utc(qb50):
+    utc = datetime.datetime.fromtimestamp(qb50 + 946684800).strftime("%A, %d. %B %Y %I:%M%p")
+    return utc
 
 def cnv32_8(inc):
 
