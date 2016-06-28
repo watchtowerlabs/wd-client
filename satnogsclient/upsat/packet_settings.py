@@ -226,6 +226,18 @@ TM_TIME_SET_TIME_QB50          = 2 #subservice 2
 TM_REPORT_TIME_IN_UTC          = 3 #subservice 3
 TM_REPORT_TIME_IN_QB50         = 4 #subservice 4
 
-
+SU_SCRIPT_1     = 1
+SU_SCRIPT_2     = 2
+SU_SCRIPT_3     = 3
+SU_SCRIPT_4     = 4
+SU_SCRIPT_5     = 5
+SU_SCRIPT_6     = 6
+SU_SCRIPT_7     = 7
+SU_LOG          = 8
+WOD_LOG         = 9
+EXT_WOD_LOG     = 10
+EVENT_LOG       = 11
+FOTOS           = 12
+SCHS            = 13
 
 
