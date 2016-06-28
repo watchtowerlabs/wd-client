@@ -100,6 +100,7 @@ $(document).ready(function() {
         $select.find('option').remove();
         $select.append('<option selected="true" style="display:none;">Service sub Type</option>');
 
+        var key;
         if (subservice == "TC_VERIFICATION_SERVICE") {
             for (key in VR_SERVICE) {
                 $select.append('<option value=' + VR_SERVICE[key] + '>' + key + '</option>');
@@ -167,23 +168,23 @@ $(document).ready(function() {
         }
 
         if (selected_value == "Custom") {
-            var app_id = $('#service-param-app_id').val();
-            var type = $('#service-param-type').val();
-            var ack = $('#service-param-ack').val();
-            var service_type = $('#service-param-service_type').val();
-            var service_subtype = $('#service-param-service_subtype').val();
-            var dest_id = $('#service-param-dest_id').val();
-            var data = $('#service-param-service-data').val().split(",");
-            var seq_count = 0;
+            app_id = $('#service-param-app_id').val();
+            type = $('#service-param-type').val();
+            ack = $('#service-param-ack').val();
+            service_type = $('#service-param-service_type').val();
+            service_subtype = $('#service-param-service_subtype').val();
+            dest_id = $('#service-param-dest_id').val();
+            data = $('#service-param-service-data').val().split(",");
+            seq_count = 0;
         } else if (selected_value == "House keeping") {
-            var app_id = $('#service-param-hk-app_id').val();
-            var type = 1;
-            var ack = 0;
-            var service_type = 3;
-            var service_subtype = 21;
-            var dest_id = $('#service-param-hk-dest-id').val();
+            app_id = $('#service-param-hk-app_id').val();
+            type = 1;
+            ack = 0;
+            service_type = 3;
+            service_subtype = 21;
+            dest_id = $('#service-param-hk-dest-id').val();
 
-            var data = $('#service-param-hk-sid').val();
+            data = $('#service-param-hk-sid').val();
 
 
         } //else if (selected_value == "Mass storage") {
@@ -240,88 +241,88 @@ $(document).ready(function() {
 
         //}
         else if (selected_value == "Power") {
-            var dev_id = $('#service-param-dev-id').val();
-            var type = 1;
-            var ack = $('#service-param-power-ack').val();
+            dev_id = $('#service-param-dev-id').val();
+            type = 1;
+            ack = $('#service-param-power-ack').val();
 
-            var service_type = 8;
-            var service_subtype = 1;
-            var dest_id = $('#service-param-power-dest_id').val();
+            service_type = 8;
+            service_subtype = 1;
+            dest_id = $('#service-param-power-dest_id').val();
 
             if (dev_id == 1) {
-                var app_id = 2;
+                app_id = 2;
             } else if (dev_id == 2) {
-                var app_id = 2;
+                app_id = 2;
             } else if (dev_id == 3) {
-                var app_id = 2;
+                app_id = 2;
             } else if (dev_id == 4) {
-                var app_id = 2;
+                app_id = 2;
             } else if (dev_id == 5) {
-                var app_id = 1;
+                app_id = 1;
             } else if (dev_id == 6) {
-                var app_id = 2;
+                app_id = 2;
             } else if (dev_id == 7) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 8) {
-                var app_id = 1;
+                app_id = 1;
             } else if (dev_id == 9) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 10) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 11) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 12) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 13) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 14) {
-                var app_id = 3;
+                app_id = 3;
             } else if (dev_id == 15) {
-                var app_id = 3;
+                app_id = 3;
             }
 
             var fun_id = $('#service-param-function').val();
-            var data = [fun_id, dev_id];
+            data = [fun_id, dev_id];
         } else if (selected_value == "Test") {
-            var app_id = $('#service-param-test-app_id').val();
-            var type = 1;
-            var ack = 0;
+            app_id = $('#service-param-test-app_id').val();
+            type = 1;
+            ack = 0;
 
-            var service_type = 17;
-            var service_subtype = 1;
-            var dest_id = $('#service-param-test-dest_id').val();
-            var data = [];
+            service_type = 17;
+            service_subtype = 1;
+            dest_id = $('#service-param-test-dest_id').val();
+            data = [];
         } else if (selected_value == "Time") {
             // TODO: Is app_id needed in time service?
-            //var app_id = $('#service-param-time-app_id').val();
-            var app_id = 1;
-            var type = 1;
-            var ack = 0;
+            //app_id = $('#service-param-time-app_id').val();
+            app_id = 1;
+            type = 1;
+            ack = 0;
 
-            var service_type = 17;
-            var service_subtype = 1;
-            var dest_id = $('#service-param-time-dest_id').val();
+            service_type = 17;
+            service_subtype = 1;
+            dest_id = $('#service-param-time-dest_id').val();
 
             selected_action = $('#service-param-time-report').find("option:selected").val();
 
             if (selected_action == 'manual') {
                 var datetime = datepicker.data("DateTimePicker").date();
-                var data = [datetime.utc().format().toString()];
+                data = [datetime.utc().format().toString()];
             } else if (selected_action == 'auto') {
-                var data = [moment().utc().format().toString()];
+                data = [moment().utc().format().toString()];
             } else {
                 data = [];
             }
         } else if (selected_value == "ADCS TLE update") {
             // TODO: Is app_id needed in time service?
-            //var app_id = $('#service-param-time-app_id').val();
-            var app_id = 7;
-            var type = 0;
-            var ack = 0;
+            //app_id = $('#service-param-time-app_id').val();
+            app_id = 7;
+            type = 0;
+            ack = 0;
 
-            var service_type = 3;
-            var service_subtype = 23;
-            var dest_id = 3;
+            service_type = 3;
+            service_subtype = 23;
+            dest_id = 3;
 
             data = [];
             ascii_to_dec($('#service-param-service-tle').val().split(''), data);
@@ -353,7 +354,7 @@ $(document).ready(function() {
 
     $("#time-radio").change(function() {
         // If checkbox not checked already
-        if ($('input[name=power-radio]').prop('checked') == true) {
+        if ($('input[name=power-radio]').prop('checked') === true) {
             var elem = document.getElementById('subservice-params-time');
             var elem2 = document.getElementById('subservice-params-power');
             elem.style.display = "block";
@@ -443,8 +444,8 @@ $(document).ready(function() {
     });
 
     $("#mode-switch li").click(function() {
-      var mode = $(this).attr("data-value");
-      display_control_view(mode);
+        var mode = $(this).attr("data-value");
+        display_control_view(mode);
     });
 
 });
@@ -482,7 +483,7 @@ function ascii_to_dec(inc, out) {
 }
 
 function encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count) {
-    var DataFieldHeader = new Object();
+    var DataFieldHeader = {};
     DataFieldHeader.CCSDSSecondaryHeaderFlag = '0';
     DataFieldHeader.TCPacketPUSVersionNumber = '1';
     DataFieldHeader.Ack = ack;
@@ -491,13 +492,13 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
     DataFieldHeader.SourceID = dest_id;
     DataFieldHeader.Spare = '0';
 
-    var PacketID = new Object();
+    var PacketID = {};
     PacketID.VersionNumber = '0';
     PacketID.Type = type;
     PacketID.DataFieldHeaderFlag = '1';
     PacketID.ApplicationProcessID = app_id;
 
-    var PacketSequenceControl = new Object();
+    var PacketSequenceControl = {};
     PacketSequenceControl.SequenceFlags = '3';
 
 
@@ -505,7 +506,7 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
         PacketSequenceControl.SequenceCount = seq_count;
     }
 
-    var PacketDataField = new Object();
+    var PacketDataField = {};
     PacketDataField.DataFieldHeader = DataFieldHeader;
     if (data) {
         PacketDataField.ApplicationData = data;
@@ -515,16 +516,16 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
     PacketDataField.Spare = '0';
     PacketDataField.PacketErrorControl = '5';
 
-    var PacketHeader = new Object();
+    var PacketHeader = {};
     PacketHeader.PacketID = PacketID;
     PacketHeader.PacketSequenceControl = PacketSequenceControl;
     PacketHeader.PacketLength = '66';
 
-    var TestServicePacket = new Object();
+    var TestServicePacket = {};
     TestServicePacket.PacketHeader = PacketHeader;
     TestServicePacket.PacketDataField = PacketDataField;
 
-    var ecss_cmd = new Object();
+    var ecss_cmd = {};
     ecss_cmd.ecss_cmd = TestServicePacket;
     ecss_cmd.backend = backend;
 
@@ -534,9 +535,9 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
 }
 
 function encode_comms_tx_rf(status) {
-    var response = new Object();
-    var custom_cmd = new Object();
-    var comms_tx_rf = new Object();
+    var response = {};
+    var custom_cmd = {};
+    var comms_tx_rf = {};
     if (status) {
         custom_cmd.comms_tx_rf = 'comms_on';
     } else {
@@ -549,9 +550,9 @@ function encode_comms_tx_rf(status) {
 }
 
 function encode_backend_mode(mode) {
-    var response = new Object();
-    var custom_cmd = new Object();
-    var backend = new Object();
+    var response = {};
+    var custom_cmd = {};
+    var backend = {};
     if (mode == "gnuradio") {
         custom_cmd.backend = 'gnuradio';
     } else if (mode == "serial") {
@@ -566,15 +567,15 @@ function encode_backend_mode(mode) {
 function print_command_response(data) {
     var response_panel = $('#response-panel-body ul');
     var data_type;
-    if (data['id'] == 1) {
+    if (data.id == 1) {
         data_type = 'cmd';
-        log_data = data['log_message'];
-    } else if (data['id'] == 2) {
+        log_data = data.log_message;
+    } else if (data.id == 2) {
         data_type = 'ecss';
-        log_data = data['log_message'];
+        log_data = data.log_message;
     } else {
         data_type = 'other';
-        log_data = data['log_message'];
+        log_data = data.log_message;
     }
     response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format('DD-MM-YYYY HH:mm:ss').toString() + '] ' + log_data + '</li>');
     response_panel.scrollTop = response_panel.scrollHeight;
@@ -605,20 +606,21 @@ function query_control_backend(data, post_mode, url, content_type, data_type, pr
     });
 }
 
-function display_control_view (mode) {
-  if (mode == 'Network') {
-    // Disable Upsat Command and Control
-    $('#cnc_mode').css('display', 'none');
-    $('#network_mode').css('display', 'block');
-  }
-  else if (mode == 'Stand-Alone') {
-    // Enable Upsat Command and Control
-    $('#cnc_mode').css('display', 'block');
-    $('#network_mode').css('display', 'none');
-  }
+function display_control_view(mode) {
+    if (mode == 'Network') {
+        // Disable Upsat Command and Control
+        $('#cnc_mode').css('display', 'none');
+        $('#network_mode').css('display', 'block');
+    } else if (mode == 'Stand-Alone') {
+        // Enable Upsat Command and Control
+        $('#cnc_mode').css('display', 'block');
+        $('#network_mode').css('display', 'none');
+    }
 }
 
 function init() {
+    // Various variable definition
+    var app_id, type, ack, service_type, service_subtype, dest_id, data, seq_count;
 
     //mode = $("#mode-switch li").attr("data-value");
     mode = Cookies.get('mode');

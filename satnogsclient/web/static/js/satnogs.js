@@ -36,7 +36,7 @@ $("#mode-switch li").click(function() {
           }
       }
    }
-   else if (Cookies.get('mode') == null) {
+   else if (Cookies.get('mode') === null) {
      //TODO: Fix hardcoded initialization
      default_mode = "Network";
      Cookies.set('mode', default_mode);
@@ -47,9 +47,9 @@ $("#mode-switch li").click(function() {
   }
 
   function encode_mode_switch(mode) {
-    var response = new Object();
-    var custom_cmd = new Object();
-    var comms_tx_rf = new Object();
+    var response = {};
+    var custom_cmd = {};
+    var comms_tx_rf = {};
     if (mode == "Stand-Alone") {
         custom_cmd.mode = 'cmd_ctrl';
     }
