@@ -1,4 +1,3 @@
-from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import serial_handler
 from satnogsclient.upsat import gnuradio_handler
 import os
@@ -8,7 +7,7 @@ logger = logging.getLogger('satnogsclient')
 
 
 def send_to_backend(buf):
-    logger.debug('Send to backend called with backen %s',os.environ['BACKEND'])
+    logger.debug('Send to backend called with backen %s', os.environ['BACKEND'])
     curr_backend = os.environ['BACKEND']
     if curr_backend != 'gnuradio' or curr_backend != 'serial':
         return 0

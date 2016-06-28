@@ -20,7 +20,7 @@ from satnogsclient.receiver import SignalReceiver
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import serial_handler
-from satnogsclient.upsat.gnuradio_handler import write_to_gnuradio, read_from_gnuradio
+from satnogsclient.upsat.gnuradio_handler import read_from_gnuradio
 from time import sleep
 
 logger = logging.getLogger('satnogsclient')
