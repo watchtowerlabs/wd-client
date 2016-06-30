@@ -240,4 +240,15 @@ EVENT_LOG       = 11
 FOTOS           = 12
 SCHS            = 13
 
-
+EV_inc_pkt           = 1
+EV_pkt_ack_er        = 2
+EV_sys_boot          = 3
+EV_pwr_level         = 4
+EV_comms_tx_off      = 5
+EV_sys_timeout       = 6
+EV_sys_shutdown      = 7
+EV_assertion         = 8
+EV_su_error          = 9
+EV_su_scr_start      = 10
+EV_pkt_pool_timeout  = 11
+EV_ms_err            = 12
