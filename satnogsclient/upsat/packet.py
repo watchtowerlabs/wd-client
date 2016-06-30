@@ -277,8 +277,8 @@ def ecss_logic(ecss_dict):
     elif ecss_dict['ser_type'] == TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == TM_EV_NORMAL_REPORT:
 
         event_id = ecss_dict['data'][0]
-        if event_id == HEALTH_REP:
-            report = "data "
+        if event_id == EV_sys_boot:
+            report = "booted"
 
         text +=  "EVENT {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
@@ -349,6 +349,7 @@ def ecss_logic(ecss_dict):
                     #error
 
                 ecss_dict['files'] = [0] * files
+                ecss_dict['files']['sid'] = sid
 
                 for i in range(0, files):
                     filename = cnv8_16(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
