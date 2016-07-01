@@ -137,7 +137,7 @@ def ecss_packetizer(ecss, buf):
     buf[1] = app_id_ls
     seq_flags = packet_settings.TC_TM_SEQ_SPACKET
     seq_count = ecss['seq_count']
-    seq_count_ms = seq_count & 0xFF00
+    seq_count_ms = (seq_count >> 8) & 0x00FF
     seq_count_ls = seq_count & 0x00FF
     seq_count_ms = seq_count >> 8
     buf[2] = (seq_flags << 6 | seq_count_ms)
@@ -153,7 +153,7 @@ def ecss_packetizer(ecss, buf):
     for i in range(0, data_size):
         buf[buf_pointer + i] = ecss['data'][i]
     data_w_headers = data_size + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE - 1
-    packet_size_ms = data_w_headers & 0xFF00
+    packet_size_ms = (data_w_headers >> 8) & 0x00FF
     packet_size_ls = data_w_headers & 0x00FF
     buf[4] = packet_size_ms >> 8
     buf[5] = packet_size_ls
@@ -163,6 +163,7 @@ def ecss_packetizer(ecss, buf):
 
     size = buf_pointer + 2
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
+    print "Packetizer ", ''.join(' {:02x} '.format(x) for x in buf)
     return packet_settings.SATR_OK
 
 
@@ -229,18 +230,18 @@ def ecss_logic(ecss_dict):
     id = 0 
     text = "Nothing found"
 
-    if ecss_dict['ser_type'] == TC_VERIFICATION_SERVICE:
+    if ecss_dict['ser_type'] == packet_settings.TC_VERIFICATION_SERVICE:
 
         #we should have a list of packets with ack in order to return it        
         report = "Wrong sub type"
-        if ecss_dict['ser_subtype'] == TM_VR_ACCEPTANCE_SUCCESS:
+        if ecss_dict['ser_subtype'] == packet_settings.TM_VR_ACCEPTANCE_SUCCESS:
             report = "OK"
-        elif ecss_dict['ser_subtype'] == TM_VR_ACCEPTANCE_FAILURE:
+        elif ecss_dict['ser_subtype'] == packet_settings.TM_VR_ACCEPTANCE_FAILURE:
             report = "Error " + SAT_RETURN_STATE[ecss_dict['data'][4]]
 
         text +=  "ACK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_HOUSEKEEPING_SERVICE and ecss_dict['ser_subtype'] == TM_HK_PARAMETERS_REPORT:
+    elif ecss_dict['ser_type'] == packet_settings.TC_HOUSEKEEPING_SERVICE and ecss_dict['ser_subtype'] == packet_settings.TM_HK_PARAMETERS_REPORT:
 
         struct_id = ecss_dict['data'][0]
 
@@ -274,7 +275,7 @@ def ecss_logic(ecss_dict):
 
         text +=  "HK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == TM_EV_NORMAL_REPORT:
+    elif ecss_dict['ser_type'] == packet_settings.TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == packet_settings.TM_EV_NORMAL_REPORT:
 
         event_id = ecss_dict['data'][0]
         if event_id == EV_sys_boot:
@@ -282,14 +283,14 @@ def ecss_logic(ecss_dict):
 
         text +=  "EVENT {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_FUNCTION_MANAGEMENT_SERVICE:
+    elif ecss_dict['ser_type'] == packet_settings.TC_FUNCTION_MANAGEMENT_SERVICE:
          #nothing to do here
          text +=  "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_TIME_MANAGEMENT_SERVICE:
+    elif ecss_dict['ser_type'] == packet_settings.TC_TIME_MANAGEMENT_SERVICE:
 
         #check https://docs.python.org/2/library/datetime.html#strftime-strptime-behavior
-        if ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_UTC:
+        if ecss_dict['ser_subtype'] == packet_settings.TM_REPORT_TIME_IN_UTC:
 
             day = ecss_dict['data'][0]
             mon = ecss_dict['data'][1]
@@ -301,7 +302,7 @@ def ecss_logic(ecss_dict):
             utc = timedelta(years = year, months = mon, days = day, hours = hour, minutes = mins, seconds = sec).strftime("%A, %d. %B %Y %I:%M%p")
             report = "UTC: " + utc
 
-        elif ecss_dict['ser_subtype'] == TM_REPORT_TIME_IN_QB50:
+        elif ecss_dict['ser_subtype'] == packet_settings.TM_REPORT_TIME_IN_QB50:
 
             qb50 = cnv8_32(ecss_dict['data'])
             utc = qb50_to_utc(qb50)
@@ -309,15 +310,15 @@ def ecss_logic(ecss_dict):
 
         text +=  "TIME {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_SCHEDULING_SERVICE:
+    elif ecss_dict['ser_type'] == packet_settings.TC_SCHEDULING_SERVICE:
         text +=  "APO, DO LET US KNOW WHAT TO DO HERE"
-    elif ecss_dict['ser_type'] == TC_LARGE_DATA_SERVICE:
+    elif ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:
         #nothing to do here
         text +=  "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
-    elif ecss_dict['ser_type'] == TC_MASS_STORAGE_SERVICE:
+    elif ecss_dict['ser_type'] == packet_settings.TC_MASS_STORAGE_SERVICE:
 
         report = ""
-        if ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_REPORT:
+        if ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_REPORT:
 
             for i in range(0, 7):
 
@@ -337,7 +338,7 @@ def ecss_logic(ecss_dict):
 
                 report += "su script " + i + " valid: " + valid + " size: " + size + " time_modfied: " + time_modfied
 
-        elif ecss_dict['ser_subtype'] == TM_MS_CATALOGUE_LIST:
+        elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
             sid = ecss_dict['data'][0]
 
@@ -363,7 +364,7 @@ def ecss_logic(ecss_dict):
 
                 report = "received file list, with " + files + " files"
 
-        elif ecss_dict['ser_subtype'] == TM_MS_CONTENT:
+        elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CONTENT:
 
             sid = ecss_dict['data'][0]
 
@@ -383,15 +384,16 @@ def ecss_logic(ecss_dict):
 
         text +=  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
-    elif ecss_dict['ser_type'] == TC_TEST_SERVICE:
-        text +=  "TEST Service from{0}".format(upsat_app_id[ecss_dict['app_id']])
-    elif ecss_dict['ser_type'] == TC_SU_MNLP_SERVICE:
-        text +=  "APO, DO LET US KNOW WHAT TO DO HERE"
+    elif ecss_dict['ser_type'] == packet_settings.TC_TEST_SERVICE:
+        text =  "TEST Service from {0}".format(packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
+    elif ecss_dict['ser_type'] == packet_settings.TC_SU_MNLP_SERVICE:
+        text =  "APO, DO LET US KNOW WHAT TO DO HERE"
 
-    ecss_dict['id'] = id
-    ecss_dict['log_message'] = text
-    ecss_dict['files'] = []
-    return ecss_dict
+    res_dict = {}
+    res_dict['id'] = id
+    res_dict['log_message'] = text
+    res_dict['files'] = []
+    return res_dict
 
 def fatfs_to_utc(fatfs):
     return fatfs
