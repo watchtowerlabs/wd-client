@@ -335,7 +335,7 @@ $(document).ready(function() {
         }
 
         if (flag) {
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
         } else {
             alert('Please fill ' + missing);
@@ -567,17 +567,23 @@ function encode_backend_mode(mode) {
 function print_command_response(data) {
     var response_panel = $('#response-panel-body ul');
     var data_type;
-    if (data.id == 1) {
-        data_type = 'cmd';
-        log_data = data.log_message;
-    } else if (data.id == 2) {
-        data_type = 'ecss';
-        log_data = data.log_message;
-    } else {
-        data_type = 'other';
-        log_data = data.log_message;
+    console.log(JSON.stringify(data));
+
+    for(var key in data) {
+        var resp = data[key];
+
+        if (resp.id == 1) {
+            data_type = 'cmd';
+            log_data = resp.log_message;
+        } else if (resp.id == 2) {
+            data_type = 'ecss';
+            log_data = resp.log_message;
+        } else {
+            data_type = 'other';
+            log_data = resp.log_message;
+        }
+        response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format('DD-MM-YYYY HH:mm:ss').toString() + '] ' + log_data + '</li>');
     }
-    response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format('DD-MM-YYYY HH:mm:ss').toString() + '] ' + log_data + '</li>');
     response_panel.scrollTop = response_panel.scrollHeight;
 }
 
