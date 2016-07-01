@@ -44,3 +44,11 @@ def read_from_gnuradio():
                 ecss_feeder_sock.sendto(pickled, ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
         except KeyError:
             logger.error('Ecss Dictionary not properly constructed. Error occured. Key \'ser_type\' not in dictionary')
+            
+def exec_gnuradio():
+    import imp
+    gr = imp.load_source('transceiver', '/home/sleepwalker/netlab/satnogs/gr-satnogs/examples/debug_fsk_transceiver_uhd.py')
+    from multiprocessing import Process
+    ef = Process(target=gr.main, args=())
+    ef.start()
+    
