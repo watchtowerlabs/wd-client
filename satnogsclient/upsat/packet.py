@@ -8,7 +8,6 @@ from satnogsclient.upsat import packet_settings
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import hldlc
-from satnogsclient import settings
 import json
 
 logger = logging.getLogger('satnogsclient')
