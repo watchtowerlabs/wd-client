@@ -170,10 +170,10 @@ def comms_off():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I",data, 9, settings.RF_SW_CMD_OFF_1)
-    struct.pack_into("<I",data, 13, settings.RF_SW_CMD_OFF_2)
-    struct.pack_into("<I",data, 17, settings.RF_SW_CMD_OFF_3)
-    struct.pack_into("<I",data, 21, settings.RF_SW_CMD_OFF_4)
+    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_OFF_1)
+    struct.pack_into("<I", data, 13, settings.RF_SW_CMD_OFF_2)
+    struct.pack_into("<I", data, 17, settings.RF_SW_CMD_OFF_3)
+    struct.pack_into("<I", data, 21, settings.RF_SW_CMD_OFF_4)
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
@@ -182,10 +182,10 @@ def comms_on():
     sock = Udpsocket([])
     data = ctypes.create_string_buffer(25)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I",data, 9, settings.RF_SW_CMD_ON_1)
-    struct.pack_into("<I",data, 13, settings.RF_SW_CMD_ON_2)
-    struct.pack_into("<I",data, 17, settings.RF_SW_CMD_ON_3)
-    struct.pack_into("<I",data, 21, settings.RF_SW_CMD_ON_4)
+    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_ON_1)
+    struct.pack_into("<I", data, 13, settings.RF_SW_CMD_ON_2)
+    struct.pack_into("<I", data, 17, settings.RF_SW_CMD_ON_3)
+    struct.pack_into("<I", data, 21, settings.RF_SW_CMD_ON_4)
     print data.raw
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
@@ -222,5 +222,3 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
     elif backend == 'gnuradio':
         res = ecss_depacketizer(buf_in, ecss_dict)
     return res
-
-   
