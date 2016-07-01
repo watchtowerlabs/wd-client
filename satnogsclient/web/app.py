@@ -66,6 +66,7 @@ def get_control_rx():
         tmp = {}
         tmp['log_message'] = e
         return jsonify(tmp)
+    print "einai auto paketo?", data
     packet_list = json.loads(data)
     """
     The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
@@ -73,16 +74,19 @@ def get_control_rx():
     The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
     Next, for each item in list, json.dumps(item) will give the ecss dictionary
     """
-    ecss_dicts_list = []
+    ecss_dicts = {}
     if packet_list:
+        cnt = 0
         for str_dict in packet_list:
             print str_dict
             ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
-            ecss_dicts_list.append(ecss_dict)
-        return jsonify(ecss_dicts_list)
+            res = packet.ecss_logic(ecss_dict)
+            ecss_dicts[cnt] =res;
+            cnt += 1 
+        return jsonify(ecss_dicts)
     else:
         tmp = {}
-        tmp['log_message'] = 'This is a test'
+        tmp[0] = {'log_message' : 'This is a test' }
         return jsonify(tmp)
 
 
@@ -90,31 +94,28 @@ def get_control_rx():
 def get_command():
     requested_command = request.get_json()
     response = {}
-    response['log_message'] = 'This is a test response'
+    response[0] = {'id' : 1, 'log_message' : 'This is a test response' };
     if requested_command is not None:
         if 'custom_cmd' in requested_command:
             if 'comms_tx_rf' in requested_command['custom_cmd']:
                 # TODO: Handle the comms_tx_rf request
                 if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
                     packet.comms_off()
-                    response['log_message'] = 'COMMS_OFF command sent'
-                    response['id'] = 1
+                    response[0] = {'id' : 1, 'log_message' : 'COMMS_OFF command sent' };
                     return jsonify(response)
                 elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
                     packet.comms_on()
-                    response['log_message'] = 'COMMS_ON command sent'
-                    response['id'] = 1
+                    response[0] = {'id' : 1, 'log_message' : 'COMMS_ON command sent' };
                     return jsonify(response)
             elif 'mode' in requested_command['custom_cmd']:
                 # TODO: Handle the comms_tx_rf request
                 mode = requested_command['custom_cmd']['mode']
                 if requested_command['custom_cmd']['mode'] == 'cmd_ctrl':
-                    response['log_message'] = 'Mode changed to Stand-Alone'
-                    response['id'] = 1
+                    response[0] = { 'log_message' : 'Mode changed to Stand-Alone' };
+                    response[0]= { 'id' : 1 };
                     # return jsonify(response)
                 elif requested_command['custom_cmd']['mode'] == 'network':
-                    response['log_message'] = 'Mode changed to Network'
-                    response['id'] = 1
+                    response[0] = { 'id' : 1, 'log_message' : 'Mode changed to Network' };
                     # return jsonify(response)
                 dict_out = {'mode': mode}
                 packet.custom_cmd_to_backend(dict_out)
@@ -122,16 +123,15 @@ def get_command():
                 # TODO: Handle the comms_tx_rf request
                 backend = requested_command['custom_cmd']['backend']
                 if requested_command['custom_cmd']['backend'] == 'gnuradio':
-                    response['log_message'] = 'Backend changed to GNURadio'
-                    response['id'] = 1
+                    response[0] = { 'id' : 1, 'log_message' : 'Backend changed to GNURadio' };
                     # return jsonify(response)
                 elif requested_command['custom_cmd']['backend'] == 'serial':
-                    response['log_message'] = 'Backend changed to Serial'
-                    response['id'] = 1
+                    response[0] = { 'id' : 1, 'log_message' : 'Backend changed to Serial' };
                     # return jsonify(response)
                 dict_out = {'backend': backend}
                 packet.custom_cmd_to_backend(dict_out)
         elif 'ecss_cmd' in requested_command:
+            print "got a ecss packet from ui"
             ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
                     'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
                     'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
@@ -150,8 +150,7 @@ def get_command():
                 print "storing packet for verification"
 
             buf = packet.construct_packet(ecss, os.environ['BACKEND'])
-            response['log_message'] = 'ECSS command send'
-            response['id'] = 1
+            response[0] = { 'id' : 1 , 'log_message' : 'ECSS command send' };
             tx_handler.send_to_backend(buf)
             return jsonify(response)
     return render_template('control.j2')
