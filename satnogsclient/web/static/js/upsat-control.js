@@ -144,6 +144,18 @@ $(document).ready(function() {
         }
     });
 
+    $('#service-param-ms-function').on('change', function() {
+        fun = $('#service-param-ms-function').find("option:selected").val();
+        alert(fun);
+        if (fun == "File_system") {
+    
+        } else if (fun == "Format") {
+
+        } else if (fun == "Enable") {
+
+        }
+    });
+
     $('#service-param-time-report').on('change', function() {
         elem = document.getElementById('datetimepicker1');
         if ($('#service-param-time-report').find("option:selected").val() == "manual") {
@@ -192,60 +204,76 @@ $(document).ready(function() {
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
-        // } else if (selected_value == "mass") {
-        //
-        //     var type = 1;
-        //     var ack = $('#service-param-ms-ack').val();
-        //     var dest_id = $('#service-param-ms-dest-id').val();
-        //     var service_type = 15;
-        //     var data = [];
-        //
-        //     var store_id = $('#service-param-ms-sid').val();
-        //
-        //     var fun = $('#service-param-ms-function').val();
-        //
-        //     if (fun == "Format") {
-        //         if (confirm('Are you sure you want to format the sd?')) {
-        //             var service_subtype = 15;
-        //         } else {
-        //             return 0;
-        //         }
-        //
-        //     } else if (fun == "File_system") {
-        //         var action = $('#service-param-ms-action').val();
-        //
-        //         if (action == "Report") {
-        //
-        //             var fn = $('#service-param-service-ms-iter').val();
-        //
-        //             var service_subtype = 12;
-        //             data[0] = store_id;
-        //
-        //             data[1] = 0x000000FF & fn;
-        //             data[2] = 0x000000FF & (fn >> 8);
-        //             data[3] = 0x000000FF & (fn >> 16);
-        //             data[4] = 0x000000FF & (fn >> 24);
-        //
-        //         } else if (action == "Uplink") {
-        //             continue;
-        //         } else if (action == "Delete") {
-        //
-        //             var service_subtype = 11;
-        //             data[0] = store_id;
-        //
-        //             data[1] = 0;
-        //
-        //             data[2] = 0;
-        //             data[3] = 0;
-        //             data[4] = 0;
-        //             data[5] = 0;
-        //         }
-        //
-        //     } else if (fun == "Enable") {
-        //         continue;
+
+        } else if (selected_value == "Mass storage") {
+
+            var type = 1;
+            var ack = $('#service-param-ms-ack').val();
+            var dest_id = $('#service-param-ms-dest-id').val();
+            var service_type = 15;
+            var data = [];
+
+            var store_id = $('#service-param-ms-sid').val();
+
+            var fun = $('#service-param-ms-function').val();
+
+            if(fun == "Format") {
+                if (confirm('Are you sure you want to format the sd?')) {
+                    var service_subtype = 15;
+                } else {
+                    return 0;
+                }
+            } else if(fun == "File_system") {
+
+                var action = $('#service-param-ms-action').val();
+
+                if(action == "Report") {
+
+                    var service_subtype = 12;
+
+                } else if(action == "List") {
+
+                    var fn = $('#service-param-service-ms-num').val();
+                    var service_subtype = 16;
+
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // next file
+                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+
+                } else if(action == "Downlink") {
+
+                    var fn = $('#service-param-service-ms-num').val();                                   
+                    var service_subtype = 9;
+
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // file from
+                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+                    data.splice(3, 0, 1); // num of files
+                
+                } else if(action == "Uplink") {
+                    return 0;
+                } else if(action == "Delete") {
+
+                    var fnum = $('#service-param-service-ms-num').val();
+                    var service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 0); //mode != 6
+                    data.splice(2, 0, ((fnum >> 8) & 0x00FF)); // num of files
+                    data.splice(3, 0, ((fnum >> 0) & 0x00FF));
+
+                } else if(action == "Hard") {
+
+                    var service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 6);  // 6 is hard delete mode
+                }
+             } 
+        //      else if(fun == "Enable") {
+        //       continue;
         //     }
-        //
-         } else if (selected_value == "power") {
+
+        } else if (selected_value == "Power") {
+            
             dev_id = $('#service-param-dev-id').val();
             type = 1;
             ack = $('#service-param-power-ack').val();
