@@ -1,11 +1,11 @@
 {% extends "base.j2" %}
-{% set active_page = "control" %}
+{% set active_page = "upsat_control" %}
 
-{% block title %} - Control{% endblock %}
+{% block title %} - UPSat C&amp;C{% endblock %}
 
 {% block content %}
   <div class="container">
-    <h1>Control</h1>
+    <h1>UPSat C&amp;C</h1>
     <div class="row" id="cnc_mode">
       <div class="col-md-7">
         <div class="row" id="switch-panel">
@@ -550,5 +550,5 @@
 
 {% endblock %}
 {% block js %}
-<script src="{{ url_for('static', filename='js/satnogs-control.js') }}"></script>
+<script src="{{ url_for('static', filename='js/upsat-control.js') }}"></script>
 {% endblock %}
