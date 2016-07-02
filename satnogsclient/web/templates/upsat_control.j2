@@ -278,57 +278,103 @@
                     </div>
                   </div>
                   <div class="row">
-                    <select id="service-param-ms-function" class="form-control">
-                      <option selected="true" style="display:none;">App ID</option>
-                      <option value="File_system" >File system</option>
-                      <option value="Format" >Format</option>
-                      <option value="Enable" >Enable</option>
-                    </select>
-                    <select id="service-param-ms-ack" class="form-control">
-                      <option selected="true" style="display:none;">ACK</option>
-                      <option value="1" >ACK</option>
-                      <option value="0" >NO ACK</option>
-                    </select>
-                    <select id="service-param-test-ms-dest-id" class="form-control">
-                      <option selected="true" style="display:none;">Dest ID</option>
-                      <option value="6" >GND</option>
-                      <option value="7" >UMB</option>
-                    </select>
-                    <select id="service-param-ms-sid" class="form-control">
-                      <option selected="true" style="display:none;">Service Type</option>
-                      <option value="1" >SU_SCRIPT 1</option>
-                      <option value="2" >SU_SCRIPT 2</option>
-                      <option value="3" >SU_SCRIPT 3</option>
-                      <option value="4" >SU_SCRIPT 4</option>
-                      <option value="5" >SU_SCRIPT 5</option>
-                      <option value="6" >SU_SCRIPT 6</option>
-                      <option value="7" >SU_SCRIPT 7</option>
-                      <option value="8" >SU_LOG</option>
-                      <option value="9" >WOD_LOG</option>
-                      <option value="10" >EXT_WOD_LOG</option>
-                      <option value="11" >EVENT_LOG</option>
-                      <option value="12" >FOTOS</option>
-                    </select>
-                    <select id="service-param-ms-action" class="form-control">
-                      <option selected="true" style="display:none;">ACK</option>
-                      <option value="Delete" >Delete All</option>
-                      <option value="Report" >Report</option>
-                      <option value="Uplink" >Uplink</option>
-                    </select>
-                    <div class="text-center m-b-md">
-                      <label> Iter: </label>
-                      <input type="text" id="service-param-service-ms-iter">
+                    <div class="col-md-4">
+                      <label>Function:</label>
                     </div>
-                    <div id="service-param-ms-fs-action">
-                      <label> File name </label>
-                      <label> File size </label>
-                      <label> Modified </label>
-                      <button class="btn btn-primary"> View </button>
-                      <button class="btn btn-primary"> Delete </button>
-                      <button class="btn btn-primary"> Delete To</button>
+                    <div class="col-md-8">
+                      <select id="service-param-ms-function" class="form-control">
+                        <option selected="true" style="display:none;">App ID</option>
+                        <option value="File_system" >File system</option>
+                        <option value="Format" >Format</option>
+                        <option value="Enable" >Enable</option>
+                      </select>
                     </div>
-                    <div class="text-center text-center">
-                      <button class="btn btn-primary"> Send </button>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>ACK:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-ms-ack" class="form-control">
+                        <option selected="true" style="display:none;">ACK</option>
+                        <option value="1" >ACK</option>
+                        <option value="0" >NO ACK</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Destination ID:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-test-ms-dest-id" class="form-control">
+                        <option selected="true" style="display:none;">Dest ID</option>
+                        <option value="6" >GND</option>
+                        <option value="7" >UMB</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Service ID:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-ms-sid" class="form-control">
+                        <option selected="true" style="display:none;">Service ID</option>
+                        <option value="1" >SU_SCRIPT 1</option>
+                        <option value="2" >SU_SCRIPT 2</option>
+                        <option value="3" >SU_SCRIPT 3</option>
+                        <option value="4" >SU_SCRIPT 4</option>
+                        <option value="5" >SU_SCRIPT 5</option>
+                        <option value="6" >SU_SCRIPT 6</option>
+                        <option value="7" >SU_SCRIPT 7</option>
+                        <option value="8" >SU_LOG</option>
+                        <option value="9" >WOD_LOG</option>
+                        <option value="10" >EXT_WOD_LOG</option>
+                        <option value="11" >EVENT_LOG</option>
+                        <option value="12" >FOTOS</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Action:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-ms-action" class="form-control">
+                        <option selected="true" style="display:none;">Action</option>
+                        <option value="Delete" >Delete All</option>
+                        <option value="Report" >Report</option>
+                        <option value="Uplink" >Uplink</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Iter:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <div class="text-center m-b-md">
+                        <input class="form-control" type="text" id="service-param-service-ms-iter">
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-12">
+                      <div id="service-param-ms-fs-action">
+                        <button class="btn btn-primary"> View </button>
+                        <button class="btn btn-primary"> Delete </button>
+                        <button class="btn btn-primary"> Delete To</button>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                    </div>
+                    <div class="col-md-8">
+                      <div class="text-right">
+                        <button class="btn btn-primary"> Send </button>
+                      </div>
                     </div>
                   </div>
                 </div>
