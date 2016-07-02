@@ -278,7 +278,7 @@
                   </div>
                   <div class="row">
                     <select id="service-param-ms-function" class="form-control">
-                      <option selected="true" style="display:none;">App ID</option>
+                      <option selected="true" style="display:none;">Function</option>
                       <option value="File_system" >File system</option>
                       <option value="Format" >Format</option>
                       <option value="Enable" >Enable</option>
@@ -294,7 +294,7 @@
                       <option value="7" >UMB</option>
                     </select>
                     <select id="service-param-ms-sid" class="form-control">
-                      <option selected="true" style="display:none;">Service Type</option>
+                      <option selected="true" style="display:none;">Store id</option>
                       <option value="1" >SU_SCRIPT 1</option>
                       <option value="2" >SU_SCRIPT 2</option>
                       <option value="3" >SU_SCRIPT 3</option>
@@ -309,22 +309,17 @@
                       <option value="12" >FOTOS</option>
                     </select>
                     <select id="service-param-ms-action" class="form-control">
-                      <option selected="true" style="display:none;">ACK</option>
-                      <option value="Delete" >Delete All</option>
+                      <option selected="true" style="display:none;">Action</option>
+                      <option value="Delete" >Delete</option>
+                      <option value="Hard" >Hard delete</option>
                       <option value="Report" >Report</option>
+                      <option value="List" >List</option>
+                      <option value="Downlink" >Downlink</option>
                       <option value="Uplink" >Uplink</option>
                     </select>
                     <div class="text-center m-b-md">
-                      <label> Iter: </label>
-                      <input type="text" id="service-param-service-ms-iter">
-                    </div>
-                    <div id="service-param-ms-fs-action">
-                      <label> File name </label>
-                      <label> File size </label>
-                      <label> Modified </label>
-                      <button class="btn btn-primary"> View </button>
-                      <button class="btn btn-primary"> Delete </button>
-                      <button class="btn btn-primary"> Delete To</button>
+                      <label> Num/Iter: </label>
+                      <input type="text" id="service-param-service-ms-num">
                     </div>
                     <div class="text-center text-center">
                       <button class="btn btn-primary"> Send </button>
