@@ -179,7 +179,15 @@ $(document).ready(function() {
             }
         }
 
-        if (selected_value == "custom") {
+        var app_id = 0;
+        var type = 0;
+        var ack = 0;
+        var service_type = 0;
+        var service_subtype = 0;
+        var dest_id = 0;
+        var data = 0;
+
+        if (selected_value == "Custom") {
             app_id = $('#service-param-app_id').val();
             type = $('#service-param-type').val();
             ack = $('#service-param-ack').val();
@@ -205,13 +213,14 @@ $(document).ready(function() {
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
 
-        } else if (selected_value == "Mass storage") {
+        } else if (selected_value == "Mass Storage") {
 
-            var type = 1;
-            var ack = $('#service-param-ms-ack').val();
-            var dest_id = $('#service-param-ms-dest-id').val();
-            var service_type = 15;
-            var data = [];
+            app_id = 1;
+            type = 1;
+            ack = $('#service-param-ms-ack').val();
+            dest_id = $('#service-param-ms-dest-id').val();
+            service_type = 15;
+            data = [];
 
             var store_id = $('#service-param-ms-sid').val();
 
@@ -219,7 +228,7 @@ $(document).ready(function() {
 
             if(fun == "Format") {
                 if (confirm('Are you sure you want to format the sd?')) {
-                    var service_subtype = 15;
+                    service_subtype = 15;
                 } else {
                     return 0;
                 }
@@ -229,12 +238,12 @@ $(document).ready(function() {
 
                 if(action == "Report") {
 
-                    var service_subtype = 12;
+                    service_subtype = 12;
 
                 } else if(action == "List") {
 
                     var fn = $('#service-param-service-ms-num').val();
-                    var service_subtype = 16;
+                    service_subtype = 16;
 
                     data.splice(0, 0, store_id);
                     data.splice(1, 0, ((fn >> 8) & 0x00FF)); // next file
@@ -243,7 +252,7 @@ $(document).ready(function() {
                 } else if(action == "Downlink") {
 
                     var fn = $('#service-param-service-ms-num').val();                                   
-                    var service_subtype = 9;
+                    service_subtype = 9;
 
                     data.splice(0, 0, store_id);
                     data.splice(1, 0, ((fn >> 8) & 0x00FF)); // file from
@@ -255,7 +264,7 @@ $(document).ready(function() {
                 } else if(action == "Delete") {
 
                     var fnum = $('#service-param-service-ms-num').val();
-                    var service_subtype = 11;
+                    service_subtype = 11;
                     data.splice(0, 0, store_id);
                     data.splice(1, 0, 0); //mode != 6
                     data.splice(2, 0, ((fnum >> 8) & 0x00FF)); // num of files
@@ -263,9 +272,17 @@ $(document).ready(function() {
 
                 } else if(action == "Hard") {
 
-                    var service_subtype = 11;
+                    service_subtype = 11;
                     data.splice(0, 0, store_id);
                     data.splice(1, 0, 6);  // 6 is hard delete mode
+
+                } else if(action == "All") {
+
+                    service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 7);  // 7 is delete all mode
+                    data.splice(2, 0, 0); // pads for keeping same format as delete
+                    data.splice(3, 0, 0);
                 }
              } 
         //      else if(fun == "Enable") {
@@ -405,10 +422,10 @@ $(document).ready(function() {
     });
 
     $(':file').change(function() {
-        // var file = this.files[0];
-        // var name = file.name;
-        // var size = file.size;
-        // var type = file.type;
+        var file = this.files[0];
+        var name = file.name;
+        var size = file.size;
+        var type = file.type;
         //Your validation
     });
 
@@ -643,7 +660,7 @@ function init() {
     display_control_view(mode);
 
     // Set initial back-end mode
-    backend = 'gnuradio';
+    backend = 'serial';
     request = encode_backend_mode(backend);
     query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
