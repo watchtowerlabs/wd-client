@@ -67,7 +67,7 @@ def get_control_rx():
         tmp['log_message'] = e
         return jsonify(tmp)
     print "einai auto paketo?", data
-    packet_list = json.loads(data)
+    packet_list = json.loads(data, encoding='latin-1')
     """
     The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
     each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
@@ -80,6 +80,7 @@ def get_control_rx():
         for str_dict in packet_list:
             print str_dict
             ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
+            print "Edw ta kala ecss ", ecss_dict
             res = packet.ecss_logic(ecss_dict)
             ecss_dicts[cnt] =res;
             cnt += 1 
@@ -137,7 +138,7 @@ def get_command():
                     'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'seq_count': 0,
                     'ser_type': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
-                    'ser_subtype': 1,  # int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
+                    'ser_subtype': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
                     'data': map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
                     'dest_id': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
                     'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
