@@ -455,6 +455,14 @@ $(document).ready(function() {
         }
     });
 
+    $('#clear-log').on('click', function() {
+      var itemsToFilter = $('#response-panel-body ul li');
+      for (var i = 0; i < itemsToFilter.length; i++) {
+        var currentItem = itemsToFilter[i];
+        currentItem.remove();
+      }
+    });
+
     $("#mode-switch li").click(function() {
         var mode = $(this).attr("data-value");
         display_control_view(mode);

@@ -275,10 +275,7 @@ body {
   font-size: 10px;
   background-color: rgb(230, 230, 205);
   margin-left: 0px;
-}
-
-#filter-section ul {
-  margin-left: 10px;
+  margin-right: 0px;
 }
 
 .show-log {
