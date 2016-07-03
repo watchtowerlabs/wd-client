@@ -322,21 +322,28 @@ def ecss_logic(ecss_dict):
 
             for i in range(0, 7):
 
-                valid = ecss_dict['data'][(i * SCRIPT_REPORT_SIZE)]
-                size = cnv8_32(ecss_dict['data'][1 + (i * SCRIPT_REPORT_SIZE)])
-                fatfs = cnv8_32(ecss_dict['data'][5 + (i * SCRIPT_REPORT_SIZE)])
-                time_modfied = fatfs_to_utc(qb50)
+                offset = (i * packet_settings.SCRIPT_REPORT_SU_OFFSET)
+                valid = ecss_dict['data'][(offset):]
+                size = cnv8_32(ecss_dict['data'][(1 + offset):])
+                fatfs = cnv8_32(ecss_dict['data'][(5 + offset):])
+                time_modfied = fatfs_to_utc(fatfs)
 
-                report += "su script " + i + " valid: " + valid + " size: " + size + " time_modfied: " + time_modfied
+                report += "script " + packet_settings.upsat_store_ids[str(i+1)] + " valid: " + str(valid) + " size: " + str(size) + " time_modified: " + str(time_modfied)
 
-            for i in range(0, 7):
+            for i in range(0, 4):
 
-                valid = ecss_dict['data'][(i * SCRIPT_REPORT_SIZE)]
-                size = cnv8_32(ecss_dict['data'][1 + (i * SCRIPT_REPORT_SIZE)])
-                fatfs = cnv8_32(ecss_dict['data'][5 + (i * SCRIPT_REPORT_SIZE)])
-                time_modfied = fatfs_to_utc(qb50)
+                offset = (7 * packet_settings.SCRIPT_REPORT_SU_OFFSET) + (i * packet_settings.SCRIPT_REPORT_LOGS_OFFSET)
 
-                report += "su script " + i + " valid: " + valid + " size: " + size + " time_modfied: " + time_modfied
+                fnum = cnv8_16(ecss_dict['data'][(offset):])
+                tail_size = cnv8_32(ecss_dict['data'][(2 + offset):])
+                fatfs_tail = cnv8_32(ecss_dict['data'][(6 + offset):])
+                time_modfied_tail = fatfs_to_utc(fatfs)
+                
+                head_size = cnv8_32(ecss_dict['data'][(10 + offset):])
+                fatfs_head = cnv8_32(ecss_dict['data'][(14 + offset):])
+                time_modfied_head = fatfs_to_utc(fatfs)
+
+                report += "script " + packet_settings.upsat_store_ids[str(i+8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head)
 
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
@@ -353,10 +360,10 @@ def ecss_logic(ecss_dict):
                 ecss_dict['files']['sid'] = sid
 
                 for i in range(0, files):
-                    filename = cnv8_16(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
-                    fatfs = cnv8_32(ecss_dict['data'][3 + (i * SU_LOG_SIZE)])
+                    filename = cnv8_16(ecss_dict['data'][(1 + (i * SU_LOG_SIZE)):])
+                    fatfs = cnv8_32(ecss_dict['data'][(3 + (i * SU_LOG_SIZE)):])
                     time_modfied = fatfs_to_utc(qb50)
-                    size = cnv8_32(ecss_dict['data'][7 + (i * SU_LOG_SIZE)])
+                    size = cnv8_32(ecss_dict['data'][(7 + (i * SU_LOG_SIZE)):])
 
                     ecss_dict['files'][i]['filename'] = filename
                     ecss_dict['files'][i]['time_modfied'] = time_modfied
