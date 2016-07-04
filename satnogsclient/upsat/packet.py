@@ -28,7 +28,7 @@ def ecss_encoder(port):
 
 def ecss_depacketizer(buf, dict_out):
     size = len(buf)
-    print binascii.hexlify(buf)
+    print "New pkt size: ", size, " ", binascii.hexlify(buf)
     assert((buf != 0) == True)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     print "I should see that"
@@ -62,16 +62,17 @@ def ecss_depacketizer(buf, dict_out):
         return (dict_out, packet_settings.SATR_PKT_ILLEGAL_APPID)
 
     if not ((pkt_len == size - packet_settings.ECSS_HEADER_SIZE - 1) == True):
-        print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1
+        print "INV LEN", pkt_len, " ", size - packet_settings.ECSS_HEADER_SIZE - 1, " ", size
         return (dict_out, packet_settings.SATR_PKT_INV_LEN)
 
     pkt_len = pkt_len - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE + 1
 
-    if not ((tmp_crc1 == tmp_crc2) == True):
+    if not (tmp_crc1 == tmp_crc2):
+        print "INV CRC calc ", tmp_crc2, " pkt", tmp_crc1
         return (dict_out, packet_settings.SATR_PKT_INC_CRC)
 
-    if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True):
-        return (dict_out, packet_settings.SATR_PKT_ILLEGAL_PKT_TP)
+    #if not((packet_settings.SERVICES_VERIFICATION_TC_TM[pkt_ser_type][pkt_ser_subtype][pkt_type] == 1) == True):
+    #    return (dict_out, packet_settings.SATR_PKT_ILLEGAL_PKT_TP)
 
     if not ((ver == packet_settings.ECSS_VER_NUMBER) == True):
         return (dict_out, packet_settings.SATR_ERROR)
@@ -355,27 +356,30 @@ def ecss_logic(ecss_dict):
 
             sid = ecss_dict['data'][0]
 
-            if sid == SU_LOG or sid == WOD_LOG or sid == EXT_WOD_LOG or sid == EVENT_LOG or sid == FOTOS:
+            if sid == packet_settings.SU_LOG or sid == packet_settings.WOD_LOG or sid == packet_settings.EXT_WOD_LOG or sid == packet_settings.EVENT_LOG or sid == packet_settings.FOTOS:
 
-                files = (ecss_dict['size'] - 1) / LOGS_LIST_SIZE
+                files = (ecss_dict['size'] - 1) / packet_settings.LOGS_LIST_SIZE
 
+                print "data size is: ", ecss_dict['size'], " ", (ecss_dict['size'] - 1) / packet_settings.LOGS_LIST_SIZE, " ", files
                 #if su_logs > MAX_DOWNLINK_SU_LOGS:
                     #error
 
                 ecss_dict['files'] = [0] * files
-                ecss_dict['files']['sid'] = sid
+                ecss_dict['files_sid'] = sid
 
+                report = "received file list, with " + str(files) + " files " + "\n"
                 for i in range(0, files):
-                    filename = cnv8_16(ecss_dict['data'][(1 + (i * SU_LOG_SIZE)):])
-                    fatfs = cnv8_32(ecss_dict['data'][(3 + (i * SU_LOG_SIZE)):])
-                    time_modfied = fatfs_to_utc(qb50)
-                    size = cnv8_32(ecss_dict['data'][(7 + (i * SU_LOG_SIZE)):])
+                    filename = cnv8_16(ecss_dict['data'][(1 + (i * packet_settings.LOGS_LIST_SIZE)):])
+                    fatfs = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.LOGS_LIST_SIZE)):])
+                    time_modfied = fatfs_to_utc(fatfs)
+                    size = cnv8_32(ecss_dict['data'][(7 + (i * packet_settings.LOGS_LIST_SIZE)):])
 
-                    ecss_dict['files'][i]['filename'] = filename
-                    ecss_dict['files'][i]['time_modfied'] = time_modfied
-                    ecss_dict['files'][i]['size'] = size
+                    #ecss_dict['files'][i]['filename'] = filename
+                    #ecss_dict['files'][i]['time_modfied'] = time_modfied
+                    #ecss_dict['files'][i]['size'] = size
 
-                report = "received file list, with " + files + " files"
+                    report += " file " + str(i) + " filename " + str(filename) + " size " + str(size) + " modified " + str(time_modfied) + "\n"
+                print report
 
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CONTENT:
 
@@ -395,7 +399,7 @@ def ecss_logic(ecss_dict):
                     report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
                     #write log to a file and or in DB
 
-        text =  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+        text =  "MS {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_TEST_SERVICE:
         text =  "TEST Service from {0}".format(packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
