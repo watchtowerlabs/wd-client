@@ -323,12 +323,15 @@ def ecss_logic(ecss_dict):
             for i in range(0, 7):
 
                 offset = (i * packet_settings.SCRIPT_REPORT_SU_OFFSET)
-                valid = ecss_dict['data'][(offset):]
+                valid = ecss_dict['data'][(offset)]
                 size = cnv8_32(ecss_dict['data'][(1 + offset):])
                 fatfs = cnv8_32(ecss_dict['data'][(5 + offset):])
                 time_modfied = fatfs_to_utc(fatfs)
 
-                report += "script " + packet_settings.upsat_store_ids[str(i+1)] + " valid: " + str(valid) + " size: " + str(size) + " time_modified: " + str(time_modfied)
+                print "offset: " + str(offset) + " script " + packet_settings.upsat_store_ids[str(i+1)] + " valid: " + str(valid) + " size: " + str(size) + " time_modified: " + str(time_modfied)
+                print "raw ", ' '.join('{:02x}'.format(x) for x in ecss_dict['data'][(offset):(offset + packet_settings.SCRIPT_REPORT_SU_OFFSET)])
+
+                report += "script " + packet_settings.upsat_store_ids[str(i+1)] + " valid: " + str(valid) + " size: " + str(size) + " time_modified: " + str(time_modfied) + "\n"
 
             for i in range(0, 4):
 
@@ -337,13 +340,16 @@ def ecss_logic(ecss_dict):
                 fnum = cnv8_16(ecss_dict['data'][(offset):])
                 tail_size = cnv8_32(ecss_dict['data'][(2 + offset):])
                 fatfs_tail = cnv8_32(ecss_dict['data'][(6 + offset):])
-                time_modfied_tail = fatfs_to_utc(fatfs)
+                time_modfied_tail = fatfs_to_utc(fatfs_tail)
                 
                 head_size = cnv8_32(ecss_dict['data'][(10 + offset):])
                 fatfs_head = cnv8_32(ecss_dict['data'][(14 + offset):])
-                time_modfied_head = fatfs_to_utc(fatfs)
+                time_modfied_head = fatfs_to_utc(fatfs_head)
 
-                report += "script " + packet_settings.upsat_store_ids[str(i+8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head)
+                print "offset: " + str(offset) + " script " + packet_settings.upsat_store_ids[str(i+8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head)
+                print "raw ", ' '.join('{:02x}'.format(x) for x in ecss_dict['data'][(offset):(offset + packet_settings.SCRIPT_REPORT_LOGS_OFFSET)])
+
+                report += "script " + packet_settings.upsat_store_ids[str(i+8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head) + "\n"
 
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
@@ -389,7 +395,7 @@ def ecss_logic(ecss_dict):
                     report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
                     #write log to a file and or in DB
 
-        text +=  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+        text =  "MS {0}, FROM: {1}".format(report, ecss_dict['app_id'])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_TEST_SERVICE:
         text =  "TEST Service from {0}".format(packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
@@ -431,4 +437,4 @@ def cnv8_32(inc):
     return ((inc[3] << 24) | (inc[2] << 16) | (inc[1] << 8) | (inc[0]))
 
 def cnv8_16(inc):
-    return ((inc[0] << 8) | (inc[1]))
+    return ((inc[1] << 8) | (inc[0]))
