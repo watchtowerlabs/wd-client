@@ -49,7 +49,6 @@ def ecss_encoder(port):
 
 def ecss_depacketizer(buf, dict_out):
     size = len(buf)
-    print binascii.hexlify(buf)
     assert((buf != 0) == True)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     tmp_crc1 = buf[size - 1]
@@ -216,7 +215,7 @@ def custom_cmd_to_backend(data):
 
 
 def construct_packet(ecss_dict, backend):
-    logger.info('ECSS to be sent: %s', ecss_dict)
+    
     if backend == "serial":
         out_buf = bytearray(0)
         packet_size = len(ecss_dict['data']) + packet_settings.ECSS_DATA_HEADER_SIZE + packet_settings.ECSS_CRC_SIZE + packet_settings.ECSS_HEADER_SIZE
