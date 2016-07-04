@@ -66,7 +66,7 @@ upsat_store_ids = {
 SCRIPT_REPORT_SU_OFFSET = 9
 SCRIPT_REPORT_LOGS_OFFSET = 18
 
-
+LOGS_LIST_SIZE = 10
 
 SERVICES_VERIFICATION_TC_TM = [
     [ [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0] ],
@@ -218,6 +218,8 @@ TC_MS_REPORT                   = 12
 TM_MS_CATALOGUE_REPORT         = 13
 TC_MS_UPLINK                   = 14
 TC_MS_FORMAT                   = 15
+TM_MS_CATALOGUE_LIST           = 17
+
 
 TC_CT_PERFORM_TEST             = 1
 TM_CT_REPORT_TEST              = 2
