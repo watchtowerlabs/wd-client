@@ -49,7 +49,6 @@ def ecss_encoder(port):
 
 def ecss_depacketizer(buf, dict_out):
     size = len(buf)
-    print binascii.hexlify(buf)
     assert((buf != 0) == True)
     assert((size > packet_settings.MIN_PKT_SIZE and size < packet_settings.MAX_PKT_SIZE) == True)
     tmp_crc1 = buf[size - 1]

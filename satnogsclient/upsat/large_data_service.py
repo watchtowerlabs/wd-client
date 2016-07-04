@@ -5,6 +5,8 @@ from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import packet
+from time import sleep
+from _socket import htons
 
 
 large_data_id = 0
@@ -16,7 +18,7 @@ def uplink(filename, info):
     filename = "/home/sleepwalker/Documents/large.txt"
     buf = bytearray(0)
     fo = open(filename, "rb")
-    available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE - 3
+    available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE -3
     file_size = os.stat(filename)[6]  # get size of file
     remaining_bytes = file_size
     total_packets = file_size / available_data_len
@@ -32,11 +34,12 @@ def uplink(filename, info):
             data_size = remaining_bytes
             remaining_bytes = 0
         buf = bytearray(fo.read(data_size))
-        packet_count_ms = packet_count & 0xFF00
+        packet_count_htons = htons(packet_count)
+        packet_count_ms = (packet_count & 0xFF00) >> 8
         packet_count_ls = packet_count & 0x00FF
-        buf.insert(0, large_data_id)
+        buf.insert(0, packet_count_ms)
         buf.insert(0, packet_count_ls)
-        buf.insert(0, packet_count_ms >> 8)
+        buf.insert(0, large_data_id)
 
         if packet_count == 0:
             ser_subtype = packet_settings.TC_LD_FIRST_UPLINK
@@ -46,7 +49,7 @@ def uplink(filename, info):
             ser_subtype = packet_settings.TC_LD_INT_UPLINK
         ecss = {'type': 1,
              'app_id': 4,
-             'size': data_size,
+             'size': len(buf),
              'ack': 1,
              'ser_type': packet_settings.TC_LARGE_DATA_SERVICE,
              'ser_subtype': ser_subtype,
@@ -59,19 +62,23 @@ def uplink(filename, info):
         got_ack = 0
         retries = 0
         while (retries < 30) and (got_ack == 0):
+            print 'ecss to be sent ', ecss
             print ' retries = ', retries, 'got ack = ', got_ack
             try:
                 print 'WAITING TO RECEIVE ACK!!!!'
                 ack = socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
                 ret = packet.deconstruct_packet(bytearray(ack[0]), [], 'gnuradio')
                 ecss_dict = ret[0]
-                print ecss_dict['data'][0], '    ', hex(packet_count)
-                if hex(ord(ecss_dict['data'][2])) == hex(large_data_id):
+                if len(ecss_dict) == 0:
+                    continue
+                if hex(ecss_dict['data'][0]) == hex(large_data_id):
                     print 'Seq count = ', (ecss_dict['data'][0] << 8) | ecss_dict['data'][1]
-                    if ((ecss_dict['data'][0] << 8) | ecss_dict['data'][1]) == packet_count:
+                    if ((ecss_dict['data'][2] << 8) | ecss_dict['data'][1]) == packet_count:
                         got_ack = 1
+                        sleep(0.5)
                         print 'Got the right ack!!!!'
                     else:
+                        sleep(0.5)
                         gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))  # Resend previous frame
                         retries = retries + 1
                         print ' Got wrong sequence number ack'
@@ -81,6 +88,7 @@ def uplink(filename, info):
             except Exception, e:
                 traceback.print_exc()
                 print str(e)
+                sleep(0.5)
                 gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))
                 retries = retries + 1
                 print 'Timeout'
