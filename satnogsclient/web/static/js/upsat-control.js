@@ -398,6 +398,10 @@ $(document).ready(function() {
                 return 0;
             }
 
+<<<<<<< HEAD:satnogsclient/web/static/js/upsat-control.js
+=======
+        if (flag) {
+>>>>>>> 4d5a470cdb07d149b9dd42b00b25214299a122d3:satnogsclient/web/static/js/satnogs-control.js
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
@@ -432,6 +436,64 @@ $(document).ready(function() {
         //Your validation
     });
 
+<<<<<<< HEAD:satnogsclient/web/static/js/upsat-control.js
+=======
+    $('#upload-btn').click(function() {
+        var formData = new FormData($('form')[0]);
+        // $.ajax({
+        //     url: '/raw', //Server script to process data
+        //     type: 'POST',
+        //     xhr: function() { // Custom XMLHttpRequest
+        //         var myXhr = $.ajaxSettings.xhr();
+        //         if (myXhr.upload) { // Check if upload property exists
+        //             myXhr.upload.addEventListener('progress', progressHandlingFunction, false); // For handling the progress of the upload
+        //         }
+        //         return myXhr;
+        //     },
+            //Ajax events
+            // beforeSend: beforeSendHandler,
+            // success: completeHandler,
+            // error: errorHandler,
+            // Form data
+            var data = formData.get('file');
+            //Options to tell jQuery not to process data or worry about content-type.
+        //    cache: false,
+        //    contentType: false,
+        //    processData: false
+        //});
+    });
+
+
+    //  $("#fileinput").click(function(){
+    //     input = document.getElementById('fileinput');
+    //
+    //     file = input.files[0];
+    //     var reader = new FileReader();
+    //     reader.onload = function(){
+    //         var binaryString = this.result;
+    //         $.ajax({
+    //            url: '/raw',
+    //            type: 'POST',
+    //            contentType: 'application/octet-stream',
+    //            data: binaryString,
+    //            processData: false
+    //         });
+    //       };
+    //     data = reader.readAsBinaryString(file);
+    //
+    //  });
+
+    $("#send-cmd").click(function() {
+        if ($("#command-btn:first-child").text() == 'Test Service') {
+            request = encode_test_service();
+        } else {
+            alert('Invalid command');
+            request = false;
+        }
+        query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+    });
+
+>>>>>>> 4d5a470cdb07d149b9dd42b00b25214299a122d3:satnogsclient/web/static/js/satnogs-control.js
     $('#filter-section input').on('change', function() {
         var itemsToFilter = $('#response-panel-body ul li');
         for (var i = 0; i < itemsToFilter.length; i++) {
