@@ -231,7 +231,7 @@ def ecss_feeder(port1, port2):
                 a = qu.get()
                 new_list.append(a)
             print "sending to conn ", new_list
-            pickled = cPickle.dumps(new_list)
+            pickled = cPickle.dumps(new_list,protocol=2)
             sock.sendto(pickled, conn[1])
         pr.join()
     except IOError:  # Handle SIGTERM signal
