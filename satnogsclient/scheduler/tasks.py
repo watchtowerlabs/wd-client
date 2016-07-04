@@ -4,6 +4,7 @@ import os
 import signal
 import time
 import sys
+import cPickle
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
@@ -230,7 +231,8 @@ def ecss_feeder(port1, port2):
                 a = qu.get()
                 new_list.append(a)
             print "sending to conn ", new_list
-            sock.sendto(json.dumps(new_list, encoding='latin-1'), conn[1])
+            pickled = cPickle.dumps(new_list)
+            sock.sendto(pickled, conn[1])
         pr.join()
     except IOError:  # Handle SIGTERM signal
         if child_pid != 0:
