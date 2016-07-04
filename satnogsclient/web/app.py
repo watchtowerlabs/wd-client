@@ -67,7 +67,7 @@ def get_control_rx():
         tmp['log_message'] = e
         return jsonify(tmp)
     print "einai auto paketo?", data
-    packet_list = json.loads(data, encoding='latin-1')
+    packet_list =  cPickle.loads(data)
     """
     The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
     each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
@@ -79,12 +79,13 @@ def get_control_rx():
         cnt = 0
         for str_dict in packet_list:
             print str_dict
-            ecss_dict = cPickle.loads(str_dict.encode('utf-8'))
+            ecss_dict = cPickle.loads(str_dict)
             print "Edw ta kala ecss ", ecss_dict
             res = packet.ecss_logic(ecss_dict)
             ecss_dicts[cnt] =res;
             cnt += 1 
-        return jsonify(ecss_dicts)
+        print "Ready to be sheeped", ecss_dicts
+        return jsonify(ecss_dicts) #, 200, {'Content-Type' : 'json; charset=latin-1'}
     else:
         tmp = {}
         tmp[0] = {'log_message' : 'This is a test' }
