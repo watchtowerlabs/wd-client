@@ -197,7 +197,7 @@ $(document).ready(function() {
             data = $('#service-param-service-data').val().split(",");
             seq_count = 0;
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "house") {
@@ -209,7 +209,7 @@ $(document).ready(function() {
             dest_id = $('#service-param-hk-dest-id').val();
 
             data = $('#service-param-hk-sid').val();
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
 
@@ -289,6 +289,9 @@ $(document).ready(function() {
         //       continue;
         //     }
 
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+
         } else if (selected_value == "Power") {
             
             dev_id = $('#service-param-dev-id').val();
@@ -334,7 +337,7 @@ $(document).ready(function() {
             var fun_id = $('#service-param-function').val();
             data = [fun_id, dev_id];
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "test") {
@@ -347,7 +350,7 @@ $(document).ready(function() {
             dest_id = $('#service-param-test-dest_id').val();
             data = [];
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "time") {
@@ -372,7 +375,7 @@ $(document).ready(function() {
                 data = [];
             }
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "adcs") {
@@ -395,7 +398,7 @@ $(document).ready(function() {
                 return 0;
             }
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "comms") {
