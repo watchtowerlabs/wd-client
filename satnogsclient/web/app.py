@@ -1,9 +1,9 @@
 from flask import Flask, render_template, request, json, jsonify
 from flask.ext.socketio import SocketIO, emit
-
+from multiprocessing import Process
 
 from satnogsclient import settings as client_settings
-from satnogsclient.upsat import packet, tx_handler, ecss_logic_utils
+from satnogsclient.upsat import packet, tx_handler, packet_settings, large_data_service
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 import logging
@@ -145,7 +145,12 @@ def get_command():
 
             buf = packet.construct_packet(ecss, os.environ['BACKEND'])
             response[0] = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
-            tx_handler.send_to_backend(buf)
+            if len(buf) > packet_settings.MAX_COMMS_PKT_SIZE:
+                ld = Process(target=large_data_service.uplink, args=(buf,))
+                ld.daemon = True
+                ld.start()
+            else:
+                tx_handler.send_to_backend(buf)
             return jsonify(response)
     return render_template('upsat_control.j2')
 

@@ -14,15 +14,13 @@ socket = Udpsocket(('0.0.0.0', client_settings.LD_UPLINK_LISTEN_PORT))
 gnuradio_sock = Udpsocket([])  # Gnuradio's udp listen port
 
 
-def uplink(filename, info):
-    filename = "/home/sleepwalker/Documents/large.txt"
+def uplink(buf_in):
     buf = bytearray(0)
-    fo = open(filename, "rb")
     available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE -3
-    file_size = os.stat(filename)[6]  # get size of file
-    remaining_bytes = file_size
-    total_packets = file_size / available_data_len
-    if file_size % available_data_len > 0:
+    buffer_size = len(buf_in)
+    remaining_bytes = buffer_size
+    total_packets = buffer_size / available_data_len
+    if buffer_size % available_data_len > 0:
         total_packets = total_packets + 1
     packet_count = 0
     data_size = 0
@@ -33,7 +31,8 @@ def uplink(filename, info):
         else:
             data_size = remaining_bytes
             remaining_bytes = 0
-        buf = bytearray(fo.read(data_size))
+        buf = buf_in[0:data_size]
+        del buf_in[0:data_size]
         packet_count_htons = htons(packet_count)
         packet_count_ms = (packet_count & 0xFF00) >> 8
         packet_count_ls = packet_count & 0x00FF
@@ -57,7 +56,7 @@ def uplink(filename, info):
              'data': buf,
              'seq_count': packet_count
              }
-        hldlc_buf = packet.construct_packet(ecss, 'gnuradio')
+        hldlc_buf = packet.construct_packet(ecss, os.environ['BACKEND'])
         gnuradio_sock.sendto(hldlc_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))
         got_ack = 0
         retries = 0
@@ -67,7 +66,7 @@ def uplink(filename, info):
             try:
                 print 'WAITING TO RECEIVE ACK!!!!'
                 ack = socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
-                ret = packet.deconstruct_packet(bytearray(ack[0]), [], 'gnuradio')
+                ret = packet.deconstruct_packet(bytearray(ack[0]), [], os.environ['BACKEND'])
                 ecss_dict = ret[0]
                 if len(ecss_dict) == 0:
                     continue
