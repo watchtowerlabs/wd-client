@@ -355,25 +355,26 @@ def ecss_logic(ecss_dict):
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
             sid = ecss_dict['data'][0]
+            f_iter = cnv8_16(ecss_dict['data'][1:])
 
             if sid == packet_settings.SU_LOG or sid == packet_settings.WOD_LOG or sid == packet_settings.EXT_WOD_LOG or sid == packet_settings.EVENT_LOG or sid == packet_settings.FOTOS:
 
-                files = (ecss_dict['size'] - 1) / packet_settings.LOGS_LIST_SIZE
+                files = (ecss_dict['size'] - 3) / packet_settings.LOGS_LIST_SIZE
 
-                print "data size is: ", ecss_dict['size'], " ", (ecss_dict['size'] - 1) / packet_settings.LOGS_LIST_SIZE, " ", files
+                print "data size is: ", ecss_dict['size'], " ", (ecss_dict['size'] - 3) / packet_settings.LOGS_LIST_SIZE, " ", files
                 #if su_logs > MAX_DOWNLINK_SU_LOGS:
                     #error
 
                 ecss_dict['files'] = [0] * files
                 ecss_dict['files_sid'] = sid
 
-                report = "received file list, with " + str(files) + " files " + "\n"
+                report = "received file list, for store " + str(sid) + " with " + str(files) + " files, next file iteration is: " + str(f_iter) +  "\n"
                 for i in range(0, files):
-                    filename = cnv8_16(ecss_dict['data'][(1 + (i * packet_settings.LOGS_LIST_SIZE)):])
-                    fatfs = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.LOGS_LIST_SIZE)):])
-                    time_modfied = fatfs_to_utc(fatfs)
-                    size = cnv8_32(ecss_dict['data'][(7 + (i * packet_settings.LOGS_LIST_SIZE)):])
 
+                    filename = cnv8_16(ecss_dict['data'][(3 + (i * packet_settings.LOGS_LIST_SIZE)):])
+                    size = cnv8_32(ecss_dict['data'][(5 + (i * packet_settings.LOGS_LIST_SIZE)):])
+                    fatfs = cnv8_32(ecss_dict['data'][(9 + (i * packet_settings.LOGS_LIST_SIZE)):])
+                    time_modfied = fatfs_to_utc(fatfs)
                     #ecss_dict['files'][i]['filename'] = filename
                     #ecss_dict['files'][i]['time_modfied'] = time_modfied
                     #ecss_dict['files'][i]['size'] = size
@@ -384,20 +385,23 @@ def ecss_logic(ecss_dict):
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CONTENT:
 
             sid = ecss_dict['data'][0]
+            fname = cnv8_16(ecss_dict['data'][1:])
 
-            if sid == SU_LOG:
+            report = "From store: " + packet_settings.upsat_store_ids[str(sid)] + " file " + str(fname) + " content " + ecss_dict['data'] + " " +' '.join('{:02x}'.format(x) for x in ecss_dict['data']) + "\n"
 
-                su_logs = (ecss_dict['size'] - 1) / SU_LOG_SIZE
+            # if sid ==  packet_settings.SU_LOG:
 
-                #if su_logs > MAX_DOWNLINK_SU_LOGS:
-                    #error
+            #     su_logs = (ecss_dict['size'] - 1) / SU_LOG_SIZE
 
-                report = "received " + su_logs + " su logs " 
-                for i in range(0, su_logs):
-                    qb50 = cnv8_32(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
-                    utc = qb50_to_utc(qb50)
-                    report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
-                    #write log to a file and or in DB
+            #     #if su_logs > MAX_DOWNLINK_SU_LOGS:
+            #         #error
+
+            #     report = "received " + su_logs + " su logs " 
+            #     for i in range(0, su_logs):
+            #         qb50 = cnv8_32(ecss_dict['data'][1 + (i * SU_LOG_SIZE)])
+            #         utc = qb50_to_utc(qb50)
+            #         report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
+            #         #write log to a file and or in DB
 
         text =  "MS {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
