@@ -16,7 +16,7 @@ gnuradio_sock = Udpsocket([])  # Gnuradio's udp listen port
 
 def uplink(buf_in):
     buf = bytearray(0)
-    available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE -3
+    available_data_len = packet_settings.MAX_COMMS_PKT_SIZE - packet_settings.ECSS_HEADER_SIZE - packet_settings.ECSS_DATA_HEADER_SIZE - packet_settings.ECSS_CRC_SIZE - 3
     buffer_size = len(buf_in)
     remaining_bytes = buffer_size
     total_packets = buffer_size / available_data_len
@@ -99,3 +99,6 @@ def uplink(buf_in):
         else:
             print 'Abort'
             return
+        
+#def downlink():
+    
