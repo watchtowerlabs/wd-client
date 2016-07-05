@@ -169,7 +169,6 @@ $(document).ready(function() {
 
         var list = $('this').parent().siblings().find('select');
         var selected_value = $('#service-select li.active').attr("data-value");
-        data = [];
         //TODO: Check whether all required fields are selected
         var missing = [];
         for (i = 0; i < list.length; i++) {
@@ -185,7 +184,7 @@ $(document).ready(function() {
         var service_type = 0;
         var service_subtype = 0;
         var dest_id = 0;
-        var data = 0;
+        var data = [];
 
         if (selected_value == "Custom") {
             app_id = $('#service-param-app_id').val();
@@ -213,7 +212,7 @@ $(document).ready(function() {
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
 
-        } else if (selected_value == "Mass Storage") {
+        } else if (selected_value == "mass") {
 
             app_id = 1;
             type = 1;
@@ -260,6 +259,10 @@ $(document).ready(function() {
                     data.splice(3, 0, 1); // num of files
                 
                 } else if(action == "Uplink") {
+
+                    service_subtype = 14;
+
+                    file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id);
                     return 0;
                 } else if(action == "Delete") {
 
@@ -422,14 +425,6 @@ $(document).ready(function() {
             $('input[name=power-radio]').prop('checked', false);
             // TODO: Uncheck every other radio
         }
-    });
-
-    $(':file').change(function() {
-        var file = this.files[0];
-        var name = file.name;
-        var size = file.size;
-        var type = file.type;
-        //Your validation
     });
 
     $('#filter-section input').on('change', function() {
@@ -638,7 +633,7 @@ function display_control_view(mode) {
 }
 
 //Retrieve file encode command and post the request
-function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, seq_count) {
+function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id) {
   input = document.getElementById('file');
   file = input.files[0];
   reader = new FileReader();
@@ -648,7 +643,10 @@ function file_encode_and_query_backend(type, app_id, service_type, service_subty
       data = [];
       result = evt.target.result;
       ascii_to_dec(result,data);
-      request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+
+      data.unshift(store_id);
+      console.log(data);
+      request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
       query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
     }
   };
