@@ -186,7 +186,7 @@ $(document).ready(function() {
         var dest_id = 0;
         var data = [];
 
-        if (selected_value == "Custom") {
+        if (selected_value == "custom") {
             app_id = $('#service-param-app_id').val();
             type = $('#service-param-type').val();
             ack = $('#service-param-ack').val();
@@ -295,7 +295,7 @@ $(document).ready(function() {
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
-        } else if (selected_value == "Power") {
+        } else if (selected_value == "power") {
             
             dev_id = $('#service-param-dev-id').val();
             type = 1;
