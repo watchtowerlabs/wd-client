@@ -1,4 +1,5 @@
 $(document).ready(function() {
+
     init();
 
     $("#comms-gnu").click(function() {
@@ -143,6 +144,18 @@ $(document).ready(function() {
         }
     });
 
+    $('#service-param-ms-function').on('change', function() {
+        fun = $('#service-param-ms-function').find("option:selected").val();
+        alert(fun);
+        if (fun == "File_system") {
+    
+        } else if (fun == "Format") {
+
+        } else if (fun == "Enable") {
+
+        }
+    });
+
     $('#service-param-time-report').on('change', function() {
         elem = document.getElementById('datetimepicker1');
         if ($('#service-param-time-report').find("option:selected").val() == "manual") {
@@ -156,7 +169,6 @@ $(document).ready(function() {
 
         var list = $('this').parent().siblings().find('select');
         var selected_value = $('#service-select li.active').attr("data-value");
-        data = [];
         //TODO: Check whether all required fields are selected
         var missing = [];
         for (i = 0; i < list.length; i++) {
@@ -165,6 +177,14 @@ $(document).ready(function() {
                 flag = false;
             }
         }
+
+        var app_id = 0;
+        var type = 0;
+        var ack = 0;
+        var service_type = 0;
+        var service_subtype = 0;
+        var dest_id = 0;
+        var data = [];
 
         if (selected_value == "custom") {
             app_id = $('#service-param-app_id').val();
@@ -176,7 +196,7 @@ $(document).ready(function() {
             data = $('#service-param-service-data').val().split(",");
             seq_count = 0;
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "house") {
@@ -188,63 +208,95 @@ $(document).ready(function() {
             dest_id = $('#service-param-hk-dest-id').val();
 
             data = $('#service-param-hk-sid').val();
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
-        // } else if (selected_value == "mass") {
-        //
-        //     var type = 1;
-        //     var ack = $('#service-param-ms-ack').val();
-        //     var dest_id = $('#service-param-ms-dest-id').val();
-        //     var service_type = 15;
-        //     var data = [];
-        //
-        //     var store_id = $('#service-param-ms-sid').val();
-        //
-        //     var fun = $('#service-param-ms-function').val();
-        //
-        //     if (fun == "Format") {
-        //         if (confirm('Are you sure you want to format the sd?')) {
-        //             var service_subtype = 15;
-        //         } else {
-        //             return 0;
-        //         }
-        //
-        //     } else if (fun == "File_system") {
-        //         var action = $('#service-param-ms-action').val();
-        //
-        //         if (action == "Report") {
-        //
-        //             var fn = $('#service-param-service-ms-iter').val();
-        //
-        //             var service_subtype = 12;
-        //             data[0] = store_id;
-        //
-        //             data[1] = 0x000000FF & fn;
-        //             data[2] = 0x000000FF & (fn >> 8);
-        //             data[3] = 0x000000FF & (fn >> 16);
-        //             data[4] = 0x000000FF & (fn >> 24);
-        //
-        //         } else if (action == "Uplink") {
-        //             continue;
-        //         } else if (action == "Delete") {
-        //
-        //             var service_subtype = 11;
-        //             data[0] = store_id;
-        //
-        //             data[1] = 0;
-        //
-        //             data[2] = 0;
-        //             data[3] = 0;
-        //             data[4] = 0;
-        //             data[5] = 0;
-        //         }
-        //
-        //     } else if (fun == "Enable") {
-        //         continue;
+
+        } else if (selected_value == "mass") {
+
+            app_id = 1;
+            type = 1;
+            ack = $('#service-param-ms-ack').val();
+            dest_id = $('#service-param-ms-dest-id').val();
+            service_type = 15;
+            data = [];
+
+            var store_id = $('#service-param-ms-sid').val();
+
+            var fun = $('#service-param-ms-function').val();
+
+            if(fun == "Format") {
+                if (confirm('Are you sure you want to format the sd?')) {
+                    service_subtype = 15;
+                } else {
+                    return 0;
+                }
+            } else if(fun == "File_system") {
+
+                var action = $('#service-param-ms-action').val();
+
+                if(action == "Report") {
+
+                    service_subtype = 12;
+
+                } else if(action == "List") {
+
+                    var fn = $('#service-param-service-ms-num').val();
+                    service_subtype = 16;
+
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // next file
+                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+
+                } else if(action == "Downlink") {
+
+                    var fn = $('#service-param-service-ms-num').val();                                   
+                    service_subtype = 9;
+
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // file from
+                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+                    data.splice(3, 0, 1); // num of files
+                
+                } else if(action == "Uplink") {
+
+                    service_subtype = 14;
+
+                    file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id);
+                    return 0;
+                } else if(action == "Delete") {
+
+                    var fnum = $('#service-param-service-ms-num').val();
+                    service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 0); //mode != 6
+                    data.splice(2, 0, ((fnum >> 8) & 0x00FF)); // num of files
+                    data.splice(3, 0, ((fnum >> 0) & 0x00FF));
+
+                } else if(action == "Hard") {
+
+                    service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 6);  // 6 is hard delete mode
+
+                } else if(action == "All") {
+
+                    service_subtype = 11;
+                    data.splice(0, 0, store_id);
+                    data.splice(1, 0, 7);  // 7 is delete all mode
+                    data.splice(2, 0, 0); // pads for keeping same format as delete
+                    data.splice(3, 0, 0);
+                }
+             } 
+        //      else if(fun == "Enable") {
+        //       continue;
         //     }
-        //
-         } else if (selected_value == "power") {
+
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+
+        } else if (selected_value == "power") {
+            
             dev_id = $('#service-param-dev-id').val();
             type = 1;
             ack = $('#service-param-power-ack').val();
@@ -288,7 +340,7 @@ $(document).ready(function() {
             var fun_id = $('#service-param-function').val();
             data = [fun_id, dev_id];
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "test") {
@@ -301,7 +353,7 @@ $(document).ready(function() {
             dest_id = $('#service-param-test-dest_id').val();
             data = [];
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "time") {
@@ -326,7 +378,7 @@ $(document).ready(function() {
                 data = [];
             }
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "adcs") {
@@ -349,7 +401,7 @@ $(document).ready(function() {
                 return 0;
             }
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "comms") {
@@ -373,14 +425,6 @@ $(document).ready(function() {
             $('input[name=power-radio]').prop('checked', false);
             // TODO: Uncheck every other radio
         }
-    });
-
-    $(':file').change(function() {
-        // var file = this.files[0];
-        // var name = file.name;
-        // var size = file.size;
-        // var type = file.type;
-        //Your validation
     });
 
     $('#filter-section input').on('change', function() {
@@ -531,17 +575,23 @@ function encode_backend_mode(mode) {
 function print_command_response(data) {
     var response_panel = $('#response-panel-body ul');
     var data_type;
-    if (data.id == 1) {
-        data_type = 'cmd';
-        log_data = data.log_message;
-    } else if (data.id == 2) {
-        data_type = 'ecss';
-        log_data = data.log_message;
-    } else {
-        data_type = 'other';
-        log_data = data.log_message;
+    console.log(JSON.stringify(data));
+
+    for(var key in data) {
+        var resp = data[key];
+
+        if (resp.id == 1) {
+            data_type = 'cmd';
+            log_data = resp.log_message;
+        } else if (resp.id == 2) {
+            data_type = 'ecss';
+            log_data = resp.log_message;
+        } else {
+            data_type = 'other';
+            log_data = resp.log_message;
+        }
+        response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format('DD-MM-YYYY HH:mm:ss').toString() + '] ' + log_data + '</li>');
     }
-    response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">[' + moment().format('DD-MM-YYYY HH:mm:ss').toString() + '] ' + log_data + '</li>');
     response_panel.scrollTop = response_panel.scrollHeight;
 }
 
@@ -583,7 +633,7 @@ function display_control_view(mode) {
 }
 
 //Retrieve file encode command and post the request
-function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, seq_count) {
+function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id) {
   input = document.getElementById('file');
   file = input.files[0];
   reader = new FileReader();
@@ -593,7 +643,10 @@ function file_encode_and_query_backend(type, app_id, service_type, service_subty
       data = [];
       result = evt.target.result;
       ascii_to_dec(result,data);
-      request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data, seq_count);
+
+      data.unshift(store_id);
+      console.log(data);
+      request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
       query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
     }
   };
@@ -608,7 +661,7 @@ function init() {
     display_control_view(mode);
 
     // Set initial back-end mode
-    backend = 'gnuradio';
+    backend = 'serial';
     request = encode_backend_mode(backend);
     query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
