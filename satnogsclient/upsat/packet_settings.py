@@ -38,6 +38,36 @@ IAC_APP_ID      = 5
 GND_APP_ID      = 6
 DBG_APP_ID      = 7
 LAST_APP_ID     = 8
+
+upsat_app_ids = { 
+"1" : "OBC",
+"2" : "EPS",
+"3" : "ADCS",
+"4" : "COMMS",
+"5" : "IAC",
+"6" : "GND",
+"7" : "DBG"
+}
+
+upsat_store_ids = {
+"1" : "SU_SCRIPT_1",
+"2" : "SU_SCRIPT_2",
+"3" : "SU_SCRIPT_3",
+"4" : "SU_SCRIPT_4",
+"5" : "SU_SCRIPT_5",
+"6" : "SU_SCRIPT_6",
+"7" : "SU_SCRIPT_7",
+"8" : "SU_LOG",
+"9" : "WOD_LOG",
+"10" : "EXT_WOD_LOG",
+"11" : "EVENT_LOG"
+}
+
+SCRIPT_REPORT_SU_OFFSET = 9
+SCRIPT_REPORT_LOGS_OFFSET = 18
+
+LOGS_LIST_SIZE = 10
+
 SERVICES_VERIFICATION_TC_TM = [
     [ [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0] ],
     [ [0, 0], [1, 0], [1, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0] ], #TC_VERIFICATION_SERVICE
@@ -181,13 +211,14 @@ TM_LD_ABORT_RE_UPLINK          = 16
 
 TC_MS_ENABLE                   = 1
 TC_MS_DISABLE                  = 2
-TC_MS_CONTENT                  = 8
+TM_MS_CONTENT                  = 8
 TC_MS_DOWNLINK                 = 9
 TC_MS_DELETE                   = 11
 TC_MS_REPORT                   = 12
 TM_MS_CATALOGUE_REPORT         = 13
 TC_MS_UPLINK                   = 14
 TC_MS_FORMAT                   = 15
+TM_MS_CATALOGUE_LIST           = 17
 
 TC_CT_PERFORM_TEST             = 1
 TM_CT_REPORT_TEST              = 2
@@ -226,6 +257,29 @@ TM_TIME_SET_TIME_QB50          = 2 #subservice 2
 TM_REPORT_TIME_IN_UTC          = 3 #subservice 3
 TM_REPORT_TIME_IN_QB50         = 4 #subservice 4
 
+SU_SCRIPT_1     = 1
+SU_SCRIPT_2     = 2
+SU_SCRIPT_3     = 3
+SU_SCRIPT_4     = 4
+SU_SCRIPT_5     = 5
+SU_SCRIPT_6     = 6
+SU_SCRIPT_7     = 7
+SU_LOG          = 8
+WOD_LOG         = 9
+EXT_WOD_LOG     = 10
+EVENT_LOG       = 11
+FOTOS           = 12
+SCHS            = 13
 
-
-
+EV_inc_pkt           = 1
+EV_pkt_ack_er        = 2
+EV_sys_boot          = 3
+EV_pwr_level         = 4
+EV_comms_tx_off      = 5
+EV_sys_timeout       = 6
+EV_sys_shutdown      = 7
+EV_assertion         = 8
+EV_su_error          = 9
+EV_su_scr_start      = 10
+EV_pkt_pool_timeout  = 11
+EV_ms_err            = 12
