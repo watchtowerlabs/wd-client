@@ -10,7 +10,7 @@ def HLDLC_deframe(buf_in, buf_out):
         if buf_in[i] == packet_settings.HLDLC_START_FLAG:
             return packet_settings.SATR_EOT
         elif buf_in[i] == packet_settings.HLDLC_CONTROL_FLAG:
-            r.remove(i+1) #it skips the next ieteration
+            r.remove(i + 1)  # it skips the next ieteration
             i = i + 1
             if not (i < size - 1) == True:
                 return packet_settings.SATR_ERROR

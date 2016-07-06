@@ -229,33 +229,38 @@ $(document).ready(function() {
 
                 } else if(action == "List") {
 
-                    var fn = $('#service-param-service-ms-num').val();
+                    var fn_list = $('#service-param-service-ms-num').val();
                     service_subtype = 16;
 
                     data.splice(0, 0, store_id);
-                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // next file
-                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+                    data.splice(1, 0, ((fn_list >> 8) & 0x00FF)); // next file
+                    data.splice(2, 0, ((fn_list >> 0) & 0x00FF));
 
                 } else if(action == "Downlink") {
 
-                    var fn = $('#service-param-service-ms-num').val();                                   
+                    var fn_down = $('#service-param-service-ms-num').val();
                     service_subtype = 9;
 
                     data.splice(0, 0, store_id);
-                    data.splice(1, 0, ((fn >> 8) & 0x00FF)); // file from
-                    data.splice(2, 0, ((fn >> 0) & 0x00FF));
+                    data.splice(1, 0, ((fn_down >> 8) & 0x00FF)); // file from
+                    data.splice(2, 0, ((fn_down >> 0) & 0x00FF));
                     data.splice(3, 0, 1); // num of files
-                
+
                 } else if(action == "Uplink") {
-                    return 0;
+
+                       service_subtype = 14;
+
+                       file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id);
+                       return 0;
+
                 } else if(action == "Delete") {
 
-                    var fnum = $('#service-param-service-ms-num').val();
+                    var fn_del = $('#service-param-service-ms-num').val();
                     service_subtype = 11;
                     data.splice(0, 0, store_id);
                     data.splice(1, 0, 0); //mode != 6
-                    data.splice(2, 0, ((fnum >> 8) & 0x00FF)); // num of files
-                    data.splice(3, 0, ((fnum >> 0) & 0x00FF));
+                    data.splice(2, 0, ((fn_del >> 8) & 0x00FF)); // num of files
+                    data.splice(3, 0, ((fn_del >> 0) & 0x00FF));
 
                 } else if(action == "Hard") {
 
@@ -271,7 +276,7 @@ $(document).ready(function() {
                     data.splice(2, 0, 0); // pads for keeping same format as delete
                     data.splice(3, 0, 0);
                 }
-             } 
+             }
         //      else if(fun == "Enable") {
         //       continue;
         //     }
@@ -280,7 +285,7 @@ $(document).ready(function() {
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "power") {
-            
+
             dev_id = $('#service-param-dev-id').val();
             type = 1;
             ack = $('#service-param-power-ack').val();
@@ -340,32 +345,35 @@ $(document).ready(function() {
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
-        } else if (selected_value == "time") {
-            // TODO: Is app_id needed in time service?
-            //app_id = $('#service-param-time-app_id').val();
-            app_id = 1;
-            type = 1;
-            ack = 0;
+          } else if (selected_value == "time") {
+              // TODO: Is app_id needed in time service?
+              //app_id = $('#service-param-time-app_id').val();
+              app_id = $('#service-param-time-app_id').val();
+              type = 1;
+              ack = 0;
 
-            service_type = 17;
-            service_subtype = 1;
-            dest_id = $('#service-param-time-dest_id').val();
+              service_type = 9;
+              dest_id = $('#service-param-time-dest_id').val();
 
-            selected_action = $('#service-param-time-report').find("option:selected").val();
+              selected_action = $('#service-param-time-report').find("option:selected").val();
 
-            if (selected_action == 'manual') {
-                var datetime = datepicker.data("DateTimePicker").date();
-                data = [datetime.utc().format().toString()];
-            } else if (selected_action == 'auto') {
-                data = [moment().utc().format().toString()];
-            } else {
-                data = [];
-            }
+              if (selected_action == 'manual') {
+                  var datetime = datepicker.data("DateTimePicker").date();
+                  data = [datetime.utc().format().toString()];
+              } else if (selected_action == 'auto') {
+                  data = [moment().utc().format().toString()];
+              } else if (selected_action == 'utc') {
+                  service_subtype = 3;
+              } else if (selected_action == 'qb50') {
+                  service_subtype = 4;
+              } else {
+                  return 0;
+              }
 
-            request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+              request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+              query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
-        } else if (selected_value == "adcs") {
+          } else if (selected_value == "adcs") {
             // TODO: Is app_id needed in time service?
             //app_id = $('#service-param-time-app_id').val();
             app_id = 7;
@@ -574,7 +582,7 @@ function print_command_response(data) {
             data_type = 'other';
             log_data = resp.log_message;
         }
-    
+
         //Check if log is just hearbeat
         if (resp.log_message == 'backend_online') {
             console.log('backend reported online');
