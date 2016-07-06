@@ -382,6 +382,9 @@ def ecss_logic(ecss_dict):
                     report += " file " + str(i) + " filename " + str(filename) + " size " + str(size) + " modified " + str(time_modfied) + "\n"
                 print report
 
+            elif sid <= packet_settings.SU_SCRIPT_7:
+                report = "received file list, for store " + str(sid) + " you should do a report"
+
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CONTENT:
 
             sid = ecss_dict['data'][0]
