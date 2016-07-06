@@ -363,8 +363,7 @@ $(document).ready(function() {
             type = 1;
             ack = 0;
 
-            service_type = 17;
-            service_subtype = 1;
+            service_type = 9;
             dest_id = $('#service-param-time-dest_id').val();
 
             selected_action = $('#service-param-time-report').find("option:selected").val();
@@ -374,8 +373,12 @@ $(document).ready(function() {
                 data = [datetime.utc().format().toString()];
             } else if (selected_action == 'auto') {
                 data = [moment().utc().format().toString()];
+            } else if (selected_action == 'utc') {
+                service_subtype = 3;
+            } else if (selected_action == 'qb50') {
+                service_subtype = 4;
             } else {
-                data = [];
+                return 0;
             }
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
