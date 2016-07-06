@@ -359,7 +359,7 @@ $(document).ready(function() {
         } else if (selected_value == "time") {
             // TODO: Is app_id needed in time service?
             //app_id = $('#service-param-time-app_id').val();
-            app_id = 1;
+            app_id = $('#service-param-time-app_id').val();
             type = 1;
             ack = 0;
 
