@@ -255,7 +255,7 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer]:) * 0.001
+            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
             report += "time " + time + " "
 
@@ -268,7 +268,7 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer]:) * 0.001
+            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
             report += "time " + time + " "
 
@@ -277,7 +277,7 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer]:) * 0.001
+            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
             report += "time " + time + " "
 
@@ -286,39 +286,39 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "SU_SCI_HDR_REP "
 
-            roll = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            roll = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "roll " + roll + " "
 
-            pitch = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            pitch = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "pitch " + pitch + " "
 
-            yaw = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            yaw = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "yaw " + yaw + " "
 
-            roll_dot = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            roll_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "roll_dot " + roll_dot + " "
 
-            pitch_dot = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            pitch_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "pitch_dot " + pitch_dot + " "
 
-            yaw_dot = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            yaw_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "yaw_dot " + yaw_dot + " "
 
-            x = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            x = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "x " + x + " "
 
-            y = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            y = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "y " + y + " "
 
-            z = cnv8_16(ecss_dict['data'][pointer]:) * 0.01
+            z = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "z " + z + " "
 
@@ -327,7 +327,7 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer]:) * 0.001
+            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
             report += "time " + time + " "
 
