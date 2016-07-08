@@ -138,9 +138,10 @@ $(document).ready(function() {
 
                 } else if(action == "Uplink") {
 
+                       var file = $('#service-param-service-ms-num').val();
                        service_subtype = 14;
 
-                       file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id);
+                       file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id, file);
                        return 0;
 
                 } else if(action == "Delete") {
@@ -649,7 +650,7 @@ function display_control_view(mode) {
 }
 
 //Retrieve file encode command and post the request
-function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id) {
+function file_encode_and_query_backend(type, app_id, service_type, service_subtype, dest_id, ack, store_id, file) {
   input = document.getElementById('file');
   file = input.files[0];
   reader = new FileReader();
@@ -660,6 +661,9 @@ function file_encode_and_query_backend(type, app_id, service_type, service_subty
       result = evt.target.result;
       ascii_to_dec(result,data);
 
+      data.unshift((file >> 0) & 0x00FF); // file to uplink, applicable only to sch sid.
+      data.unshift((file >> 8) & 0x00FF); //unshifts inserts to first of the array so the order is reversed
+                                          //first the file and then the sid so the array is [sid][file (2 bytes)][data (x bytes)]
       data.unshift(store_id);
       console.log(data);
       request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
