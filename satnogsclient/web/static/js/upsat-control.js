@@ -260,12 +260,12 @@ $(document).ready(function() {
               }
 
               if (dateutc !== null) {
-                data[0] = dateutc.date();
-                data[1] = dateutc.month() + 1;
-                data[2] = dateutc.year() - 2000;
-                data[3] = dateutc.hour();
-                data[4] = dateutc.minute();
-                data[5] = dateutc.seconds();
+                data.splice(0, 0, dateutc.date());
+                data.splice(1, 0, dateutc.month() + 1);  // 7 is delete all mode
+                data.splice(2, 0, dateutc.year() - 2000); // pads for keeping same format as delete
+                data.splice(3, 0, dateutc.hour());
+                data.splice(4, 0, dateutc.minute());
+                data.splice(5, 0, dateutc.seconds());
               }
               else {
                 data = [];
