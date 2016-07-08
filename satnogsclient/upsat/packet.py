@@ -283,39 +283,39 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "SU_SCI_HDR_REP "
 
-            roll = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            roll = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "roll " + str(roll) + " "
 
-            pitch = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            pitch = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "pitch " + str(pitch) + " "
 
-            yaw = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            yaw = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.01
             pointer += 2
             report += "yaw " + str(yaw) + " "
 
-            roll_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            roll_dot = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.001
             pointer += 2
             report += "roll_dot " + str(roll_dot) + " "
 
-            pitch_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            pitch_dot = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.001
             pointer += 2
             report += "pitch_dot " + str(pitch_dot) + " "
 
-            yaw_dot = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            yaw_dot = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.001
             pointer += 2
             report += "yaw_dot " + str(yaw_dot) + " "
 
-            x = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            x = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.5
             pointer += 2
             report += "x " + str(x) + " "
 
-            y = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            y = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.5
             pointer += 2
             report += "y " + str(y) + " "
 
-            z = cnv8_16(ecss_dict['data'][pointer:]) * 0.01
+            z = cnv_signed_8_16(ecss_dict['data'][pointer:]) * 0.5
             pointer += 2
             report += "z " + str(z) + " "
 
@@ -508,6 +508,18 @@ def cnv16_8(inc):
 def cnv8_32(inc):
     return ((inc[3] << 24) | (inc[2] << 16) | (inc[1] << 8) | (inc[0]))
 
-
 def cnv8_16(inc):
     return ((inc[1] << 8) | (inc[0]))
+
+
+def cnv_signed_8_32(inc):
+    res = ((inc[3] << 24) | (inc[2] << 16) | (inc[1] << 8) | (inc[0]))
+    if (res >> 31) == 1:
+        res = (0xFFFFFFFF - res) * -1
+    return res
+
+def cnv_signed_8_16(inc):
+    res = ((inc[1] << 8) | (inc[0]))
+    if (res >> 15) == 1:
+        res = (0xFFFF - res) * -1
+    return res
