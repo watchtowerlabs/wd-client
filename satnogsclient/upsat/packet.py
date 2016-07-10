@@ -328,15 +328,16 @@ def ecss_logic(ecss_dict):
 
     elif ecss_dict['ser_type'] == packet_settings.TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == packet_settings.TM_EV_NORMAL_REPORT:
 
-        # event_id = ecss_dict['data'][0]
-        # if event_id == EV_sys_boot:
-        #    report = "booted"
+        report = ""
+        event_id = ecss_dict['data'][0]
+        if event_id == packet_settings.EV_sys_boot:
+            report = "booted"
 
-        text += "EVENT {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+        text += "EVENT {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_FUNCTION_MANAGEMENT_SERVICE:
         # Nothing to do here
-        text += "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
+        text += "FM {0}, FROM: {1}".format(packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_TIME_MANAGEMENT_SERVICE:
 
