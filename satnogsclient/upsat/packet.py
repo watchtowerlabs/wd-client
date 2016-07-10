@@ -388,20 +388,23 @@ def ecss_logic(ecss_dict):
                 offset = (7 * packet_settings.SCRIPT_REPORT_SU_OFFSET) + (i * packet_settings.SCRIPT_REPORT_LOGS_OFFSET)
 
                 fnum = cnv8_16(ecss_dict['data'][(offset):])
-                tail_size = cnv8_32(ecss_dict['data'][(2 + offset):])
-                fatfs_tail = cnv8_32(ecss_dict['data'][(6 + offset):])
+
+                fname_tail = cnv8_16(ecss_dict['data'][(2 + offset):])
+                tail_size = cnv8_32(ecss_dict['data'][(4 + offset):])
+                fatfs_tail = cnv8_32(ecss_dict['data'][(8 + offset):])
                 time_modfied_tail = fatfs_to_utc(fatfs_tail)
 
-                head_size = cnv8_32(ecss_dict['data'][(10 + offset):])
-                fatfs_head = cnv8_32(ecss_dict['data'][(14 + offset):])
+                fname_head = cnv8_16(ecss_dict['data'][(12 + offset):])
+                head_size = cnv8_32(ecss_dict['data'][(14 + offset):])
+                fatfs_head = cnv8_32(ecss_dict['data'][(18 + offset):])
                 time_modfied_head = fatfs_to_utc(fatfs_head)
 
                 print "offset: " + str(offset) + " script " + packet_settings.upsat_store_ids[str(i + 8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + \
                     " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head)
                 print "raw ", ' '.join('{:02x}'.format(x) for x in ecss_dict['data'][(offset):(offset + packet_settings.SCRIPT_REPORT_LOGS_OFFSET)])
 
-                report += "script " + packet_settings.upsat_store_ids[str(i + 8)] + " number of files: " + str(fnum) + " tail size: " + str(tail_size) + " tail time_modfied: " + \
-                    str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head) + "\n"
+                report += "script " + packet_settings.upsat_store_ids[str(i + 8)] + " number of files: " + str(fnum) + " tail name: " + str(fname_tail) + " tail size: " + str(tail_size) + " tail time_modfied: " + \
+                    str(time_modfied_tail) + " head name: " + str(fname_head) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head) + "\n"
 
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
