@@ -247,28 +247,30 @@ $(document).ready(function() {
               selected_action = $('#service-param-time-report').find("option:selected").val();
 
               if (selected_action == 'manual') {
-                  var datetime = datepicker.data("DateTimePicker").date();
+                  var datetime = datepicker_time.data("DateTimePicker").date();
                   dateutc = datetime;
+
+                  data.splice(0, 0, dateutc.date());
+                  data.splice(1, 0, dateutc.month() + 1);  // 7 is delete all mode
+                  data.splice(2, 0, dateutc.year() - 2000); // pads for keeping same format as delete
+                  data.splice(3, 0, dateutc.hour());
+                  data.splice(4, 0, dateutc.minute());
+                  data.splice(5, 0, dateutc.seconds());
               } else if (selected_action == 'auto') {
                   dateutc = moment();
+
+                  data.splice(0, 0, dateutc.date());
+                  data.splice(1, 0, dateutc.month() + 1);  // 7 is delete all mode
+                  data.splice(2, 0, dateutc.year() - 2000); // pads for keeping same format as delete
+                  data.splice(3, 0, dateutc.hour());
+                  data.splice(4, 0, dateutc.minute());
+                  data.splice(5, 0, dateutc.seconds());
               } else if (selected_action == 'utc') {
                   service_subtype = 3;
               } else if (selected_action == 'qb50') {
                   service_subtype = 4;
               } else {
                   return 0;
-              }
-
-              if (dateutc !== null) {
-                data.splice(0, 0, dateutc.date());
-                data.splice(1, 0, dateutc.month() + 1);  // 7 is delete all mode
-                data.splice(2, 0, dateutc.year() - 2000); // pads for keeping same format as delete
-                data.splice(3, 0, dateutc.hour());
-                data.splice(4, 0, dateutc.minute());
-                data.splice(5, 0, dateutc.seconds());
-              }
-              else {
-                data = [];
               }
 
               request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
@@ -710,7 +712,12 @@ function init() {
     }, 10000);
 
     // Setup the datetimepicker
-    datepicker = $('#datetimepicker1').datetimepicker({
+    datepicker_time = $('#datetimepicker-time').datetimepicker({
+        format: 'DD-MM-YYYY HH:mm:ss',
+    });
+
+        // Setup the datetimepicker
+    datepicker_sch = $('#datetimepicker-sch').datetimepicker({
         format: 'DD-MM-YYYY HH:mm:ss',
     });
 }
