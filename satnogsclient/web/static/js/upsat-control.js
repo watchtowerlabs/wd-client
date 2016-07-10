@@ -360,7 +360,8 @@ function display_service(selection) {
         'tle-select': 'service-param-tle',
         'ms-select': 'service-param-mass-storage',
         'comms-select': 'service-param-comms',
-        'hk-select': 'service-param-housekeeping'
+        'hk-select': 'service-param-housekeeping',
+        'sch-select': 'service-param-schedule'
     };
     var keys = [];
     for (var key in services) {
