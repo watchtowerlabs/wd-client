@@ -254,7 +254,7 @@ def ecss_logic(ecss_dict):
 
             time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + time + " "
+            report += "time " + str(time) + " "
 
         elif ecss_dict['app_id'] == packet_settings.COMMS_APP_ID and struct_id == packet_settings.HEALTH_REP:
 
@@ -267,7 +267,7 @@ def ecss_logic(ecss_dict):
 
             time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + time + " "
+            report += "time " + str(time) + " "
 
         elif ecss_dict['app_id'] == packet_settings.ADCS_APP_ID and struct_id == packet_settings.EX_HEALTH_REP:
 
@@ -276,7 +276,7 @@ def ecss_logic(ecss_dict):
 
             time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + time + " "
+            report += "time " + str(time) + " "
 
         elif ecss_dict['app_id'] == packet_settings.ADCS_APP_ID and struct_id == packet_settings.SU_SCI_HDR_REP:
 
@@ -324,7 +324,11 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-        text = "HK {0}, FROM: {1}".format(report, ecss_dict['app_id'])
+            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+            report += "time " + str(time) + " "
+
+        text = "HK {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_EVENT_SERVICE and ecss_dict['ser_subtype'] == packet_settings.TM_EV_NORMAL_REPORT:
 
