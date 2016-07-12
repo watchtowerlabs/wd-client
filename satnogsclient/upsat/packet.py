@@ -326,12 +326,12 @@ def ecss_logic(ecss_dict):
 
             time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + str(time) + " "
+            report += "time " + str(time)
 
             
         elif struct_id == packet_settings.EXT_WOD_REP:
             pointer = 1
-            report = "EXT WOD "
+            report = "EXT WOD"
 
             qb50 = cnv8_32(ecss_dict['data'][pointer:])
             utc = qb50_to_utc(qb50)
@@ -346,7 +346,31 @@ def ecss_logic(ecss_dict):
             adcs = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
 
-            report += "time " + str(qb50) + " UTC " + str(utc) + " obc " + str(obc) + " " + " comms " + str(comms) + " " + " eps " + str(eps) + " " + " adcs " + str(adcs)
+            task_uart = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+
+            task_idle = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+
+            task_hk = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+
+            task_su = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+
+            task_sch = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            pointer += 4
+
+            report += " time " + str(qb50) + " UTC " + str(utc) + \
+                      " obc " + str(obc) + \
+                      " comms " + str(comms) + \
+                      " eps " + str(eps) + \
+                      " adcs " + str(adcs) + \
+                      " task_uart " + str(task_uart) + \
+                      " task_idle " + str(task_idle) + \
+                      " task_hk " + str(task_hk) + \
+                      " task_su " + str(task_su) + \
+                      " task_sch " + str(task_sch)
 
         text = "HK {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
