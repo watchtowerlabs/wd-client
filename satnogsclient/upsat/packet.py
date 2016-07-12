@@ -381,7 +381,7 @@ def ecss_logic(ecss_dict):
 
             qb50 = cnv8_32(ecss_dict['data'][0:])
             utc = qb50_to_utc(qb50)
-            report = "QB50 " + qb50 + " UTC: " + utc
+            report = "QB50 " + str(qb50) + " UTC: " + str(utc)
 
         text = "TIME: {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
