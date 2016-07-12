@@ -247,6 +247,8 @@ $(document).ready(function() {
               selected_action = $('#service-param-time-report').find("option:selected").val();
 
               if (selected_action == 'manual') {
+                  service_subtype = 1;
+
                   var datetime = datepicker_time.data("DateTimePicker").date();
                   dateutc = datetime;
 
@@ -257,6 +259,8 @@ $(document).ready(function() {
                   data.splice(4, 0, dateutc.minute());
                   data.splice(5, 0, dateutc.seconds());
               } else if (selected_action == 'auto') {
+
+                  service_subtype = 1;
                   dateutc = moment();
 
                   data.splice(0, 0, dateutc.date());
