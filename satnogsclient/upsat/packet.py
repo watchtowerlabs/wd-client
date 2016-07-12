@@ -334,6 +334,7 @@ def ecss_logic(ecss_dict):
             report = "EXT WOD "
 
             qb50 = cnv8_32(ecss_dict['data'][pointer:])
+            utc = qb50_to_utc(qb50)
             pointer += 4
 
             obc = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
@@ -345,7 +346,7 @@ def ecss_logic(ecss_dict):
             adcs = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
 
-            report += "time " + str(qb50) + " obc " + str(obc) + " " + " comms " + str(comms) + " " + " eps " + str(eps) + " " + " time " + str(adcs)
+            report += "time " + str(qb50) + " UTC " + str(utc) + " obc " + str(obc) + " " + " comms " + str(comms) + " " + " eps " + str(eps) + " " + " adcs " + str(adcs)
 
         text = "HK {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
