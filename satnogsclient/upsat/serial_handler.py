@@ -19,7 +19,12 @@ def init():
     global ecss_feeder_sock
     global ui_listener_sock
     global ld_socket
-    port = serial.Serial(client_settings.SERIAL_PORT, baudrate=9600, timeout=1.0)
+    try:
+        port = serial.Serial(client_settings.SERIAL_PORT, baudrate=9600, timeout=1.0)
+    except serial.SerialException as e:
+        logger.error('Could not open serial port. Error occured')
+        logger.error(e)
+        return
     ecss_feeder_sock = Udpsocket([])  # The socket with which we communicate with the ecss feeder thread
     ui_listener_sock = Udpsocket(('127.0.0.1', client_settings.BACKEND_FEEDER_PORT))
     ld_socket = Udpsocket([])
@@ -33,7 +38,11 @@ def close():
 def write_to_serial(buf):
     print "Sending data to serial ", ''.join('{:02x}'.format(x) for x in buf)
     global port
-    port.write(buf)
+    try:
+        port.write(buf)
+    except serial.SerialException as e:
+        logger.error('Could not write to serial port. Error occured')
+        logger.error(e)
 
 
 def read_from_serial():
@@ -44,7 +53,12 @@ def read_from_serial():
     print 'Started serial listener process'
     buf_in = bytearray(0)
     while True:
-        c = port.read()
+        try:
+            c = port.read()
+        except serial.SerialException as e:
+            logger.error('Could not read from serial port. Error occured')
+            logger.error(e)
+            return
         if len(c) != 0:
             buf_in.append(c)
             if len(buf_in) == 1 and buf_in[0] != 0x7E:
