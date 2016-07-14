@@ -328,7 +328,6 @@ def ecss_logic(ecss_dict):
             pointer += 4
             report += "time " + str(time)
 
-            
         elif struct_id == packet_settings.EXT_WOD_REP:
             pointer = 1
             report = "EXT WOD"
@@ -452,8 +451,9 @@ def ecss_logic(ecss_dict):
                     " tail time_modfied: " + str(time_modfied_tail) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head)
                 print "raw ", ' '.join('{:02x}'.format(x) for x in ecss_dict['data'][(offset):(offset + packet_settings.SCRIPT_REPORT_LOGS_OFFSET)])
 
-                report += "script " + packet_settings.upsat_store_ids[str(i + 8)] + " number of files: " + str(fnum) + " tail name: " + str(fname_tail) + " tail size: " + str(tail_size) + " tail time_modfied: " + \
-                    str(time_modfied_tail) + " head name: " + str(fname_head) + " head size: " + str(head_size) + " head time_modfied: " + str(time_modfied_head) + "\n"
+                report += "script " + packet_settings.upsat_store_ids[str(i + 8)] + " number of files: " + str(fnum) + " tail name: " + str(fname_tail) + " tail size: " + \
+                    str(tail_size) + " tail time_modfied: " + str(time_modfied_tail) + " head name: " + str(fname_head) + " head size: " + str(head_size) + \
+                    " head time_modfied: " + str(time_modfied_head) + "\n"
 
         elif ecss_dict['ser_subtype'] == packet_settings.TM_MS_CATALOGUE_LIST:
 
@@ -560,6 +560,7 @@ def cnv16_8(inc):
 def cnv8_32(inc):
     return ((inc[3] << 24) | (inc[2] << 16) | (inc[1] << 8) | (inc[0]))
 
+
 def cnv8_16(inc):
     return ((inc[1] << 8) | (inc[0]))
 
@@ -569,6 +570,7 @@ def cnv_signed_8_32(inc):
     if (res >> 31) == 1:
         res = (0xFFFFFFFF - res) * -1
     return res
+
 
 def cnv_signed_8_16(inc):
     res = ((inc[1] << 8) | (inc[0]))
