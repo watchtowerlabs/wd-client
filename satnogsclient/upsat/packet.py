@@ -3,6 +3,7 @@ import binascii
 import struct
 import ctypes
 import datetime
+import time
 
 from satnogsclient import settings
 from satnogsclient.upsat import packet_settings
@@ -359,8 +360,8 @@ def ecss_logic(ecss_dict):
             task_sch = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
 
-            uart_state = ecss_dict['data'][pointer]
-            pointer += 1
+            #uart_state = ecss_dict['data'][pointer]
+            #pointer += 1
  
             report += " time " + str(qb50) + " UTC " + str(utc) + \
                       " obc " + str(obc) + \
@@ -528,12 +529,12 @@ def ecss_logic(ecss_dict):
                 #If su_logs > MAX_DOWNLINK_SU_LOGS:
                 #Error
 
-                report += " received " + su_logs + " su logs "
+                report += " received " + str(su_logs) + " su logs "
                 for i in range(0, su_logs):
-                   qb50 = cnv8_32(ecss_dict['data'][3 + (i * packet_settings.SU_LOG_SIZE)])
+                   qb50 = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.SU_LOG_SIZE)):])
                    utc = qb50_to_utc(qb50)
-                   report += "SU LOG, with QB50 " + qb50 + " UTC: " + utc
-                Write log to a file and or in DB
+                   report += "SU LOG, with QB50 " + str(qb50) + " UTC: " + str(utc)
+                #Write log to a file and or in DB
 
             elif sid <= packet_settings.SU_SCRIPT_7:
 
@@ -548,9 +549,10 @@ def ecss_logic(ecss_dict):
                 else:
                     report += " Checksum error"
 
-            timestr = time.strftime("%Y%m%d-%H%M%S")
+            timestr = "10"#time.strftime("%Y%m%d-%H%M%S")
 
-            fwname = packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
+            #fwname = "./" + packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
+            fwname = str(sid) + "_" + str(fname) + "_" + timestr + ".bin"
             myfile = open(fwname,'w')
             myfile.write(ecss_dict['data'][3:])
             myfile.close()
