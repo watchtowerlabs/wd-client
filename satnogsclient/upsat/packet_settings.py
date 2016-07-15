@@ -290,6 +290,7 @@ EXT_WOD_LOG = 10
 EVENT_LOG = 11
 FOTOS = 12
 SCHS = 13
+SRAM = 14
 
 EV_inc_pkt = 1
 EV_pkt_ack_er = 2
