@@ -13,7 +13,14 @@ from satnogsclient.upsat import hldlc
 import json
 
 logger = logging.getLogger('satnogsclient')
+log_path = os.environ['OUTPUT_PATH'] + "/files/"
 
+def folder_init():
+
+    global log_path
+    for p in packet_settings.upsat_store_ids:
+        if not os.path.exists(log_path + p):
+            os.mkdir(p)
 
 def ecss_encoder(port):
     logger.info('Started ecss encoder')
@@ -224,6 +231,8 @@ def deconstruct_packet(buf_in, ecss_dict, backend):
 
 
 def ecss_logic(ecss_dict):
+
+    global log_path
 
     id = 0
     text = "Nothing found"
@@ -555,7 +564,7 @@ def ecss_logic(ecss_dict):
 
             timestr = "10"#time.strftime("%Y%m%d-%H%M%S")
 
-            #fwname = "./" + packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
+            fwname = log_path + packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
             fwname = str(sid) + "_" + str(fname) + "_" + timestr + ".bin"
             myfile = open(fwname,'w')
             myfile.write(ecss_dict['data'][3:])
