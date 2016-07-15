@@ -360,6 +360,9 @@ def ecss_logic(ecss_dict):
             task_sch = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
 
+            vbat = cnv8_16(ecss_dict['data'][pointer:])
+            pointer += 2
+
             #uart_state = ecss_dict['data'][pointer]
             #pointer += 1
  
@@ -372,7 +375,8 @@ def ecss_logic(ecss_dict):
                       " task_idle " + str(task_idle) + \
                       " task_hk " + str(task_hk) + \
                       " task_su " + str(task_su) + \
-                      " task_sch " + str(task_sch)
+                      " task_sch " + str(task_sch) + \
+                      " vbat " + str(vbat) 
 
             # if uart_state == 0x00:
             #     report += " Uart state reset"
