@@ -548,6 +548,12 @@ def ecss_logic(ecss_dict):
                 else:
                     report += " Checksum error"
 
+            timestr = time.strftime("%Y%m%d-%H%M%S")
+
+            fwname = packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
+            myfile = open(fwname,'w')
+            myfile.write(ecss_dict['data'][3:])
+            myfile.close()
 
         text = "MS {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
