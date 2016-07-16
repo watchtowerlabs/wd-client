@@ -1,26 +1,37 @@
-import logging
 import binascii
-import struct
 import ctypes
 import datetime
+import json
+import logging
+import os
+import struct
 import time
 
 from satnogsclient import settings
-from satnogsclient.upsat import packet_settings
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import hldlc
-import json
+from satnogsclient.upsat import packet_settings
+
 
 logger = logging.getLogger('satnogsclient')
-log_path = os.environ['OUTPUT_PATH'] + "/files/"
+log_path = ""
+
 
 def folder_init():
-
     global log_path
-    for p in packet_settings.upsat_store_ids:
-        if not os.path.exists(log_path + p):
-            os.mkdir(p)
+    log_path = packet_settings.OUTPUT_PATH + "/files/"
+    print "Dir ", log_path, packet_settings.OUTPUT_PATH
+    if not os.path.exists(log_path):
+        print "Made dir", log_path
+        os.mkdir(log_path)
+    for sid in range(8, 11):
+        sid_dir = os.path.join(log_path, packet_settings.upsat_store_ids[str(sid)])
+        print "check dir", sid_dir
+        if not os.path.exists(sid_dir):
+            print "Made dir", sid_dir
+            os.mkdir(sid_dir)
+
 
 def ecss_encoder(port):
     logger.info('Started ecss encoder')
@@ -261,9 +272,9 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            time_obc = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + str(time) + " "
+            report += "time " + str(time_obc) + " "
 
         elif ecss_dict['app_id'] == packet_settings.COMMS_APP_ID and struct_id == packet_settings.HEALTH_REP:
 
@@ -274,18 +285,18 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            time_obc = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + str(time) + " "
+            report += "time " + str(time_obc) + " "
 
         elif ecss_dict['app_id'] == packet_settings.ADCS_APP_ID and struct_id == packet_settings.EX_HEALTH_REP:
 
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            time_obc = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + str(time) + " "
+            report += "time " + str(time_obc) + " "
 
         elif ecss_dict['app_id'] == packet_settings.ADCS_APP_ID and struct_id == packet_settings.SU_SCI_HDR_REP:
 
@@ -333,9 +344,9 @@ def ecss_logic(ecss_dict):
             pointer = 1
             report = "EX_HEALTH_REP "
 
-            time = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
+            time_obc = cnv8_32(ecss_dict['data'][pointer:]) * 0.001
             pointer += 4
-            report += "time " + str(time)
+            report += "time " + str(time_obc)
 
         elif struct_id == packet_settings.EXT_WOD_REP:
             pointer = 1
@@ -372,9 +383,9 @@ def ecss_logic(ecss_dict):
             vbat = cnv8_16(ecss_dict['data'][pointer:])
             pointer += 2
 
-            #uart_state = ecss_dict['data'][pointer]
-            #pointer += 1
- 
+            # uart_state = ecss_dict['data'][pointer]
+            # pointer += 1
+
             report += " time " + str(qb50) + " UTC " + str(utc) + \
                       " obc " + str(obc) + \
                       " comms " + str(comms) + \
@@ -385,7 +396,7 @@ def ecss_logic(ecss_dict):
                       " task_hk " + str(task_hk) + \
                       " task_su " + str(task_su) + \
                       " task_sch " + str(task_sch) + \
-                      " vbat " + str(vbat) 
+                      " vbat " + str(vbat)
 
             # if uart_state == 0x00:
             #     report += " Uart state reset"
@@ -532,22 +543,21 @@ def ecss_logic(ecss_dict):
             sid = ecss_dict['data'][0]
             fname = cnv8_16(ecss_dict['data'][1:])
 
-            report = "From store: " + packet_settings.upsat_store_ids[str(sid)] + " file " + str(fname)# + " content " + ecss_dict['data'] + \
-                     #" " + ' '.join('{:02x}'.format(x) for x in ecss_dict['data']) + "\n"
+            report = "From store: " + packet_settings.upsat_store_ids[str(sid)] + " file " + str(fname)  # + " content " + ecss_dict['data'] + \
+            # " " + ' '.join('{:02x}'.format(x) for x in ecss_dict['data']) + "\n"
 
             if sid == packet_settings.SU_LOG:
 
-                su_logs = 1#(ecss_dict['size'] - 3) / packet_settings.SU_LOG_SIZE
+                su_logs = 1  # (ecss_dict['size'] - 3) / packet_settings.SU_LOG_SIZE
 
-                #If su_logs > MAX_DOWNLINK_SU_LOGS:
-                #Error
+                # If su_logs > MAX_DOWNLINK_SU_LOGS:
+                # Error
 
                 report += " received " + str(su_logs) + " su logs "
                 for i in range(0, su_logs):
-                   qb50 = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.SU_LOG_SIZE)):])
-                   utc = qb50_to_utc(qb50)
-                   report += "SU LOG, with QB50 " + str(qb50) + " UTC: " + str(utc)
-                #Write log to a file and or in DB
+                    qb50 = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.SU_LOG_SIZE)):])
+                    utc = qb50_to_utc(qb50)
+                    report += "SU LOG, with QB50 " + str(qb50) + " UTC: " + str(utc)
 
             elif sid <= packet_settings.SU_SCRIPT_7:
 
@@ -562,11 +572,10 @@ def ecss_logic(ecss_dict):
                 else:
                     report += " Checksum error"
 
-            timestr = "10"#time.strftime("%Y%m%d-%H%M%S")
+            timestr = time.strftime("%Y%m%d-%H%M%S")
 
             fwname = log_path + packet_settings.upsat_store_ids[str(sid)] + "/" + str(fname) + "_" + timestr + ".bin"
-            fwname = str(sid) + "_" + str(fname) + "_" + timestr + ".bin"
-            myfile = open(fwname,'w')
+            myfile = open(fwname, 'w')
             myfile.write(ecss_dict['data'][3:])
             myfile.close()
 
