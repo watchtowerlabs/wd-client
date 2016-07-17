@@ -20,8 +20,8 @@ log_path = ""
 
 def folder_init():
     global log_path
-    log_path = packet_settings.OUTPUT_PATH + "/files/"
-    print "Dir ", log_path, packet_settings.OUTPUT_PATH
+    log_path = settings.OUTPUT_PATH + "/files/"
+    print "Dir ", log_path, settings.OUTPUT_PATH
     if not os.path.exists(log_path):
         print "Made dir", log_path
         os.mkdir(log_path)
