@@ -559,6 +559,19 @@ def ecss_logic(ecss_dict):
                     utc = qb50_to_utc(qb50)
                     report += "SU LOG, with QB50 " + str(qb50) + " UTC: " + str(utc)
 
+            elif sid == packet_settings.WOD_LOG:
+
+                wod_logs = 1  # (ecss_dict['size'] - 3) / packet_settings.SU_LOG_SIZE
+
+                # If su_logs > MAX_DOWNLINK_SU_LOGS:
+                # Error
+
+                report += " received " + str(wod_logs) + " wod logs "
+                for i in range(0, wod_logs):
+                    qb50 = cnv8_32(ecss_dict['data'][(3 + (i * packet_settings.WOD_LOG_SIZE)):])
+                    utc = qb50_to_utc(qb50)
+                    report += "WOD LOG, with QB50 " + str(qb50) + " UTC: " + str(utc)
+
             elif sid <= packet_settings.SU_SCRIPT_7:
 
                 sum1 = 0
