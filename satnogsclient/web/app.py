@@ -3,7 +3,7 @@ from flask.ext.socketio import SocketIO, emit
 from multiprocessing import Process
 
 from satnogsclient import settings as client_settings
-from satnogsclient.upsat import packet, tx_handler, packet_settings, large_data_service
+from satnogsclient.upsat import packet, tx_handler, packet_settings, large_data_service, ecss_logic_utils
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 import logging
