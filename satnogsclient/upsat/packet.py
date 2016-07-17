@@ -255,9 +255,9 @@ def ecss_logic(ecss_dict):
         if ecss_dict['ser_subtype'] == packet_settings.TM_VR_ACCEPTANCE_SUCCESS:
             report = "OK"
         elif ecss_dict['ser_subtype'] == packet_settings.TM_VR_ACCEPTANCE_FAILURE:
-            report = "Error " + packet_settings.SAT_RETURN_STATE[ecss_dict['data'][4]]
+            report = "Error " + packet_settings.SAT_RETURN_STATES[ecss_dict['data'][4]]
 
-        text += "ACK {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
+        text = "ACK {0}, FROM: {1}".format(report, packet_settings.upsat_app_ids[str(ecss_dict['app_id'])])
 
     elif ecss_dict['ser_type'] == packet_settings.TC_HOUSEKEEPING_SERVICE and ecss_dict['ser_subtype'] == packet_settings.TM_HK_PARAMETERS_REPORT:
 
