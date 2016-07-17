@@ -1,4 +1,3 @@
-import binascii
 import ctypes
 import json
 import logging

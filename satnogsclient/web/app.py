@@ -1,18 +1,10 @@
-<<<<<<< 11a81dc87b6df2c0ececd8fba1e2285eaf6773d4
 from flask import Flask, render_template, json, jsonify
-from flask_socketio import SocketIO, emit
-
-
-from satnogsclient import settings as client_settings
-from satnogsclient.upsat import packet, tx_handler
-=======
-from flask import Flask, render_template, request, json, jsonify
 from flask.ext.socketio import SocketIO, emit
 from multiprocessing import Process
 
 from satnogsclient import settings as client_settings
 from satnogsclient.upsat import packet, tx_handler, packet_settings, large_data_service
->>>>>>> Large data handles large ecss packets
+
 from satnogsclient.observer.commsocket import Commsocket
 import logging
 import os
@@ -149,7 +141,13 @@ def handle_requested_cmd(data):
 
             buf = packet.construct_packet(ecss, os.environ['BACKEND'])
             response = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
-            tx_handler.send_to_backend(buf)
+            if len(buf) > packet_settings.MAX_COMMS_PKT_SIZE:
+                ld = Process(target=large_data_service.uplink, args=(buf,))
+                ld.daemon = True
+                ld.start()
+            else:
+                tx_handler.send_to_backend(buf)
+
             emit('backend_msg', response)
 
 
