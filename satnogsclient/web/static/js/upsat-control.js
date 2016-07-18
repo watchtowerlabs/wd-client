@@ -601,6 +601,8 @@ function print_command_response(data) {
     for(var key in data) {
         var resp = data[key];
 
+        var log_data = "";
+
         if (resp.id == 1) {
             data_type = 'cmd';
             log_data = resp.log_message;
@@ -610,6 +612,7 @@ function print_command_response(data) {
         } else {
             data_type = 'other';
             log_data = resp.log_message;
+            log_data = log_data.split("\n").join("<br>");
         }
 
         //Check if log is just hearbeat
