@@ -52,6 +52,30 @@ $(document).ready(function() {
         }
     });
 
+    $('#service-param-adcs-action').on('change', function() {
+        if ($('#service-param-adcs-action').find("option:selected").val() == "ADCS_SPIN") {
+            $('#adcs-spin-row').show();
+            $('#adcs-magneto-row').hide();
+            $('#adcs-gain-row').hide();
+            $('#adcs-tle-row').hide();
+        } else if ($('#service-param-adcs-action').find("option:selected").val() == "ADCS_MAGNETO") {
+            $('#adcs-spin-row').hide();
+            $('#adcs-magneto-row').show();
+            $('#adcs-gain-row').hide();
+            $('#adcs-tle-row').hide();
+        } else if ($('#service-param-adcs-action').find("option:selected").val() == "ADCS_CTRL_GAIN") {
+            $('#adcs-spin-row').hide();
+            $('#adcs-magneto-row').hide();
+            $('#adcs-gain-row').show();
+            $('#adcs-tle-row').hide();
+        } else if ($('#service-param-adcs-action').find("option:selected").val() == "ADCS_TLE"){
+            $('#adcs-spin-row').hide();
+            $('#adcs-magneto-row').hide();
+            $('#adcs-gain-row').hide();
+            $('#adcs-tle-row').show();
+        }
+    });
+
     $('#service-param-ms-action').on('change', function() {
         if ($('#service-param-ms-action').find("option:selected").val() == "Uplink") {
             $('#file-upload-row').show();
@@ -347,14 +371,39 @@ $(document).ready(function() {
             dest_id = 3;
 
             data = [];
-            ascii_to_dec($('#service-param-service-tle').val().split(''), data);
-            data.unshift(6);
-            //number of TLE chanacters
-            if (data.length != 137) {
-                alert("TLE shouldnt be: " + data.length);
-                return 0;
+            data.splice(0, 0, service_type);
+            var adcs_action = $('#service-param-adcs-action').val();
+
+            if (adcs_action == "ADCS_SPIN") {
+                var spin = $('#service-param-service-spin').val();
+                data.splice(1, 0, 13);
+                data.splice(2, 0, spin);
+            } else if (adcs_action == "ADCS_MAGNETO") {
+                var x = $('#service-param-service-x').val();
+                var y = $('#service-param-service-y').val();
+                data.splice(1, 0, 12);
+                data.splice(2, 0, x);
+                data.splice(6, 0, y);
+            } else if (adcs_action == "ADCS_CTRL_GAIN") {
+                var g1 = $('#service-param-service-g1').val();
+                var g2 = $('#service-param-service-g2').val();
+                var g3 = $('#service-param-service-g3').val();
+                data.splice(1, 0, 15);
+                data.splice(2, 0, g1);
+                data.splice(4, 0, g2);
+                data.splice(6, 0, g3);
+            } else if (adcs_action == "ADCS_TLE") {
+                ascii_to_dec($('#service-param-service-tle').val(), data);
+                data.unshift(service_type);
+                data.unshift(14);
+                //number of TLE chanacters
+                if (data.length != 147) {
+                    console.log("Data shouldnt be: " + data.length);
+                    return 0;
+                }
             }
 
+            console.log(data);
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
@@ -441,7 +490,7 @@ function display_service(selection) {
         'power-select': 'service-param-power',
         'test-select': 'service-param-test',
         'time-select': 'service-param-time',
-        'tle-select': 'service-param-tle',
+        'adcs-select': 'service-param-adcs',
         'ms-select': 'service-param-mass-storage',
         'comms-select': 'service-param-comms',
         'hk-select': 'service-param-housekeeping',
@@ -845,11 +894,16 @@ function init() {
     // Reveal the initial service panel
     display_service('test-select');
 
+    // Initially hide the UI components below
     $('#datetimepicker-time-row').hide();
     $('#file-upload-row').hide();
     $('#file-select-row').hide();
     $('#file-action-row').hide();
     $('#folder-select-row').hide();
+    $('#adcs-spin-row').hide();
+    $('#adcs-magneto-row').hide();
+    $('#adcs-gain-row').hide();
+    $('#adcs-tle-row').hide();
 }
 
 function encode_mode_switch(mode) {
