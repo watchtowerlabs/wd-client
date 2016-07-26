@@ -95,6 +95,7 @@
                         <option value="ADCS_SPIN" >Set spin</option>
                         <option value="ADCS_MAGNETO" >Set magnetotorquers</option>
                         <option value="ADCS_CTRL_GAIN" >Set control gains</option>
+                        <option value="ADCS_CONTROL_SP" >Set control sp</option>
                         <option value="ADCS_TLE" >Set TLE</option>
                       </select>
                     </div>
@@ -118,6 +119,20 @@
                       <input class="form-control" type="text" id="service-param-service-magneto-y">
                     </div>
                   </div>
+                  <div class="row" id="adcs-control-row">
+                    <div class="col-md-3">
+                      <label>Control SP:</label>
+                    </div>
+                    <div class="col-md-3">
+                      <input class="form-control" type="text" id="service-param-service-c1">
+                    </div>
+                    <div class="col-md-3">
+                      <input class="form-control" type="text" id="service-param-service-c2">
+                    </div>
+                    <div class="col-md-3">
+                      <input class="form-control" type="text" id="service-param-service-c3">
+                    </div>
+                  </div>
                   <div class="row" id="adcs-gain-row">
                     <div class="col-md-3">
                       <label>Control Gains:</label>
@@ -138,6 +153,30 @@
                     </div>
                     <div class="col-md-8">
                       <input class="form-control" type="text" id="service-param-service-tle">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>ACK:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-adcs-ack" class="form-control">
+                        <option selected style="display:none;">Select ACK</option>
+                        <option value="0" >NO ACK</option>
+                        <option value="1" >ACK</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Destination:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-adcs-dest_id" class="form-control">
+                        <option selected style="display:none;">Select Dest ID</option>
+                        <option value="6" >GND</option>
+                        <option value="7" >UMB</option>
+                      </select>
                     </div>
                   </div>
                   <div class="row">
