@@ -264,7 +264,12 @@ def ecss_logic(ecss_dict):
 
         if ecss_dict['app_id'] == packet_settings.EPS_APP_ID and struct_id == packet_settings.HEALTH_REP:
 
-            report = "data "
+            report = "VBAT:" + str(ecss_dict['data'][1] * 0.0716) + "V "
+            report += "IBAT:" + str(ecss_dict['data'][2] * 4.6 + 1000) + "mA "
+            report += "3V3:" + str(ecss_dict['data'][3] * 11.72) + "mA "
+            report += "5V0:" + str(ecss_dict['data'][4] * 11.72) + "mA "
+            report += "TCPU:" + str((ecss_dict['data'][5] / 4) - 15) + "C "
+            report += "TBAT:" + str((ecss_dict['data'][6] / 4) - 15) + "C"
 
         elif ecss_dict['app_id'] == packet_settings.EPS_APP_ID and struct_id == packet_settings.EX_HEALTH_REP:
 
