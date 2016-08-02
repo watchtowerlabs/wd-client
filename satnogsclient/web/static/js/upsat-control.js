@@ -1,5 +1,53 @@
 $(document).ready(function() {
-    init();
+
+    var config_socket = io.connect('http://' + document.domain + ':' + location.port + '/config', {
+        rememberTransport: false,
+        'reconnect': true,
+        'reconnection delay': 500,
+        'max reconnection attempts': 10
+    });
+
+    var rx_socket = io.connect('http://' + document.domain + ':' + location.port + '/control_rx', {
+        rememberTransport: false,
+        'reconnect': true,
+        'reconnection delay': 500,
+        'max reconnection attempts': 10
+    });
+
+    rx_socket.on('backend_msg', function(data) {
+        console.log('Received from backend: ' + JSON.stringify(data));
+        print_command_response(data);
+    });
+
+    var ecss_cmd_socket = io.connect('http://' + document.domain + ':' + location.port + '/cmd', {
+        rememberTransport: false,
+        'reconnect': true,
+        'reconnection delay': 500,
+        'max reconnection attempts': 10
+    });
+
+    config_socket.on('connect', function() {
+        $('#backend-status').addClass('online-circle').removeClass('offline-circle').attr('title','Backend Online');
+        console.log('Frontend connected to backend!');
+    });
+
+
+    config_socket.on('connect_error', function() {
+        $('#backend-status').removeClass('online-circle').addClass('offline-circle').attr('title','Backend Offline');
+        console.log('Frontend cannot connect to backend!');
+    });
+
+    config_socket.on('backend_msg', function(data) {
+        console.log('Received from backend: ' + JSON.stringify(data));
+    });
+
+    ecss_cmd_socket.on('backend_msg', function(data) {
+        console.log('Received from backend: ' + JSON.stringify(data));
+        print_command_response(data);
+    });
+
+
+    init(config_socket);
 
     $("[name='backend-switch']").on('switchChange.bootstrapSwitch', function(event, state) {
         if (state) {
@@ -9,7 +57,7 @@ $(document).ready(function() {
         }
         Cookies.set('backend', mode);
         request = encode_backend_mode(mode);
-        query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+        config_socket.emit('backend_change', request);
     });
 
     $('#service-select li').on('click', function() {
@@ -127,7 +175,7 @@ $(document).ready(function() {
             seq_count = 0;
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "house") {
             app_id = $('#service-param-hk-app_id').val();
@@ -139,8 +187,7 @@ $(document).ready(function() {
 
             data = $('#service-param-hk-sid').val();
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
-
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "mass") {
 
@@ -231,7 +278,7 @@ $(document).ready(function() {
             //     }
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "power") {
 
@@ -279,7 +326,7 @@ $(document).ready(function() {
             data = [fun_id, dev_id];
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "test") {
             app_id = $('#service-param-test-app_id').val();
@@ -292,7 +339,7 @@ $(document).ready(function() {
             data = [];
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "time") {
             app_id = $('#service-param-time-app_id').val();
@@ -352,7 +399,7 @@ $(document).ready(function() {
             }
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "adcs") {
             // TODO: Is app_id needed in time service?
@@ -422,16 +469,15 @@ $(document).ready(function() {
             }
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "comms") {
             if ($(this).attr("id") == "comms-tx-on") {
                 request = encode_comms_tx_rf(1);
-                query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
             } else if ($(this).attr("id") == "comms-tx-off") {
                 request = encode_comms_tx_rf(0);
-                query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
             }
+            ecss_cmd_socket.emit('comms_switch_command', request);
         } else if (selected_value == "mnlp") {
             app_id = 1;
             type = 1;
@@ -453,7 +499,7 @@ $(document).ready(function() {
                 data = [1];
             }
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
         }
     });
 
@@ -492,10 +538,8 @@ $(document).ready(function() {
             current_backend = 'gnuradio';
             Cookies.set('backend', current_backend);
             request = encode_backend_mode(current_backend);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            config_socket.emit('mode_change', request);
         }
-        //request = encode_mode_switch(current_mode);
-        //query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
         display_control_view(current_mode, current_backend);
     });
 
@@ -696,7 +740,6 @@ function encode_service(type, app_id, service_type, service_subtype, dest_id, ac
     var ecss_cmd = {};
     ecss_cmd.ecss_cmd = TestServicePacket;
 
-    console.log(JSON.stringify(ecss_cmd));
     var json_packet = JSON.stringify(ecss_cmd);
     return json_packet;
 }
@@ -726,7 +769,6 @@ function encode_backend_mode(mode) {
         custom_cmd.backend = 'serial';
     }
     response.custom_cmd = custom_cmd;
-    console.log(JSON.stringify(response));
     var json_packet = JSON.stringify(response);
     return json_packet;
 }
@@ -749,17 +791,17 @@ function print_command_response(data) {
             data_type = 'other';
             log_data = resp.log_message;
             current_mode = Cookies.get('mode');
-            if (current_mode !== null && typeof current_mode != 'undefined') {
+            if (current_mode === null || typeof current_mode == 'undefined') {
                 request = encode_mode_switch(current_mode);
-                query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+                //config_socket.emit('mode_change', request);
+                //FIXME:
             }
         }
-
         //Check if log is just hearbeat
         if (resp.log_message == 'backend_online') {
-            console.log('backend reported online');
+            //console.log('backend reported online');
             $('#backend_online').html('backend reported <span data-livestamp="' + moment().toString() + '"></span>');
-        } else {
+        } else if (resp.log_message == 'ECSS command send') {
             if (resp.command_sent || resp.from_id) {
               if (resp.command_sent) {
                 sub_id = resp.command_sent.app_id;
@@ -850,12 +892,12 @@ function file_encode_and_query_backend(type, app_id, service_type, service_subty
             data.unshift(store_id);
             console.log(data);
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+            ecss_cmd_socket.emit('ecss_command', request);
         }
     };
 }
 
-function init() {
+function init(config_socket) {
 
     // Various variable definition
     var app_id, type, ack, service_type, service_subtype, dest_id, data, seq_count;
@@ -887,16 +929,16 @@ function init() {
 
     // Send a request to backend in order to configure mode.
     request = encode_backend_mode(current_backend);
-    query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+    config_socket.emit('backend_change', request);
 
     // Send a request to backend in order to configure mode.
     request = encode_mode_switch(current_mode);
-    query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+    config_socket.emit('mode_change', request);
 
     // Setup the periodic packet polling
-    setInterval(function() {
-        query_control_backend({}, 'POST', '/control_rx', "application/json; charset=utf-8", "json", true);
-    }, 10000);
+    // setInterval(function() {
+    //     query_control_backend({}, 'POST', '/control_rx', "application/json; charset=utf-8", "json", true);
+    // }, 10000);
 
     // Setup the datetimepicker
     datepicker_time = $('#datetimepicker-time').datetimepicker({
