@@ -165,14 +165,14 @@ $(document).ready(function() {
 
             data.splice(0, 0, 3);
             data.splice(1, 0, 17);
-            data.splice(2, 0, ((safety_address >> 24) & 0x000000ff));
-            data.splice(3, 0, ((safety_address >> 16) & 0x000000ff));
-            data.splice(4, 0, ((safety_address >> 8) & 0x000000ff));
-            data.splice(5, 0, ((safety_address >> 0) & 0x000000ff));
-            data.splice(6, 0, ((safety_value >> 24) & 0x000000ff));
-            data.splice(7, 0, ((safety_value >> 16) & 0x000000ff));
-            data.splice(8, 0, ((safety_value >> 8) & 0x000000ff));
-            data.splice(9, 0, ((safety_value >> 0) & 0x000000ff));
+            data.splice(2, 0, ((safety_address >> 0) & 0x000000ff));
+            data.splice(3, 0, ((safety_address >> 8) & 0x000000ff));
+            data.splice(4, 0, ((safety_address >> 16) & 0x000000ff));
+            data.splice(5, 0, ((safety_address >> 24) & 0x000000ff));
+            data.splice(6, 0, ((safety_value >> 0) & 0x000000ff));
+            data.splice(7, 0, ((safety_value >> 8) & 0x000000ff));
+            data.splice(8, 0, ((safety_value >> 16) & 0x000000ff));
+            data.splice(9, 0, ((safety_value >> 24) & 0x000000ff));
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
@@ -415,22 +415,22 @@ $(document).ready(function() {
             if (adcs_action == "ADCS_SPIN") {
                 var spin = $('#service-param-service-spin').val();
                 data.splice(1, 0, 13);
-                data.splice(2, 0, ((spin >> 24) & 0x000000ff));
-                data.splice(3, 0, ((spin >> 16) & 0x000000ff));
-                data.splice(4, 0, ((spin >> 8) & 0x000000ff));
-                data.splice(5, 0, ((spin >> 0) & 0x000000ff));
+                data.splice(2, 0, ((spin >> 0) & 0x000000ff));
+                data.splice(3, 0, ((spin >> 8) & 0x000000ff));
+                data.splice(4, 0, ((spin >> 16) & 0x000000ff));
+                data.splice(5, 0, ((spin >> 24) & 0x000000ff));
             } else if (adcs_action == "ADCS_MAGNETO") {
-                var x = $('#service-param-service-x').val();
-                var y = $('#service-param-service-y').val();
+                var x = $('#service-param-service-magneto-x').val();
+                var y = $('#service-param-service-magneto-y').val();
                 data.splice(1, 0, 12);
-                data.splice(2, 0, ((x >> 24) & 0x000000ff));
-                data.splice(3, 0, ((x >> 16) & 0x000000ff));
-                data.splice(4, 0, ((x >> 8) & 0x000000ff));
-                data.splice(5, 0, ((x >> 0) & 0x000000ff));
-                data.splice(6, 0, ((y >> 24) & 0x000000ff));
-                data.splice(7, 0, ((y >> 16) & 0x000000ff));
-                data.splice(8, 0, ((y >> 8) & 0x000000ff));
-                data.splice(9, 0, ((y >> 0) & 0x000000ff));
+                data.splice(2, 0, ((x >> 0) & 0x000000FF));
+                data.splice(3, 0, ((x >> 8) & 0x000000FF));
+                data.splice(4, 0, ((x >> 16) & 0x000000FF));
+                data.splice(5, 0, ((x >> 24) & 0x000000FF));
+                data.splice(6, 0, ((y >> 0) & 0x000000FF));
+                data.splice(7, 0, ((y >> 8) & 0x000000FF));
+                data.splice(8, 0, ((y >> 16) & 0x000000FF));
+                data.splice(9, 0, ((y >> 24) & 0x000000FF));
             } else if (adcs_action == "ADCS_CTRL_GAIN") {
                 var g1 = $('#service-param-service-g1').val();
                 var g2 = $('#service-param-service-g2').val();
