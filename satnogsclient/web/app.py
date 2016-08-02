@@ -10,6 +10,8 @@ import logging
 import cPickle
 import os
 
+async_mode = None
+thread = None
 logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -51,6 +53,63 @@ def get_status_info():
     # return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
+def background_thread():
+    """Example of how to send server generated events to clients."""
+    count = 0
+    while True:
+        socketio.sleep(5)
+        if int(os.environ['ECSS_FEEDER_PID']) == 0:
+            tmp = {}
+            tmp['log_message'] = 'ECSS feeder thread not online'
+            socketio.emit('backend_msg',
+                          tmp,
+                          namespace='/control_rx')
+        sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
+        packet_list = ""
+        try:
+            conn = sock.send_listen("Requesting received packets", ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
+            data = conn[0]
+        except Exception as e:
+            logger.error("An error with the ECSS feeder occured")
+            logger.error(e)
+            tmp = {}
+            tmp['log_message'] = e
+            socketio.emit('backend_msg',
+                          tmp,
+                          namespace='/control_rx')
+        logger.info("Packet: %s", data)
+        packet_list = cPickle.loads(data)
+        """
+        The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
+        each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
+        The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
+        Next, for each item in list, json.dumps(item) will give the ecss dictionary
+        """
+        ecss_dicts = {}
+        if packet_list:
+            cnt = 0
+            for str_dict in packet_list:
+                ecss_dict = cPickle.loads(str_dict)
+                logger.info("Received ECSS formated: %s", ecss_dict)
+                res = packet.ecss_logic(ecss_dict)
+                ecss_dicts[cnt] = res
+                cnt += 1
+            logger.info("Shipping: %s", ecss_dicts)
+            socketio.emit('backend_msg',
+                          ecss_dicts,
+                          namespace='/control_rx')
+        else:
+            tmp = {}
+            tmp[0] = {'log_message': 'backend_online'}
+            socketio.emit('backend_msg',
+                          tmp,
+                          namespace='/control_rx')
+
+@socketio.on('connect', namespace='/control_rx')
+def test_connect():
+    global thread
+    if thread is None:
+        thread = socketio.start_background_task(target=background_thread)
 
 @app.route('/control_rx', methods=['GET', 'POST'])
 def get_control_rx():
@@ -94,62 +153,6 @@ def get_control_rx():
         return jsonify(tmp)
 
 
-@app.route('/command', methods=['GET', 'POST'])
-def get_command():
-    requested_command = request.get_json()
-    response = {}
-    response[0] = {'id': 1, 'log_message': 'This is a test response'}
-    if requested_command is not None:
-        if 'custom_cmd' in requested_command:
-            if 'comms_tx_rf' in requested_command['custom_cmd']:
-                # TODO: Handle the comms_tx_rf request
-                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
-                    packet.comms_off()
-                    response[0] = {'id': 1, 'log_message': 'COMMS_OFF command sent'}
-                    return jsonify(response)
-                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
-                    packet.comms_on()
-                    response[0] = {'id': 1, 'log_message': 'COMMS_ON command sent'}
-                    return jsonify(response)
-            elif 'backend' in requested_command['custom_cmd']:
-                # TODO: Handle the comms_tx_rf request
-                backend = requested_command['custom_cmd']['backend']
-                if requested_command['custom_cmd']['backend'] == 'gnuradio':
-                    response[0] = {'id': 1, 'log_message': 'Backend changed to GNURadio'}
-                    logger.info('Backend changed to GNURadio')
-                    # return jsonify(response)
-                elif requested_command['custom_cmd']['backend'] == 'serial':
-                    response[0] = {'id': 1, 'log_message': 'Backend changed to Serial'}
-                    logger.info('Backend changed to Serial')
-                    # return jsonify(response)
-                dict_out = {'backend': backend}
-                packet.custom_cmd_to_backend(dict_out)
-        elif 'ecss_cmd' in requested_command:
-            logger.info('Received ECSS packet from UI')
-            ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
-                    'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
-                    'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
-                    'seq_count': 0,
-                    'ser_type': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
-                    'ser_subtype': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
-                    'data': map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
-                    'dest_id': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
-                    'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
-
-            # check if ui wants a specific seq count
-            if 'SequenceCount' in requested_command['ecss_cmd']['PacketHeader']['PacketSequenceControl']:
-                logger.info('Seq count from ui')
-            # store packet for response check
-            if ecss['ack'] == '1':
-                logger.info('Storing packet for verification')
-
-            buf = packet.construct_packet(ecss, os.environ['BACKEND'])
-            response[0] = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
-            tx_handler.send_to_backend(buf)
-            return jsonify(response)
-    return render_template('upsat_control.j2')
-
-
 @app.route('/')
 def status():
     '''View status satnogs-client.'''
@@ -159,7 +162,7 @@ def status():
 @app.route('/upsat_control/')
 def upsat_control():
     '''UPSat command and control view.'''
-    return render_template('upsat_control.j2')
+    return render_template('upsat_control.j2', async_mode=socketio.async_mode)
 
 
 @app.route('/satnogs_control/')
@@ -197,6 +200,70 @@ def handle_mode_change(data):
                 dict_out = {'mode': mode}
                 packet.custom_cmd_to_backend(dict_out)
                 emit('backend_msg', dict_out)
+
+@socketio.on('backend_change', namespace='/config')
+def handle_backend_change(data):
+    logger.info('Received backend change: ' + str(data))
+    requested_command = json.loads(data)
+    if json is not None:
+        if 'custom_cmd' in requested_command:
+            if 'backend' in requested_command['custom_cmd']:
+                backend = requested_command['custom_cmd']['backend']
+                dict_out = {'backend': backend}
+                packet.custom_cmd_to_backend(dict_out)
+                emit('backend_msg', dict_out)
+
+
+@socketio.on('ecss_command', namespace='/cmd')
+def handle_requested_cmd(data):
+    logger.info('Received backend change: ' + str(data))
+    response = {}
+    response[0] = {'id': 1, 'log_message': 'This is a test response'}
+    requested_command = json.loads(data)
+    if json is not None:
+        if 'ecss_cmd' in requested_command:
+            logger.info('Received ECSS packet from UI')
+            ecss = {'app_id': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['ApplicationProcessID']),
+                    'type': int(requested_command['ecss_cmd']['PacketHeader']['PacketID']['Type']),
+                    'size': len(requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
+                    'seq_count': 0,
+                    'ser_type': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceType']),
+                    'ser_subtype': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['ServiceSubType']),
+                    'data': map(int, requested_command['ecss_cmd']['PacketDataField']['ApplicationData']),
+                    'dest_id': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['SourceID']),
+                    'ack': int(requested_command['ecss_cmd']['PacketDataField']['DataFieldHeader']['Ack'])}
+
+            # check if ui wants a specific seq count
+            if 'SequenceCount' in requested_command['ecss_cmd']['PacketHeader']['PacketSequenceControl']:
+                logger.info('Seq count from ui')
+            # store packet for response check
+            if ecss['ack'] == '1':
+                logger.info('Storing packet for verification')
+
+            buf = packet.construct_packet(ecss, os.environ['BACKEND'])
+            response[0] = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
+            tx_handler.send_to_backend(buf)
+            emit('backend_msg', response)
+
+
+@socketio.on('comms_switch_command', namespace='/cmd')
+def handle_comms_switch_cmd(data):
+    logger.info('Received backend change: ' + str(data))
+    response = {}
+    response[0] = {'id': 1, 'log_message': 'This is a test response'}
+    requested_command = json.loads(data)
+    if requested_command is not None:
+        if 'custom_cmd' in requested_command:
+            if 'comms_tx_rf' in requested_command['custom_cmd']:
+                # TODO: Handle the comms_tx_rf request
+                if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
+                    packet.comms_off()
+                    response[0] = {'id': 1, 'log_message': 'COMMS_OFF command sent'}
+                elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
+                    packet.comms_on()
+                    response[0] = {'id': 1, 'log_message': 'COMMS_ON command sent'}
+                emit('backend_msg', response)
+
 
 if __name__ == '__main__':
     socketio.run(app)
