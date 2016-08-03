@@ -11,6 +11,8 @@ from urlparse import urljoin
 from multiprocessing import Process, Queue
 import json
 from satnogsclient.scheduler import scheduler
+from flask_socketio import SocketIO, emit
+from satnogsclient.web.app import app, socketio
 
 import pytz
 import requests
@@ -25,7 +27,6 @@ from satnogsclient.upsat.gnuradio_handler import read_from_gnuradio
 from time import sleep
 
 logger = logging.getLogger('satnogsclient')
-
 
 def signal_term_handler(signal, frame):
     dictionary = frame.f_locals
@@ -177,11 +178,15 @@ def task_feeder(port):
     sock.bind()
     sock.listen()
     while 1:
-        conn = sock.accept()
+        try:
+            conn = sock.accept()
+        except IOError:
+            logger.info('Task feeder is terminated or something bad happened to accept')
+            return
         if conn:
             data = conn.recv(sock.tasks_buffer_size)
             # Data must be sent to socket.io here
-
+            socketio.emit('backend_msg', data, namespace='/rx_control')
 
 def ecss_feeder(port):
     sleep(1)
@@ -189,10 +194,14 @@ def ecss_feeder(port):
     logger.info('Started ecss feeder')
     sock = Udpsocket(('127.0.0.1', port))
     while 1:
-        conn = sock.recv()
-        data = conn[0]
+        try:
+            conn = sock.recv()
+        except IOError:
+            logger.info('Ecss feeder is terminated or something bad happened to accept')
+            return
+        data = ecss_logic_utils.ecss_logic(conn[0])
         # Data must be sent to socket.io here
-
+        socketio.emit('backend_msg', data, namespace='/rx_control')
 
 def status_listener():
     logger.info('Started upsat status listener')
@@ -260,7 +269,7 @@ def status_listener():
                     os.environ['ECSS_FEEDER_PID'] = '0'
                 os.environ['SCHEDULER'] = 'ON'
                 scheduler.start()
-                tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT, settings.TASK_LISTENER_TCP_PORT,))
+                tf = Process(target=task_feeder, args=(settings.TASK_FEEDER_TCP_PORT,))
                 tf.start()
                 os.environ['TASK_FEEDER_PID'] = str(tf.pid)
                 logger.info('Started task feeder process %d', tf.pid)
