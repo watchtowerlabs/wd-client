@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, json, jsonify
-from flask.ext.socketio import SocketIO, emit
+from flask_socketio import SocketIO, emit
 
 
 from satnogsclient import settings as client_settings
@@ -10,8 +10,7 @@ import logging
 import cPickle
 import os
 
-async_mode = None
-thread = None
+
 logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
@@ -53,105 +52,8 @@ def get_status_info():
     # return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
-def background_thread():
-    """Example of how to send server generated events to clients."""
-    count = 0
-    while True:
-        socketio.sleep(5)
-        if int(os.environ['ECSS_FEEDER_PID']) == 0:
-            tmp = {}
-            tmp['log_message'] = 'ECSS feeder thread not online'
-            socketio.emit('backend_msg',
-                          tmp,
-                          namespace='/control_rx')
-        sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
-        packet_list = ""
-        try:
-            conn = sock.send_listen("Requesting received packets", ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
-            data = conn[0]
-        except Exception as e:
-            logger.error("An error with the ECSS feeder occured")
-            logger.error(e)
-            tmp = {}
-            tmp['log_message'] = e
-            socketio.emit('backend_msg',
-                          tmp,
-                          namespace='/control_rx')
-        logger.info("Packet: %s", data)
-        packet_list = cPickle.loads(data)
-        """
-        The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
-        each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
-        The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
-        Next, for each item in list, json.dumps(item) will give the ecss dictionary
-        """
-        ecss_dicts = {}
-        if packet_list:
-            cnt = 0
-            for str_dict in packet_list:
-                ecss_dict = cPickle.loads(str_dict)
-                logger.info("Received ECSS formated: %s", ecss_dict)
-                res = packet.ecss_logic(ecss_dict)
-                ecss_dicts[cnt] = res
-                cnt += 1
-            logger.info("Shipping: %s", ecss_dicts)
-            socketio.emit('backend_msg',
-                          ecss_dicts,
-                          namespace='/control_rx')
-        else:
-            tmp = {}
-            tmp[0] = {'log_message': 'backend_online'}
-            socketio.emit('backend_msg',
-                          tmp,
-                          namespace='/control_rx')
-
-@socketio.on('connect', namespace='/control_rx')
-def test_connect():
-    global thread
-    if thread is None:
-        thread = socketio.start_background_task(target=background_thread)
-
-@app.route('/control_rx', methods=['GET', 'POST'])
-def get_control_rx():
-    if int(os.environ['ECSS_FEEDER_PID']) == 0:
-        tmp = {}
-        tmp['log_message'] = 'ECSS feeder thread not online'
-        return jsonify(tmp)
-    sock = Udpsocket(('127.0.0.1', client_settings.CLIENT_LISTENER_UDP_PORT))
-    packet_list = ""
-    try:
-        conn = sock.send_listen("Requesting received packets", ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
-        data = conn[0]
-    except Exception as e:
-        logger.error("An error with the ECSS feeder occured")
-        logger.error(e)
-        tmp = {}
-        tmp['log_message'] = e
-        return jsonify(tmp)
     logger.debug("Packet: %s", data)
-    packet_list = cPickle.loads(data)
-    """
-    The received 'packet_list' is a json string containing packets. Actually it is a list of dictionaries:
-    each dictionary has the ecss fields of the received packet. In order to get each dictionary 2 things must be done
-    The first json.loads(packet_list) will give a list of json strings representing the dictionaries.
-    Next, for each item in list, json.dumps(item) will give the ecss dictionary
-    """
-    ecss_dicts = {}
-    if packet_list:
-        cnt = 0
-        for str_dict in packet_list:
-            ecss_dict = cPickle.loads(str_dict)
             logger.debug("Received ECSS formated: %s", ecss_dict)
-            res = ecss_logic_utils.ecss_logic(ecss_dict)
-            ecss_dicts[cnt] = res
-            cnt += 1
-        logger.info("Shipping: %s", ecss_dicts)
-        return jsonify(ecss_dicts)
-    else:
-        tmp = {}
-        tmp[0] = {'log_message': 'backend_online'}
-        return jsonify(tmp)
-
 
 @app.route('/')
 def status():
@@ -162,7 +64,7 @@ def status():
 @app.route('/upsat_control/')
 def upsat_control():
     '''UPSat command and control view.'''
-    return render_template('upsat_control.j2', async_mode=socketio.async_mode)
+    return render_template('upsat_control.j2')
 
 
 @app.route('/satnogs_control/')

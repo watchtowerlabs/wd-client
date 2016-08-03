@@ -15,7 +15,6 @@ $(document).ready(function() {
     });
 
     rx_socket.on('backend_msg', function(data) {
-        console.log('Received from backend: ' + JSON.stringify(data));
         print_command_response(data);
     });
 
@@ -29,6 +28,14 @@ $(document).ready(function() {
     config_socket.on('connect', function() {
         $('#backend-status').addClass('online-circle').removeClass('offline-circle').attr('title','Backend Online');
         console.log('Frontend connected to backend!');
+        current_backend = Cookies.get('backend');
+        if (current_backend === null || typeof current_backend == 'undefined') {
+            current_backend = 'gnuradio';
+            Cookies.set('backend', current_backend);
+        }
+        request = encode_backend_mode(current_backend);
+        config_socket.emit('backend_change', request);
+        console.log('Resend backend mode confirmation!');
     });
 
 
@@ -45,7 +52,6 @@ $(document).ready(function() {
         console.log('Received from backend: ' + JSON.stringify(data));
         print_command_response(data);
     });
-
 
     init(config_socket);
 
@@ -237,8 +243,6 @@ $(document).ready(function() {
             data.splice(8, 0, ((safety_value >> 16) & 0x000000ff));
             data.splice(9, 0, ((safety_value >> 24) & 0x000000ff));
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
-
 
         } else if (selected_value == "mass") {
 
@@ -332,7 +336,7 @@ $(document).ready(function() {
 
             if (action == "All" || action == "Hard") {
                 if (window.confirm("Do you really want to delete all files in the folder?")) {
-                    query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
+			ecss_cmd_socket.emit('ecss_command', request);
                 }
             } else {
 		ecss_cmd_socket.emit('ecss_command', request);
@@ -468,7 +472,6 @@ $(document).ready(function() {
             }
 
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
-            query_control_backend(request, 'POST', '/command', "application/json; charset=utf-8", "json", true);
 
         } else if (selected_value == "time") {
             app_id = $('#service-param-time-app_id').val();
@@ -603,6 +606,7 @@ $(document).ready(function() {
                     ecss_cmd_socket.emit('comms_switch_command', request);
                 }
             }
+            ecss_cmd_socket.emit('comms_switch_command', request);
         } else if (selected_value == "mnlp") {
             app_id = 1;
             type = 1;
@@ -657,13 +661,19 @@ $(document).ready(function() {
     });
 
     $("#mode-switch li").click(function() {
-        var current_mode = $(this).attr("data-value");
+        var current_mode = Cookies.get('mode');
         var current_backend = Cookies.get('backend');
+        if (current_mode === null || typeof current_mode == 'undefined') {
+            current_mode = 'network';
+            Cookies.set('mode', current_mode);
+            request = encode_mode_switch(current_mode);
+            config_socket.emit('mode_change', request);
+        }
         if (current_backend === null || typeof current_backend == 'undefined') {
             current_backend = 'gnuradio';
             Cookies.set('backend', current_backend);
-            request = encode_backend_mode(current_backend);
-            config_socket.emit('mode_change', request);
+            request = encode_backend_mode(current_mode);
+            config_socket.emit('current_backend_change', request);
         }
         display_control_view(current_mode, current_backend);
     });
@@ -1066,11 +1076,6 @@ function init(config_socket) {
     // Send a request to backend in order to configure mode.
     request = encode_mode_switch(current_mode);
     config_socket.emit('mode_change', request);
-
-    // Setup the periodic packet polling
-    // setInterval(function() {
-    //     query_control_backend({}, 'POST', '/control_rx', "application/json; charset=utf-8", "json", true);
-    // }, 10000);
 
     // Setup the datetimepicker
     datepicker_time = $('#datetimepicker-time').datetimepicker({
