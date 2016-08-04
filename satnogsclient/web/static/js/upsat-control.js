@@ -822,6 +822,12 @@ function print_command_response(data) {
                 log_data = ecss_var.var_serv_id[resp.command_sent.ser_type] + ' command sent';
               } else if (resp.from_id) {
                 to_log = '<span class="label label-success"> < ' + sub + '</span>';
+                try {
+                  json_reponse = JSON.parse(log_data);
+                  log_data = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="modal" data-target="#json-prettify"></span> <span>' + log_data + '</span>';
+                } catch(e) {
+                  console.log("Couldn't find JSON in the response.");
+                }
               }
             }
             response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">' +
@@ -1020,6 +1026,15 @@ function csv_encode(strArray) {
   });
   return csv_str;
 }
+
+// Populating Log modals
+$('#json-prettify').on('show.bs.modal', function (event) {
+  var span = $(event.relatedTarget); // Button that triggered the modal
+  var modal = $(this);
+  var json_body = JSON.parse($(event.relatedTarget).next().text());
+  modal.find('.modal-title').text('Json response');
+  modal.find('.modal-body pre').html(JSON.stringify(json_body, undefined, 2));
+});
 
 // Packet settings for resolving
 var ecss_var = {
