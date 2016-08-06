@@ -4,15 +4,13 @@ import os
 import signal
 import time
 import sys
-import cPickle
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
-from multiprocessing import Process, Queue
+from multiprocessing import Process
 import json
 from satnogsclient.scheduler import scheduler
-from flask_socketio import SocketIO, emit
-from satnogsclient.web.app import app, socketio
+from flask_socketio import SocketIO
 
 import pytz
 import requests
@@ -22,11 +20,13 @@ from satnogsclient.observer.observer import Observer
 from satnogsclient.receiver import SignalReceiver
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
-from satnogsclient.upsat import serial_handler
+from satnogsclient.upsat import serial_handler, ecss_logic_utils
 from satnogsclient.upsat.gnuradio_handler import read_from_gnuradio
 from time import sleep
 
 logger = logging.getLogger('satnogsclient')
+socketio = SocketIO(message_queue='redis://127.0.0.1:6379')
+
 
 def signal_term_handler(signal, frame):
     dictionary = frame.f_locals
@@ -172,7 +172,6 @@ def get_jobs():
 
 def task_feeder(port):
     sleep(1)
-    child_pid = 0
     logger.info('Started task feeder')
     sock = Commsocket('127.0.0.1', port)
     sock.bind()
@@ -186,11 +185,11 @@ def task_feeder(port):
         if conn:
             data = conn.recv(sock.tasks_buffer_size)
             # Data must be sent to socket.io here
-            socketio.emit('backend_msg', data, namespace='/rx_control')
+            socketio.emit('backend_msg', data, namespace='/control_rx')
+
 
 def ecss_feeder(port):
     sleep(1)
-    child_pid = 0
     logger.info('Started ecss feeder')
     sock = Udpsocket(('127.0.0.1', port))
     while 1:
@@ -201,7 +200,8 @@ def ecss_feeder(port):
             return
         data = ecss_logic_utils.ecss_logic(conn[0])
         # Data must be sent to socket.io here
-        socketio.emit('backend_msg', data, namespace='/rx_control')
+        socketio.emit('backend_msg', data, namespace='/control_rx')
+
 
 def status_listener():
     logger.info('Started upsat status listener')

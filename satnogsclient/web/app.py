@@ -14,7 +14,7 @@ import os
 logger = logging.getLogger('satnogsclient')
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'secret!'
-socketio = SocketIO(app)
+socketio = SocketIO(app, message_queue='redis://127.0.0.1:6379')
 
 
 @app.route('/update_status', methods=['GET', 'POST'])
@@ -53,7 +53,7 @@ def get_status_info():
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
     logger.debug("Packet: %s", data)
-            logger.debug("Received ECSS formated: %s", ecss_dict)
+    logger.debug("Received ECSS formated: %s", ecss_dict)
 
 @app.route('/')
 def status():
