@@ -1,13 +1,11 @@
-from flask import Flask, render_template, request, json, jsonify
+from flask import Flask, render_template, json, jsonify
 from flask_socketio import SocketIO, emit
 
 
 from satnogsclient import settings as client_settings
-from satnogsclient.upsat import packet, tx_handler, ecss_logic_utils
+from satnogsclient.upsat import packet, tx_handler
 from satnogsclient.observer.commsocket import Commsocket
-from satnogsclient.observer.udpsocket import Udpsocket
 import logging
-import cPickle
 import os
 
 
@@ -52,8 +50,6 @@ def get_status_info():
     # return current_pass_json
     return jsonify(observation=dict(current=current_pass_json, scheduled=scheduled_pass_json))
 
-    logger.debug("Packet: %s", data)
-    logger.debug("Received ECSS formated: %s", ecss_dict)
 
 @app.route('/')
 def status():
@@ -102,6 +98,7 @@ def handle_mode_change(data):
                 dict_out = {'mode': mode}
                 packet.custom_cmd_to_backend(dict_out)
                 emit('backend_msg', dict_out)
+
 
 @socketio.on('backend_change', namespace='/config')
 def handle_backend_change(data):
