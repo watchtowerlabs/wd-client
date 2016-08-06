@@ -914,59 +914,52 @@ function print_command_response(data) {
     var data_type;
     console.log(JSON.stringify(data));
 
-    for (var key in data) {
-        var resp = data[key];
+    var resp = data;
 
-        if (resp.id == 1) {
-            data_type = 'cmd';
-            log_data = resp.log_message;
-        } else if (resp.id == 2) {
-            data_type = 'ecss';
-            log_data = resp.log_message;
-        } else {
-            data_type = 'other';
-            log_data = resp.log_message;
-            current_mode = Cookies.get('mode');
-            if (current_mode === null || typeof current_mode == 'undefined') {
-                request = encode_mode_switch(current_mode);
-                //config_socket.emit('mode_change', request);
-                //FIXME:
-            }
-        }
-        //Check if log is just hearbeat
-        if (resp.log_message == 'backend_online') {
-            //console.log('backend reported online');
-            $('#backend_online').html('backend reported <span data-livestamp="' + moment().toString() + '"></span>');
-        } else if (resp.log_message == 'ECSS command send') {
-            if (resp.command_sent || resp.from_id) {
-              if (resp.command_sent) {
-                sub_id = resp.command_sent.app_id;
-              } else if (resp.from_id) {
-                sub_id = resp.from_id;
-              }
-              if (sub_id) {
-                sub = ecss_var.var_app_id[sub_id];
-              } else {
-                sub = "UNK";
-              }
-              if (resp.command_sent) {
-                to_log = '<span class="label label-info"> > ' + sub + '</span>';
-                log_data = ecss_var.var_serv_id[resp.command_sent.ser_type] + ' command sent';
-              } else if (resp.from_id) {
-                to_log = '<span class="label label-success"> < ' + sub + '</span>';
-                try {
-                  json_reponse = JSON.parse(log_data);
-                  log_data = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="modal" data-target="#json-prettify"></span> <span>' + log_data + '</span>';
-                } catch(e) {
-                  console.log("Couldn't find JSON in the response.");
-                }
-              }
-            }
-            response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">' +
-            '<span class="label label-default" title="' + moment().format('YYYY/MM/DD').toString() + '">' + moment().format('HH:mm:ss').toString() +
-            '</span>' + to_log + ' ' + log_data +'</li>');
+    if (resp.id == 1) {
+        data_type = 'cmd';
+        log_data = resp.log_message;
+    } else if (resp.id == 2) {
+        data_type = 'ecss';
+        log_data = resp.log_message;
+    } else {
+        data_type = 'other';
+        log_data = resp.log_message;
+        current_mode = Cookies.get('mode');
+        if (current_mode === null || typeof current_mode == 'undefined') {
+            request = encode_mode_switch(current_mode);
+            //config_socket.emit('mode_change', request);
+            //FIXME:
         }
     }
+    if (resp.command_sent || resp.from_id) {
+      if (resp.command_sent) {
+        sub_id = resp.command_sent.app_id;
+      } else if (resp.from_id) {
+        sub_id = resp.from_id;
+      }
+      if (sub_id) {
+        sub = ecss_var.var_app_id[sub_id];
+      } else {
+        sub = "UNK";
+      }
+      if (resp.command_sent) {
+        to_log = '<span class="label label-info"> > ' + sub + '</span>';
+        log_data = ecss_var.var_serv_id[resp.command_sent.ser_type] + ' command sent';
+      } else if (resp.from_id) {
+        to_log = '<span class="label label-success"> < ' + sub + '</span>';
+        try {
+          json_reponse = JSON.parse(log_data);
+          log_data = '<span class="glyphicon glyphicon-list-alt" aria-hidden="true" data-toggle="modal" data-target="#json-prettify"></span> <span>' + log_data + '</span>';
+        } catch(e) {
+          console.log("Couldn't find JSON in the response.");
+        }
+      }
+    }
+    response_panel.append('<li class="' + apply_log_filter(data_type) + '"' + ' data-type="' + data_type + '">' +
+    '<span class="label label-default" title="' + moment().format('YYYY/MM/DD').toString() + '">' + moment().format('HH:mm:ss').toString() +
+    '</span>' + to_log + ' ' + log_data +'</li>');
+
     $('#response-panel-body').scrollTop(response_panel.height());
 }
 

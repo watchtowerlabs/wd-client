@@ -116,8 +116,7 @@ def handle_backend_change(data):
 @socketio.on('ecss_command', namespace='/cmd')
 def handle_requested_cmd(data):
     logger.info('Received backend change: ' + str(data))
-    response = {}
-    response[0] = {'id': 1, 'log_message': 'This is a test response'}
+    response = {'id': 1, 'log_message': 'This is a test response'}
     requested_command = json.loads(data)
     if json is not None:
         if 'ecss_cmd' in requested_command:
@@ -140,7 +139,7 @@ def handle_requested_cmd(data):
                 logger.info('Storing packet for verification')
 
             buf = packet.construct_packet(ecss, os.environ['BACKEND'])
-            response[0] = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
+            response = {'id': 1, 'log_message': 'ECSS command send', 'command_sent': ecss}
             tx_handler.send_to_backend(buf)
             emit('backend_msg', response)
 
@@ -148,8 +147,7 @@ def handle_requested_cmd(data):
 @socketio.on('comms_switch_command', namespace='/cmd')
 def handle_comms_switch_cmd(data):
     logger.info('Received backend change: ' + str(data))
-    response = {}
-    response[0] = {'id': 1, 'log_message': 'This is a test response'}
+    response = {'id': 1, 'log_message': 'This is a test response'}
     requested_command = json.loads(data)
     if requested_command is not None:
         if 'custom_cmd' in requested_command:
@@ -157,10 +155,10 @@ def handle_comms_switch_cmd(data):
                 # TODO: Handle the comms_tx_rf request
                 if requested_command['custom_cmd']['comms_tx_rf'] == 'comms_off':
                     packet.comms_off()
-                    response[0] = {'id': 1, 'log_message': 'COMMS_OFF command sent'}
+                    response = {'id': 1, 'log_message': 'COMMS_OFF command sent'}
                 elif requested_command['custom_cmd']['comms_tx_rf'] == 'comms_on':
                     packet.comms_on()
-                    response[0] = {'id': 1, 'log_message': 'COMMS_ON command sent'}
+                    response = {'id': 1, 'log_message': 'COMMS_ON command sent'}
                 emit('backend_msg', response)
 
 
