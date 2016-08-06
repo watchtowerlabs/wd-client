@@ -306,6 +306,7 @@ def status_listener():
                 logger.info('Starting ecss feeder thread...')
                 os.environ['MODE'] = 'cmd_ctrl'
                 kill_netw_proc()
+                start_wod_thread()
                 ef = Process(target=ecss_feeder, args=(settings.ECSS_FEEDER_UDP_PORT, settings.ECSS_LISTENER_UDP_PORT,))
                 ef.start()
                 os.environ['ECSS_FEEDER_PID'] = str(ef.pid)
@@ -313,6 +314,7 @@ def status_listener():
             elif dictionary['mode'] == 'network':
                 os.environ['MODE'] = 'network'
                 kill_cmd_ctrl_proc()
+                kill_wod_thread()
                 if int(os.environ['ECSS_FEEDER_PID']) != 0:
                     os.kill(int(os.environ['ECSS_FEEDER_PID']), signal.SIGTERM)
                     os.environ['ECSS_FEEDER_PID'] = '0'
@@ -337,6 +339,27 @@ def kill_netw_proc():
         os.environ['TASK_FEEDER_PID'] = '0'
     scheduler.shutdown()
     logger.info('Scheduler shutting down')
+
+
+def start_wod_thread():
+    wd = Process(target=wod_listener, args=())
+    wd.daemon = True
+    wd.start()
+    os.environ['WOD_THREAD_PID'] = str(wd.pid)
+    logger.info('WOD listener thread initialized')
+
+
+def wod_listener():
+    sock = Udpsocket(('0.0.0.0', settings.WOD_UDP_PORT))
+    while 1:
+        data = sock.recv()
+        print data
+
+
+def kill_wod_thread():
+    if 'WOD_THREAD_PID' in os.environ:
+        os.kill(int(os.environ['WOD_THREAD_PID']), signal.SIGKILL)
+        os.environ['WOD_THREAD_PID'] = '0'
 
 
 def add_observation(obj):
