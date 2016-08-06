@@ -4,6 +4,7 @@ import os
 import signal
 import time
 import sys
+import cPickle
 from datetime import datetime, timedelta
 from dateutil import parser
 from urlparse import urljoin
@@ -198,7 +199,7 @@ def ecss_feeder(port):
         except IOError:
             logger.info('Ecss feeder is terminated or something bad happened to accept')
             return
-        data = ecss_logic_utils.ecss_logic(conn[0])
+        data = ecss_logic_utils.ecss_logic(cPickle.loads(conn[0]))
         # Data must be sent to socket.io here
         socketio.emit('backend_msg', data, namespace='/control_rx')
 
