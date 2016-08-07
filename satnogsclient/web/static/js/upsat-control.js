@@ -447,7 +447,7 @@ $(document).ready(function() {
                 data.splice(11, 0, ((time_int >> 8) & 0x000000ff));
                 data.splice(12, 0, ((time_int >> 16) & 0x000000ff));
                 data.splice(13, 0, ((time_int >> 24) & 0x000000ff));
-                data.concat($('#service-param-service-data').val().split(","));
+                data = data.concat($('#service-param-sch-payload').val().split(","));
             } else if (selected_action == 'delete') {
 
                 service_subtype = 5;
