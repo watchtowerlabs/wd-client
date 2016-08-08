@@ -101,3 +101,90 @@ def uplink(buf_in):
         else:
             logger.info('Aborted operation')
             return
+
+
+def downlink():
+    prev_id = -1
+    end_time = 0
+    receiving = False
+    received_packets = {}
+    while 1:
+        if receiving:
+            try:
+                data = downlink_socket.recv_timeout(end_time - time.time())
+            except :
+                logger.info('Downlink operation not completed on time. Going to fallback operation')
+                ret = fallback(received_packets, prev_id)
+                prev_id = -1
+                receiving = False
+                if ret[1] == 1:
+                    frame = construct_downlink_packet(received_packets)
+                    logger.info('Downlink operation completed')
+                    received_packets.clear()
+                else:
+                    received_packets.clear()
+                    continue
+            ecss_dict = cPickle.loads(data[0])
+        else:
+            data = downlink_socket.recv()
+            end_time = time.time() + client_settings.LD_DOWNLINK_TIMEOUT
+            ecss_dict = cPickle.loads(data[0])
+            receiving = True
+            prev_id = ecss_dict['data'][0]
+        if len(ecss_dict) == 0:
+            logger.error('Received empty ecss_dict. Ignoring frame')
+            continue
+        seq_count = (ecss_dict['data'][2] << 8) | ecss_dict['data'][1]
+        if hex(prev_id) != hex(ecss_dict['data'][0]):
+            logger.error('Wrong large data id during downlink operation. Aborting')
+            prev_id = -1
+            receiving = False
+            received_packets.clear()
+        buf = ecss_dict['data'][3 : ecss_dict['size']]
+        received_packets[seq_count] = buf
+        if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
+            ret = fallback(received_packets,prev_id)
+            prev_id = -1
+            receiving = False
+            if ret[1] == 1:
+                frame = construct_downlink_packet(received_packets)
+                logger.info('Downlink operation completed')
+                received_packets.clear()
+            else:
+                received_packets.clear()
+                continue
+
+        
+def fallback(received_packets, prev_id):
+    end_time = time.time() + client_settings.LD_DOWNLINK_TIMEOUT # Maybe another timeout should be considered here
+    finished = False
+    requested_seq_num = 0
+    while not finished:
+        if requested_seq_num not in received_packets:
+            try:
+                data = downlink_socket.recv_timeout(end_time - time.time())
+            except IOError:
+                logger.error('Fallback operation was not completed on time.Aborting')
+                return(received_packets, -1)
+            ecss_dict = cPickle.loads(ack[0])
+            if len(ecss_dict) == 0:
+                logger.error('Received empty ecss dict in fallback operation. Ignoring frame')
+                continue
+            seq_count = (ecss_dict['data'][2] << 8) | ecss_dict['data'][1]
+            if seq_count != requested_seq_num:
+                logger.error('Packet with wrong frame number received. Aborting')
+                return -1
+            if hex(prev_id) != hex(ecss_dict['data'][0]):
+                logger.error('Wrong large data id during fallback of downlink operation. Aborting')
+                return -1
+            buf = ecss_dict['data'][3 : ecss_dict['size']]
+            received_packets[seq_count] = buf
+            if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
+                return(received_packets, 1)
+            requested_seq_num += 1
+
+def construct_downlink_packet(received_packets):
+    frame = bytearray()
+    for i in received_packets:
+        frame.extend(received_packets[i])
+    return frame
