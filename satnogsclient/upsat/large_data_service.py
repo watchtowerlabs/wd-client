@@ -9,11 +9,15 @@ from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import packet
 from time import sleep
 from _socket import htons
+import time
+import binascii
+
 
 logger = logging.getLogger('satnogsclient')
 
 large_data_id = 0
-socket = Udpsocket(('0.0.0.0', client_settings.LD_UPLINK_LISTEN_PORT))
+uplink_socket = Udpsocket(('0.0.0.0', client_settings.LD_UPLINK_LISTEN_PORT))
+downlink_socket = Udpsocket(('0.0.0.0', client_settings.LD_DOWNLINK_LISTEN_PORT))
 gnuradio_sock = Udpsocket([])  # Gnuradio's udp listen port
 
 
@@ -68,7 +72,7 @@ def uplink(buf_in):
             print ' retries = ', retries, 'got ack = ', got_ack
             try:
                 logger.info('Waiting for ack')
-                ack = socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
+                ack = uplink_socket.recv_timeout(client_settings.LD_UPLINK_TIMEOUT)
                 ecss_dict = cPickle.loads(ack[0])
                 if len(ecss_dict) == 0:
                     continue
@@ -119,6 +123,8 @@ def downlink():
                 receiving = False
                 if ret[1] == 1:
                     frame = construct_downlink_packet(received_packets)
+                    logger.info('Packet received is: ')
+                    print binascii.hexlify(frame)
                     logger.info('Downlink operation completed')
                     received_packets.clear()
                 else:
@@ -148,6 +154,8 @@ def downlink():
             receiving = False
             if ret[1] == 1:
                 frame = construct_downlink_packet(received_packets)
+                logger.info('Packet received is: ')
+                print binascii.hexlify(frame)
                 logger.info('Downlink operation completed')
                 received_packets.clear()
             else:
@@ -166,7 +174,7 @@ def fallback(received_packets, prev_id):
             except IOError:
                 logger.error('Fallback operation was not completed on time.Aborting')
                 return(received_packets, -1)
-            ecss_dict = cPickle.loads(ack[0])
+            ecss_dict = cPickle.loads(data[0])
             if len(ecss_dict) == 0:
                 logger.error('Received empty ecss dict in fallback operation. Ignoring frame')
                 continue
@@ -181,7 +189,7 @@ def fallback(received_packets, prev_id):
             received_packets[seq_count] = buf
             if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
                 return(received_packets, 1)
-            requested_seq_num += 1
+        requested_seq_num += 1
 
 def construct_downlink_packet(received_packets):
     frame = bytearray()
