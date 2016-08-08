@@ -16,6 +16,7 @@ import binascii
 logger = logging.getLogger('satnogsclient')
 
 large_data_id = 0
+total_downlink_packets = 0
 uplink_socket = Udpsocket(('0.0.0.0', client_settings.LD_UPLINK_LISTEN_PORT))
 downlink_socket = Udpsocket(('0.0.0.0', client_settings.LD_DOWNLINK_LISTEN_PORT))
 gnuradio_sock = Udpsocket([])  # Gnuradio's udp listen port
@@ -127,8 +128,12 @@ def downlink():
                     print binascii.hexlify(frame)
                     logger.info('Downlink operation completed')
                     received_packets.clear()
+                    global total_downlink_packets
+                    total_downlink_packets = 0
                 else:
                     received_packets.clear()
+                    global total_downlink_packets
+                    total_downlink_packets = 0
                     continue
             ecss_dict = cPickle.loads(data[0])
         else:
@@ -149,7 +154,9 @@ def downlink():
         buf = ecss_dict['data'][3 : ecss_dict['size']]
         received_packets[seq_count] = buf
         if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
-            ret = fallback(received_packets,prev_id, seq_count)
+            global total_downlink_packets
+            total_downlink_packets = seq_count
+            ret = fallback(received_packets,prev_id)
             prev_id = -1
             receiving = False
             if ret[1] == 1:
@@ -158,17 +165,22 @@ def downlink():
                 print binascii.hexlify(frame)
                 logger.info('Downlink operation completed')
                 received_packets.clear()
+                global total_downlink_packets
+                total_downlink_packets = 0
             else:
                 received_packets.clear()
+                global total_downlink_packets
+                total_downlink_packets = 0
                 continue
 
         
-def fallback(received_packets, prev_id, final_seq_num):
+def fallback(received_packets, prev_id):
     end_time = time.time() + client_settings.LD_DOWNLINK_TIMEOUT # Maybe another timeout should be considered here
     finished = False
     requested_seq_num = 0
     while not finished:
         if requested_seq_num not in received_packets:
+            request_packet(prev_id,requested_seq_num)
             try:
                 data = downlink_socket.recv_timeout(end_time - time.time())
             except IOError:
@@ -188,15 +200,44 @@ def fallback(received_packets, prev_id, final_seq_num):
             buf = ecss_dict['data'][3 : ecss_dict['size']]
             received_packets[seq_count] = buf
             if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
+                global total_downlink_packets
+                total_downlink_packets = seq_count
                 finished = True
                 return(received_packets, 1)
         requested_seq_num += 1
-        if final_seq_num > 0 and requested_seq_num == final_seq_num + 1: # The count has reached the final sequence number meaning that all packets were received
+        if total_downlink_packets > 0 and total_downlink_packets == final_seq_num + 1: # The count has reached the final sequence number meaning that all packets were received
             finished = True
             return(received_packets, 1)
 
 def construct_downlink_packet(received_packets):
     frame = bytearray()
-    for i in received_packets:
+    frame.extend(received_packets[0])
+    frame.pop(0)
+    frame.pop(0)
+    for i in range(1,total_downlink_packets):
         frame.extend(received_packets[i])
     return frame
+
+
+def request_packet(ld_id,ld_num):
+    buf = bytearray(3)
+    packet_count_htons = htons(ld_num)
+    packet_count_ms = (packet_count_htons & 0xFF00) >> 8
+    packet_count_ls = packet_count_htons & 0x00FF
+    buf.insert(0, packet_count_ls)
+    buf.insert(0, packet_count_ms)
+    buf.insert(0, large_data_id)
+    ecss = {'type': 1,
+        'app_id': 4,
+        'size': len(buf),
+        'ack': 1, # Ack 1?????
+        'ser_type': packet_settings.TC_LARGE_DATA_SERVICE,
+        'ser_subtype': packet_settings.TC_LD_REPEAT_DOWNLINK,
+        'dest_id': 6,
+        'data': buf,
+        'seq_count': 0
+    }
+    gnuradio_sock.sendto()
+    ready_buf = packet.construct_packet(ecss, os.environ['BACKEND'])
+    gnuradio_sock.sendto(ready_buf, (client_settings.GNURADIO_IP, client_settings.GNURADIO_UDP_PORT))
+    
