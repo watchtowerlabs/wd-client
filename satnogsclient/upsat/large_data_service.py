@@ -118,7 +118,7 @@ def downlink():
                 data = downlink_socket.recv_timeout(end_time - time.time())
             except :
                 logger.info('Downlink operation not completed on time. Going to fallback operation')
-                ret = fallback(received_packets, prev_id)
+                ret = fallback(received_packets, prev_id, 0)
                 prev_id = -1
                 receiving = False
                 if ret[1] == 1:
@@ -149,7 +149,7 @@ def downlink():
         buf = ecss_dict['data'][3 : ecss_dict['size']]
         received_packets[seq_count] = buf
         if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
-            ret = fallback(received_packets,prev_id)
+            ret = fallback(received_packets,prev_id, seq_count)
             prev_id = -1
             receiving = False
             if ret[1] == 1:
@@ -163,7 +163,7 @@ def downlink():
                 continue
 
         
-def fallback(received_packets, prev_id):
+def fallback(received_packets, prev_id, final_seq_num):
     end_time = time.time() + client_settings.LD_DOWNLINK_TIMEOUT # Maybe another timeout should be considered here
     finished = False
     requested_seq_num = 0
@@ -188,8 +188,12 @@ def fallback(received_packets, prev_id):
             buf = ecss_dict['data'][3 : ecss_dict['size']]
             received_packets[seq_count] = buf
             if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
+                finished = True
                 return(received_packets, 1)
         requested_seq_num += 1
+        if final_seq_num > 0 and requested_seq_num == final_seq_num + 1: # The count has reached the final sequence number meaning that all packets were received
+            finished = True
+            return(received_packets, 1)
 
 def construct_downlink_packet(received_packets):
     frame = bytearray()
