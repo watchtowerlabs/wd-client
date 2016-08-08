@@ -311,10 +311,19 @@ def start_wod_thread():
 
 
 def wod_listener():
-    sock = Udpsocket(('0.0.0.0', settings.WOD_UDP_PORT))
+    sock = Udpsocket(('127.0.0.1', settings.WOD_UDP_PORT))
     while 1:
-        data = sock.recv()
-        print data
+        try:
+            conn = sock.recv()
+        except IOError:
+            logger.info('WOD listerner is terminated or something bad happened to accept')
+            return
+        logger.debug("WOD received %s", conn)
+        data = {}
+        data["type"] = "WOD"
+        data["content"] = str(conn)
+        # Data must be sent to socket.io here
+        socketio.emit('backend_msg', data, namespace='/control_rx', callback=success_message_to_frontend())
 
 
 def kill_wod_thread():
