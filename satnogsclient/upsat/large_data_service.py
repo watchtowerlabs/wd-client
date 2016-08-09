@@ -122,7 +122,7 @@ def downlink():
                 logger.info('Downlink thread awaits for next frame')
                 data = downlink_socket.recv_timeout(end_time - time.time())
                 logger.info('Downlink packet received!')
-            except :
+            except:
                 logger.info('Downlink operation not completed on time. Going to fallback operation')
                 ret = fallback(received_packets, prev_id)
                 prev_id = -1
@@ -161,14 +161,14 @@ def downlink():
             prev_id = -1
             receiving = False
             received_packets.clear()
-        buf = ecss_dict['data'][3 : ecss_dict['size']]
+        buf = ecss_dict['data'][3:ecss_dict['size']]
         received_packets[seq_count] = buf
-        #global total_downlink_packets
-        #total_downlink_packets += 1
+        # global total_downlink_packets
+        # total_downlink_packets += 1
         if ecss_dict['ser_subtype'] == packet_settings.TM_LD_LAST_DOWNLINK:
             global total_downlink_packets
             total_downlink_packets = seq_count + 1
-            ret = fallback(received_packets,prev_id)
+            ret = fallback(received_packets, prev_id)
             logger.info('Returned from callback')
             prev_id = -1
             receiving = False
@@ -188,19 +188,19 @@ def downlink():
                 total_downlink_packets = 0
                 continue
 
-        
+
 def fallback(received_packets, prev_id):
     logger.info('Callback function takes over')
-    logger.info('Total packets received: '+str(total_downlink_packets))
+    logger.info('Total packets received: ' + str(total_downlink_packets))
     finished = False
     requested_seq_num = 0
     packet_retries = 0
     while not finished:
         logger.info('Requested sequence number =  ' + str(requested_seq_num))
         if requested_seq_num not in received_packets:
-            request_packet(prev_id,requested_seq_num,'gnuradio')
+            request_packet(prev_id, requested_seq_num, 'gnuradio')
             try:
-                end_time = time.time() + client_settings.LD_DOWNLINK_SMALL_TIMEOUT # Maybe another timeout should be considered here
+                end_time = time.time() + client_settings.LD_DOWNLINK_SMALL_TIMEOUT  # Maybe another timeout should be considered here
                 data = downlink_socket.recv_timeout(end_time - time.time())
             except IOError:
                 if packet_retries < client_settings.LD_DOWNLINK_RETRIES_LIM:
@@ -232,7 +232,7 @@ def fallback(received_packets, prev_id):
                 else:
                     logger.error('Fallback operation for packet number ' + str(requested_seq_num) + ' was not completed.Wrong LD ID.Aborting')
                     return(received_packets, -1)
-            buf = ecss_dict['data'][3 : ecss_dict['size']]
+            buf = ecss_dict['data'][3:ecss_dict['size']]
             received_packets[seq_count] = buf
             requested_seq_num += 1
             packet_retries = 0
@@ -243,19 +243,20 @@ def fallback(received_packets, prev_id):
                 return(received_packets, 1)
         else:
             requested_seq_num += 1
-        if total_downlink_packets > 0 and requested_seq_num == total_downlink_packets: # The count has reached the final sequence number meaning that all packets were received
+        if total_downlink_packets > 0 and requested_seq_num == total_downlink_packets:  # The count has reached the final sequence number meaning that all packets were received
             finished = True
             return(received_packets, 1)
+
 
 def construct_downlink_packet(received_packets):
     frame = bytearray()
     frame.extend(received_packets[0])
-    for i in range(1,total_downlink_packets):
+    for i in range(1, total_downlink_packets):
         frame.extend(received_packets[i])
     return frame
 
 
-def request_packet(ld_id,ld_num,backend):
+def request_packet(ld_id, ld_num, backend):
     buf = bytearray(0)
     packet_count_htons = htons(ld_num)
     packet_count_ms = (packet_count_htons & 0xFF00) >> 8
@@ -266,7 +267,7 @@ def request_packet(ld_id,ld_num,backend):
     ecss = {'type': 1,
         'app_id': 4,
         'size': len(buf),
-        'ack': 1, # Ack 1?????
+        'ack': 1,  # Ack 1?????
         'ser_type': packet_settings.TC_LARGE_DATA_SERVICE,
         'ser_subtype': packet_settings.TC_LD_REPEAT_DOWNLINK,
         'dest_id': 6,
@@ -285,7 +286,7 @@ def decode_and_send(buf_in):
     print ecss_dict
     data = ecss_logic_utils.ecss_logic(ecss_dict)
     socketio.emit('backend_msg', data, namespace='/control_rx', callback=success_message_to_frontend())
-    
-    
+
+
 def success_message_to_frontend():
-    logger.debug('Successfuly emit to frontend') 
+    logger.debug('Successfuly emit to frontend')
