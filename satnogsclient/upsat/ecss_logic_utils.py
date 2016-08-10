@@ -240,7 +240,37 @@ def ecss_logic(ecss_dict):
             text = "TIME: {0}".format(report)
 
         elif ecss_dict['ser_type'] == packet_settings.TC_SCHEDULING_SERVICE:
-            text = "APO, DO LET US KNOW WHAT TO DO HERE"
+            
+            pointer = 0
+            content = [{}]
+            
+            if ecss_dict['ser_subtype'] == packet_settings.TC_SC_SUMMARY_REPORT:
+
+                if len(ecss_dict['data']) % 13 == 0:
+                    for i in range(0, (len(ecss_dict['data']) / 13)):
+                        pre_content = [{}]
+                        pre_content[0]["Pos Taken"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["Position"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["Enabled"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["App_ID"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["Seq_Cnt"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["Release Time"] = str(cnv8_32(ecss_dict['data'][pointer:]))
+                        pointer += 4
+                        pre_content[0]["Timeout"] = str(cnv8_32(ecss_dict['data'][pointer:]))
+                        pointer += 4
+                        
+                        content[0][i] = pre_content
+
+                else:
+                    content[0] = "Simple schedule report was not of right data size."
+                
+            text = json.dumps(content, indent=2, sort_keys=True)
+
         elif ecss_dict['ser_type'] == packet_settings.TC_LARGE_DATA_SERVICE:
             text = "FM {0}, FROM: {1}".format(ecss_dict['app_id'])
         elif ecss_dict['ser_type'] == packet_settings.TC_MASS_STORAGE_SERVICE:

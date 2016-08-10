@@ -137,8 +137,12 @@ $(document).ready(function() {
             $('#sch-time-int-row').show();
             $('#sch-app_id-row').show();
             $('#sch-seq-row').show();
-        } else if ($('#service-param-sch-action').find("option:selected").val() == "report") {
+        } else if ($('#service-param-sch-action').find("option:selected").val() == "report_summary") {
             $('[id ^=sch][id $=row]').hide();
+        } else if ($('#service-param-sch-action').find("option:selected").val() == "report_detailed") {
+            $('[id ^=sch][id $=row]').hide();
+            $('#sch-seq-row').show();
+            $('#sch-app_id-row').show();
         } else if ($('#service-param-sch-action').find("option:selected").val() == "enable_apid"){
             $('[id ^=sch][id $=row]').hide();
             $('#sch-app_id-row').show();
@@ -488,7 +492,8 @@ $(document).ready(function() {
 
                 service_subtype = 17;
             } else if (selected_action == 'report_detailed') {
-
+                data.splice(0, 0, sch_app_id);
+                data.splice(1, 0, sch_seq_cnt);
                 service_subtype = 16;
             } else if (selected_action == 'enable_apid') {
 
@@ -507,6 +512,7 @@ $(document).ready(function() {
             }
             
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
+            ecss_cmd_socket.emit('ecss_command', request);
 
         } else if (selected_value == "time") {
             app_id = $('#service-param-time-app_id').val();
