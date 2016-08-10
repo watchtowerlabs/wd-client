@@ -487,7 +487,7 @@ $(document).ready(function() {
                 data.splice(4, 0, 1);
                 data.splice(5, 0, sch_app_id);
                 data.splice(6, 0, sch_seq_cnt);
-                data.splice(4, 0, 1);
+                data.splice(7, 0, 1);
             } else if (selected_action == 'report_summary') {
 
                 service_subtype = 17;

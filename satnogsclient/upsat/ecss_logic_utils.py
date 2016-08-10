@@ -249,8 +249,6 @@ def ecss_logic(ecss_dict):
                 if len(ecss_dict['data']) % 13 == 0:
                     for i in range(0, (len(ecss_dict['data']) / 13)):
                         pre_content = [{}]
-                        pre_content[0]["Pos Taken"] = str(ecss_dict['data'][pointer])
-                        pointer += 1
                         pre_content[0]["Position"] = str(ecss_dict['data'][pointer])
                         pointer += 1
                         pre_content[0]["Enabled"] = str(ecss_dict['data'][pointer])
@@ -258,6 +256,8 @@ def ecss_logic(ecss_dict):
                         pre_content[0]["App_ID"] = str(ecss_dict['data'][pointer])
                         pointer += 1
                         pre_content[0]["Seq_Cnt"] = str(ecss_dict['data'][pointer])
+                        pointer += 1
+                        pre_content[0]["Sch_Event"] = str(ecss_dict['data'][pointer])
                         pointer += 1
                         pre_content[0]["Release Time"] = str(cnv8_32(ecss_dict['data'][pointer:]))
                         pointer += 4
@@ -268,6 +268,33 @@ def ecss_logic(ecss_dict):
 
                 else:
                     content[0] = "Simple schedule report was not of right data size."
+            
+            elif ecss_dict['ser_subtype'] == packet_settings.TC_SC_DETAILED_REPORT:
+                content[0]['App_ID'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Type'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Seq_Flag'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Seq_Cnt'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Size'] = str(cnv8_16(ecss_dict['data'][pointer:]))
+                pointer += 2
+                content[0]['ACK'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Ser_Type'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Ser_SubType'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                content[0]['Dest_ID'] = str(ecss_dict['data'][pointer])
+                pointer += 1
+                for j in range(0,int(content[0]['Size'])):
+                    content[0]['Data'+str(j)] = str(ecss_dict['data'][pointer])
+                    pointer += 1
+                content[0]['Verif_State'] = str(ecss_dict['data'][pointer])
+                
+            else:
+                content[0] = "No valid subtype for scheduling found!"
                 
             text = json.dumps(content, indent=2, sort_keys=True)
 
