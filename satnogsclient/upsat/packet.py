@@ -184,24 +184,20 @@ def ecss_packetizer(ecss, buf):
 
 def comms_off():
     sock = Udpsocket([])
-    data = ctypes.create_string_buffer(25)
+    data = ctypes.create_string_buffer(45)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_OFF_1)
-    struct.pack_into("<I", data, 13, settings.RF_SW_CMD_OFF_2)
-    struct.pack_into("<I", data, 17, settings.RF_SW_CMD_OFF_3)
-    struct.pack_into("<I", data, 21, settings.RF_SW_CMD_OFF_4)
+    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_OFF_INT)
+    data[13:45] = settings.RF_SW_CMD_OFF_CHAR_SEQ
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
 
 def comms_on():
     sock = Udpsocket([])
-    data = ctypes.create_string_buffer(25)
+    data = ctypes.create_string_buffer(45)
     data[0:9] = 'RF SW CMD'
-    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_ON_1)
-    struct.pack_into("<I", data, 13, settings.RF_SW_CMD_ON_2)
-    struct.pack_into("<I", data, 17, settings.RF_SW_CMD_ON_3)
-    struct.pack_into("<I", data, 21, settings.RF_SW_CMD_ON_4)
+    struct.pack_into("<I", data, 9, settings.RF_SW_CMD_ON_INT)
+    data[13:45] = settings.RF_SW_CMD_ON_CHAR_SEQ
     d = bytearray(data)
     sock.sendto(d, (packet_settings.FRAME_RECEIVER_IP, packet_settings.FRAME_RECEIVER_PORT))
 
