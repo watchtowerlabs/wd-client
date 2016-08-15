@@ -152,24 +152,11 @@ $(document).ready(function() {
     });
 
     $('#service-param-mnlp-action').on('change', function() {
-        if ($('#service-param-mnlp-action').find("option:selected").val() == "su_reset") {
+        if ($('#service-param-mnlp-action').find("option:selected").val() == "su_manset_scr") {
             $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').hide();
-        } else if ($('#service-param-mnlp-action').find("option:selected").val() == "su_service_scheduler_on") {
+            $('#mnlp-suscr-row').show();
+        } else {
             $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').hide();
-        } else if ($('#service-param-mnlp-action').find("option:selected").val() == "su_service_scheduler_off") {
-            $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').hide();
-        } else if ($('#service-param-mnlp-action').find("option:selected").val() == "su_notify_task") {
-            $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').hide();
-        } else if ($('#service-param-mnlp-action').find("option:selected").val() == "su_manset_scr") {
-            $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').show();
-        } else if ($('#service-param-mnlp-action').find("option:selected").val() == "su_status_report") {
-            $('[id ^=mnlp][id $=row]').hide();
-            $('#service-param-mnlp-suscr-row').hide();
         }
     });
 
@@ -694,10 +681,9 @@ $(document).ready(function() {
             data = [];
             ack = $('#service-param-mnlp-ack').val();
             dest_id = $('#service-param-mnlp-dest_id').val();
-            scr_no = $('#service-param-mnlp-suscr').val();
             service_type = 18;
             su_func = $('#service-param-mnlp-action').val();
-            
+
             if (su_func == 'su_reset') {
                 service_subtype = 18;
                 data.splice(0, 0, 2);
@@ -712,13 +698,14 @@ $(document).ready(function() {
             } else if (su_func == 'su_notify_task') {
                 service_subtype = 15;
             } else if (su_func == 'su_manset_scr') {
+                scr_no = $('#service-param-mnlp-suscr').val();
                 service_subtype = 18;
                 data.splice(0, 0, 1);
                 data.splice(1, 0, scr_no);
-            } else if (su_func == 'su_status_report') { 
+            } else if (su_func == 'su_status_report') {
                 service_subtype = 16;
             } else if (su_func == 'su_manual_ctrl') {
-                alert("to be impl");
+                console.log("to be implemented");
             }
             request = encode_service(type, app_id, service_type, service_subtype, dest_id, ack, data);
             ecss_cmd_socket.emit('ecss_command', request);
@@ -1191,6 +1178,7 @@ function init(config_socket) {
     $('[id ^=adcs][id $=row]').hide();
     $('[id ^=sch][id $=row]').hide();
     $('#eps-safety-limits-row').hide();
+    $('[id ^=mnlp][id $=row]').hide();
 }
 
 function encode_mode_switch(mode) {

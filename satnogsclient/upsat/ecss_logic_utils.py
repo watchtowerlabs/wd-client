@@ -249,9 +249,9 @@ def ecss_logic(ecss_dict):
                 report = "QB50 " + str(qb50) + " UTC: " + str(utc)
 
             text = "TIME: {0}".format(report)
-            
+
         elif ecss_dict['ser_type'] == packet_settings.TC_SU_MNLP_SERVICE:
-            
+
             content = [{}]
             pointer = 0
             content[0]['QB50_rep_time'] = str(cnv8_32(ecss_dict['data'][pointer:]))
@@ -281,9 +281,9 @@ def ecss_logic(ecss_dict):
             content[0]['MNLP span exec count'] = str(cnv8_16(ecss_dict['data'][pointer:]))
             pointer += 2
             content[0]['MNLP tt lost count '] = str(cnv8_16(ecss_dict['data'][pointer:]))
-        
+
             text = json.dumps(content, indent=2, sort_keys=True)
-                
+
         elif ecss_dict['ser_type'] == packet_settings.TC_SCHEDULING_SERVICE:
 
             pointer = 0
