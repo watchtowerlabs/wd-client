@@ -72,4 +72,4 @@ def gnuradio_subprocess(arguments):
     if arg_string == ' ':
         arg_string = ''
     logger.info('Starting GNUradio python script')
-    os.system(client_settings.GNURADIO_SCRIPT_FILENAME + arg_string)
+    os.system('python ' + client_settings.GNURADIO_SCRIPTS_PATH + client_settings.GNURADIO_SCRIPT_FILENAME + arg_string)

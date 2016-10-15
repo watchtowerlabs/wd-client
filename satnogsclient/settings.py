@@ -46,7 +46,8 @@ DEMODULATOR_INIT_TIME = int(environ.get('SATNOGS_DEMODULATOR_INIT_TIME', 5))  # 
 SCHEDULER_SLEEP_TIME = 10  # In seconds
 GNURADIO_UDP_PORT = 16886
 GNURADIO_IP = '127.0.0.1'
-GNURADIO_SCRIPT_FILENAME='upsat_transceiver_cli.py'
+GNURADIO_SCRIPT_FILENAME='top_block.py'
+GNURADIO_SCRIPTS_PATH = '/home/sleepwalker/Documents/satnogs/satnogs-client/'
 CURRENT_PASS_TCP_PORT = 5005
 BACKEND_LISTENER_PORT = 5022
 BACKEND_FEEDER_PORT = 5023
@@ -70,6 +71,13 @@ RIG_PORT = int(environ.get('SATNOGS_RIG_PORT', 4532))
 PPM_ERROR = float(environ.get('SATNOGS_PPM_ERROR', 0))
 
 SERIAL_PORT = environ.get('SERIAL_PORT', None)
+
+# Rigctld settings
+RIG_MODEL = ""
+RIG_FILE = ""
+RIG_PTT_FILE = ""
+RIG_PTT_TYPE = ""
+RIG_SERIAL_SPEED = ""
 
 # Logging configuration
 DEFAULT_LOGGING = {
