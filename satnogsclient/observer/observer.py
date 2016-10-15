@@ -122,6 +122,8 @@ class Observer:
         # start thread for rigctl
         logger.info('Start rigctrl thread.')
         self.run_rig()
+        
+        
 
     def run_rot(self):
         self.tracker_rot = WorkerTrack(ip=self.rot_ip,
