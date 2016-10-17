@@ -40,14 +40,14 @@ ENCODING_COMMAND = environ.get('SATNOGS_ENCODING_COMMAND', 'oggenc')
 DECODING_COMMAND = environ.get('SATNOGS_DECODING_COMMAND', 'multimon-ng')
 
 NETWORK_API_URL = environ.get('SATNOGS_API_URL', 'https://network-dev.satnogs.org/api/')
-NETWORK_API_QUERY_INTERVAL = 5  # In minutes
+NETWORK_API_QUERY_INTERVAL = 1  # In minutes
 NETWORK_API_POST_INTERVAL = 15  # In minutes
 DEMODULATOR_INIT_TIME = int(environ.get('SATNOGS_DEMODULATOR_INIT_TIME', 5))  # In seconds
 SCHEDULER_SLEEP_TIME = 10  # In seconds
 GNURADIO_UDP_PORT = 16886
 GNURADIO_IP = '127.0.0.1'
-GNURADIO_SCRIPT_FILENAME='top_block.py'
-GNURADIO_SCRIPTS_PATH = '/home/sleepwalker/Documents/satnogs/satnogs-client/'
+GNURADIO_SCRIPT_FILENAME = 'satnogs_generic_iq_receiver.py'
+RX_DEVICE = 'usrpb200'
 CURRENT_PASS_TCP_PORT = 5005
 BACKEND_LISTENER_PORT = 5022
 BACKEND_FEEDER_PORT = 5023

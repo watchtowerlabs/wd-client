@@ -1,6 +1,6 @@
 import logging
 import cPickle
-import os
+import subprocess
 
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
@@ -47,29 +47,14 @@ def read_from_gnuradio():
             logger.error('Ecss Dictionary not properly constructed. Error occured. Key \'ser_type\' not in dictionary')
 
 
-def exec_gnuradio():
-    from multiprocessing import Process
-    ef = Process(target=gnuradio_subprocess, args=({},))
-    ef.start()
-
-
-def gnuradio_subprocess(arguments):
+def exec_gnuradio(observation_id, freq):
+    arguments = {'filename': client_settings.OUTPUT_PATH + '/' + str(observation_id),
+                                                    'rx_device': client_settings.RX_DEVICE,
+                                                    'center_freq': str(freq)}
     arg_string = ' '
-    if 'bind-addr' in arguments:
-        arg_string += '--bind-addr=' + str(arguments['bind-addr']) + ' '
-    if 'dest-addr' in arguments:
-        arg_string += '--dest-addr=' + str(arguments['dest-addr']) + ' '
-    if 'lo-offset' in arguments:
-        arg_string += '--lo-offset=' + str(arguments['lo-offset']) + ' '
-    if 'recv-port' in arguments:
-        arg_string += '--recv-port=' + str(arguments['recv-port']) + ' '
-    if 'rx-sdr-device' in arguments:
-        arg_string += '--rx-sdr-device=' + str(arguments['rx-sdr-device']) + ' '
-    if 'send-port' in arguments:
-        arg_string += '--send-port=' + str(arguments['send-port']) + ' '
-    if 'tx-sdr-device' in arguments:
-        arg_string += '--tx-sdr-device=' + str(arguments['tx-sdr-device']) + ' '
-    if arg_string == ' ':
-        arg_string = ''
+    arg_string += '--rx-sdr-device=' + arguments['rx_device'] + ' '
+    arg_string += '--file-path=' + arguments['filename'] + ' '
+    arg_string += '--rx-freq=' + arguments['center_freq'] + ' '
     logger.info('Starting GNUradio python script')
-    os.system('python ' + client_settings.GNURADIO_SCRIPTS_PATH + client_settings.GNURADIO_SCRIPT_FILENAME + arg_string)
+    proc = subprocess.Popen([client_settings.GNURADIO_SCRIPT_FILENAME + " " + arg_string], shell=True)
+    return proc
