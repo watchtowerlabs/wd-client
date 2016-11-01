@@ -34,11 +34,12 @@ class Worker:
 
     _azimuth = None
     _altitude = None
+    _gnu_proc = None
 
     observer_dict = {}
     satellite_dict = {}
 
-    def __init__(self, ip, port, time_to_stop=None, frequency=None):
+    def __init__(self, ip, port, time_to_stop=None, frequency=None, proc=None):
         """Initialize worker class."""
         self._IP = ip
         self._PORT = port
@@ -46,6 +47,8 @@ class Worker:
             self._frequency = frequency
         if time_to_stop:
             self._observation_end = time_to_stop
+        if proc:
+            self._gnu_proc = proc
 
     @property
     def is_alive(self):
@@ -136,6 +139,8 @@ class Worker:
         """
         logger.info('Tracking stopped.')
         self.is_alive = False
+        if self._gnu_proc:
+            self._gnu_proc.terminate()
 
     def check_observation_end_reached(self):
         if datetime.now(pytz.utc) > self._observation_end:

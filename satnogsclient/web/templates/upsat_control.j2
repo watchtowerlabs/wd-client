@@ -9,252 +9,38 @@
       <div class="col-xs-7 col-md-3">
         <h1>UPSat C&amp;C</h1>
       </div>
-      <div class="col-md-3">
+      <div class="col-md-4">
         <div id="backend-switch">
           <input type="checkbox" name="backend-switch" checked>
         </div>
       </div>
     </div>
     <div class="row" id="cnc_mode">
-      <div class="col-md-6">
+      <div class="col-md-7">
         <div class="row" id="switch-panel">
           <div class="col-md-12" id="command-col">
             <div class="row">
               <div class="col-xs-4">
                 <ul class="nav nav-tabs nav-stacked" id="service-select">
-                  <li data-value="test" role="presentation" id="test-select" class="active"><a><span class="glyphicon glyphicon-check" aria-hidden="true"></span> Test</a></li>
-                  <li data-value="time" role="presentation" id="time-select"><a><span class="glyphicon glyphicon-time" aria-hidden="true"></span> Time</a></li>
-                  <li data-value="power" role="presentation" id="power-select"><a><span class="glyphicon glyphicon-off" aria-hidden="true"></span> Power</a></li>
-                  <li data-value="mass" role="presentation" id="ms-select"><a><span class="glyphicon glyphicon-file" aria-hidden="true"></span> Mass Storage</a></li>
-                  <li data-value="house" role="presentation" id="hk-select"><a><span class="glyphicon glyphicon-home" aria-hidden="true"></span> House keeping</a></li>
-                  <li data-value="adcs" role="presentation" id="adcs-select"><a><span class="glyphicon glyphicon-plane" aria-hidden="true"></span> ADCS</a></li>
-                  <li data-value="comms" role="presentation" id="comms-select"><a><span class="glyphicon glyphicon-sort" aria-hidden="true"></span> COMMS</a></li>
-                  <li data-value="eps" role="presentation" id="eps-select"><a><span class="glyphicon glyphicon-flash" aria-hidden="true"></span> EPS</a></li>
-                  <li data-value="sch" role="presentation" id="sch-select"><a><span class="glyphicon glyphicon-calendar" aria-hidden="true"></span> Schedule</a></li>
-                  <li data-value="mnlp" role="presentation" id="mnlp-select"><a><span class="glyphicon glyphicon-education" aria-hidden="true"></span> mNLP</a></li>
-                  <li data-value="custom" role="presentation" id="custom-select"><a><span class="glyphicon glyphicon-edit" aria-hidden="true"></span> Custom</a></li>
+                  <li data-value="time" role="presentation" id="time-select" class="active"><a>Time</a></li>
+                  <li data-value="power" role="presentation" id="power-select"><a>Power</a></li>
+                  <li data-value="test" role="presentation" id="test-select"><a>Test</a></li>
+                  <li data-value="mass" role="presentation" id="ms-select"><a>Mass Storage</a></li>
+                  <li data-value="house" role="presentation" id="hk-select"><a>House keeping</a></li>
+                  <li data-value="custom" role="presentation" id="custom-select"><a>Custom</a></li>
+                  <li data-value="adcs" role="presentation" id="tle-select"><a>ADCS TLE update</a></li>
+                  <li data-value="comms" role="presentation" id="comms-select"><a>Comms</a></li>
+                  <li data-value="sch" role="presentation" id="sch-select"><a>Schedule</a></li>
                 </ul>
               </div>
               <div class="col-xs-8" id="service-param-panel">
-                <div id="service-param-mnlp" style="display:none;">
+                <div id="service-param-tle" style="display:none;">
                   <div class="row">
-                    <div class="col-md-4">
-                      <label>Function:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-mnlp-action" class="form-control">
-                        <option selected style="display:none;">Select Function</option>
-                        <option value="su_reset">Reset mNLP Script Selection</option>
-                        <option value="su_service_scheduler_on" >SU Service Scheduler ON</option>
-                        <option value="su_service_scheduler_off" >SU Service Scheduler OFF</option>
-                        <option value="su_notify_task" >Notify SU Scheduler task</option>
-                        <option value="su_manset_scr" >Manual set active script</option>
-                        <option value="su_status_report" >SU state request</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row" id="mnlp-suscr-row">
-                    <div class="col-md-4">
-                      <label>SU script:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-mnlp-suscr" class="form-control">
-                        <option selected style="display:none;">Select Script Number</option>
-                        <option value="0" >SU_NOSCRIPT</option>
-                        <option value="1" >SU_SCRIPT 1</option>
-                        <option value="2" >SU_SCRIPT 2</option>
-                        <option value="3" >SU_SCRIPT 3</option>
-                        <option value="4" >SU_SCRIPT 4</option>
-                        <option value="5" >SU_SCRIPT 5</option>
-                        <option value="6" >SU_SCRIPT 6</option>
-                        <option value="7" >SU_SCRIPT 7</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>ACK:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-mnlp-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
-                        <option value="0" >NO ACK</option>
-                        <option value="1" >ACK</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Destination:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-mnlp-dest_id" class="form-control">
-                        <option selected style="display:none;">Select Dest ID</option>
-                        <option value="6" >GND</option>
-                        <option value="7" >UMB</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-8">
-                      <div class="text-right">
-                        <button class="btn btn-primary"> Send </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div id="service-param-eps" style="display:none;">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Function:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-eps-action" class="form-control">
-                        <option selected style="display:none;">Select Function</option>
-                        <option value="eps-set-safety-limits" >Set safety limits</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row" id="eps-safety-limits-row">
-                    <div class="col-md-5">
-                      <label>Safety limits:</label>
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-eps-safety-address" placeholder="Addr">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-eps-safety-value" placeholder="Value">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>ACK:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-eps-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
-                        <option value="0" >NO ACK</option>
-                        <option value="1" >ACK</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Destination:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-eps-dest_id" class="form-control">
-                        <option selected style="display:none;">Select Dest ID</option>
-                        <option value="6" >GND</option>
-                        <option value="7" >UMB</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-8">
-                      <div class="text-right">
-                        <button class="btn btn-primary"> Send </button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div id="service-param-adcs" style="display:none;">
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Action:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-adcs-action" class="form-control">
-                        <option selected style="display:none;">Action:</option>
-                        <option value="ADCS_SPIN" >Set spin</option>
-                        <option value="ADCS_MAGNETO" >Set magnetotorquers</option>
-                        <option value="ADCS_CTRL_GAIN" >Set control gains</option>
-                        <option value="ADCS_CONTROL_SP" >Set control sp</option>
-                        <option value="ADCS_TLE" >Set TLE</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row" id="adcs-spin-row">
-                    <div class="col-md-4">
-                      <label>Spin:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-service-spin" placeholder="Spin in RPM">
-                    </div>
-                  </div>
-                  <div class="row" id="adcs-magneto-row">
-                    <div class="col-md-5">
-                      <label>Magnetotorquers:</label>
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-magneto-z" placeholder="Z">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-magneto-y" placeholder="Y">
-                    </div>
-                  </div>
-                  <div class="row" id="adcs-control-row">
-                    <div class="col-md-3">
-                      <label>Control SP:</label>
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-c1" placeholder="Roll">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-c2" placeholder="Pitch">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-c3" placeholder="Yaw">
-                    </div>
-                  </div>
-                  <div class="row" id="adcs-gain-row">
-                    <div class="col-md-3">
-                      <label>Control Gains:</label>
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-g1" placeholder="B Dot">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-g2" placeholder="KP 1">
-                    </div>
-                    <div class="col-md-3">
-                      <input class="form-control" type="text" id="service-param-service-g3" placeholder="KP 1">
-                    </div>
-                  </div>
-                  <div class="row" id="adcs-tle-row">
                     <div class="col-md-4">
                       <label>TLE:</label>
                     </div>
                     <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-service-tle" placeholder="TLE">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>ACK:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-adcs-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
-                        <option value="0" >NO ACK</option>
-                        <option value="1" >ACK</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Destination:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-adcs-dest_id" class="form-control">
-                        <option selected style="display:none;">Select Dest ID</option>
-                        <option value="6" >GND</option>
-                        <option value="7" >UMB</option>
-                      </select>
+                      <input class="form-control" type="text" id="service-param-service-tle">
                     </div>
                   </div>
                   <div class="row">
@@ -276,56 +62,15 @@
                       <button type="button" class="btn label-danger" name="comms-tx-off" id="comms-tx-off">Shutdown</button>
                     </div>
                   </div>
-                  <div class="row" id="comms-pattern-row">
-                    <div class="col-md-4">
-                      <label>Pattern:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-comms-pattern">
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>ACK:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-comms-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
-                        <option value="0" >NO ACK</option>
-                        <option value="1" >ACK</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Destination:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-comms-dest_id" class="form-control">
-                        <option selected style="display:none;">Select Dest ID</option>
-                        <option value="6" >GND</option>
-                        <option value="7" >UMB</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                    </div>
-                    <div class="col-md-8">
-                      <div class="text-right">
-                        <button class="btn btn-primary"> Send </button>
-                      </div>
-                    </div>
-                  </div>
                 </div>
                 <div id="service-param-custom" style="display:none;">
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Application:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-app_id" class="form-control">
-                        <option selected style="display:none;">Application ID</option>
+                        <option selected="true" style="display:none;">Application ID:</option>
                         <option value="1" >OBC</option>
                         <option value="2" >EPS</option>
                         <option value="3" >ADCS</option>
@@ -341,7 +86,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-type" class="form-control">
-                        <option selected style="display:none;">Type</option>
+                        <option selected="true" style="display:none;">Type</option>
                         <option value="0" >TM</option>
                         <option value="1" >TC</option>
                       </select>
@@ -353,7 +98,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
+                        <option selected="true" style="display:none;">ACK</option>
                         <option value="0" >NO ACK</option>
                         <option value="1" >ACK</option>
                       </select>
@@ -365,7 +110,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-service_type" class="form-control">
-                        <option selected style="display:none;">Service Type</option>
+                        <option selected="true" style="display:none;">Service Type</option>
                         <option value="1" >TC_VERIFICATION_SERVICE</option>
                         <option value="3" >TC_HOUSEKEEPING_SERVICE</option>
                         <option value="5" >TC_EVENT_SERVICE</option>
@@ -385,17 +130,17 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-service_subtype" class="form-control">
-                        <option selected style="display:none;">Service sub Type</option>
+                        <option selected="true" style="display:none;">Service sub Type</option>
                       </select>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-dest_id" class="form-control">
-                        <option selected style="display:none;">Dest ID</option>
+                        <option selected="true" style="display:none;">Dest ID</option>
                         <option value="1" >OBC</option>
                         <option value="2" >EPS</option>
                         <option value="3" >ADCS</option>
@@ -430,21 +175,17 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-sch-action" class="form-control">
-                        <option selected style="display:none;">Action:</option>
-                        <option value="insert" >Insert</option>
-                        <option value="delete" >Delete</option>
-                        <option value="enable_apid" >Enable APID Schedules</option>
-                        <option value="disable_apid" >Disable APID Shedules</option>
+                        <option selected="true" style="display:none;">Action:</option>
+                        <option value="ins_qb" >Insert qb50</option>
+                        <option value="ins_abs" >Insert absolute</option>
+                        <option value="del" >Delete</option>
                         <option value="shift_all" >Timeshift all</option>
                         <option value="shift_sel" >Timeshift selected</option>
-                        <option value="report_summary" >Report Summary</option>
-                        <option value="report_detailed" >Report Detailed</option>
-                        <option value="save_schedules" >Save Schedules</option>
-                        <option value="load_schedules" >Load Schedules</option>
+                        <option value="shift_seq" >Timeshift sequence</option>
                       </select>
                     </div>
                   </div>
-                  <div class="row" id="sch-time-row">
+                  <div class="row">
                     <div class="col-md-4">
                       <label>Time:</label>
                     </div>
@@ -457,41 +198,31 @@
                       </div>
                     </div>
                   </div>
-                  <div class="row" id="sch-time-int-row">
+                  <div class="row">
                     <div class="col-md-4">
-                      <label>Time int:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-sch-time-int">
-                    </div>
-                  </div>
-                  <div class="row" id="sch-payload-row">
-                    <div class="col-md-4">
-                      <label>Payload:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-sch-payload">
-                    </div>
-                  </div>
-                  <div class="row" id="sch-seq-row">
-                    <div class="col-md-4">
-                      <label>Sequence:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <input class="form-control" type="text" id="service-param-sch-seq">
-                    </div>
-                  </div>
-                  <div class="row" id="sch-app_id-row">
-                    <div class="col-md-4">
-                      <label>Application:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-sch-app_id" class="form-control">
-                        <option selected style="display:none;">Select App ID</option>
+                      <select id="service-param-sch-app-id" class="form-control">
+                        <option selected="true" style="display:none;">Application ID:</option>
                         <option value="1" >OBC</option>
                         <option value="2" >EPS</option>
                         <option value="3" >ADCS</option>
                         <option value="4" >COMMS</option>
+                        <option value="6" >GND</option>
+                        <option value="7" >UMB</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Type:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-sch-type" class="form-control">
+                        <option selected="true" style="display:none;">Type</option>
+                        <option value="0" >TM</option>
+                        <option value="1" >TC</option>
                       </select>
                     </div>
                   </div>
@@ -501,7 +232,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-sch-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
+                        <option selected="true" style="display:none;">ACK</option>
                         <option value="0" >NO ACK</option>
                         <option value="1" >ACK</option>
                       </select>
@@ -509,14 +240,64 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Service Type:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-sch-service-type" class="form-control">
+                        <option selected="true" style="display:none;">Service Type</option>
+                        <option value="1" >TC_VERIFICATION_SERVICE</option>
+                        <option value="3" >TC_HOUSEKEEPING_SERVICE</option>
+                        <option value="5" >TC_EVENT_SERVICE</option>
+                        <option value="8" >TC_FUNCTION_MANAGEMENT_SERVICE</option>
+                        <option value="9" >TC_TIME_MANAGEMENT_SERVICE</option>
+                        <option value="11" >TC_SCHEDULING_SERVICE</option>
+                        <option value="13" >TC_LARGE_DATA_SERVICE</option>
+                        <option value="15" >TC_MASS_STORAGE_SERVICE</option>
+                        <option value="17" >TC_TEST_SERVICE</option>
+                        <option value="18" >TC_SU_MNLP_SERVICE</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Service Subtype:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-sch-service-subtype" class="form-control">
+                        <option selected="true" style="display:none;">Service sub Type</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-sch-dest-id" class="form-control">
-                        <option selected style="display:none;">Dest ID</option>
+                        <option selected="true" style="display:none;">Dest ID</option>
+                        <option value="1" >OBC</option>
+                        <option value="2" >EPS</option>
+                        <option value="3" >ADCS</option>
+                        <option value="4" >COMMS</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Sequence count:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" id="service-param-sch-seq-count">
+                    </div>
+                  </div>
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Application Data:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <input class="form-control" type="text" id="service-param-sch-service-data">
                     </div>
                   </div>
                   <div class="row">
@@ -532,11 +313,11 @@
                 <div id="service-param-housekeeping" style="display:none;">
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Application:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-hk-app_id" class="form-control">
-                        <option selected style="display:none;">Application ID</option>
+                        <option selected="true" style="display:none;">Application ID:</option>
                         <option value="1" >OBC</option>
                         <option value="2" >EPS</option>
                         <option value="3" >ADCS</option>
@@ -546,29 +327,24 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Service:</label>
+                      <label>Service ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-hk-sid" class="form-control">
-                        <option selected style="display:none;">Service ID</option>
+                        <option selected="true" style="display:none;">Service ID:</option>
                         <option value="1" >HEALTH_REP</option>
                         <option value="2" >EX_HEALTH_REP</option>
-                        <option value="4" >WOD_REP</option>
-                        <option value="5" >EX_WOD_REP</option>
                         <option value="6" >SCIENCE HEADER</option>
-                        <option value="7" >GET TLE</option>
-                        <option value="8" >SAFETY LIMITS</option>
-                        <option value="9" >ECSS_STATS_REP</option>
                       </select>
                     </div>
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-hk-dest-id" class="form-control">
-                        <option selected style="display:none;">Destination ID</option>
+                        <option selected="true" style="display:none;">Destination ID:</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
@@ -586,12 +362,68 @@
                 </div>
                 <div id="service-param-mass-storage" style="display:none;">
                   <div class="row">
+                    <div class="col-md-12">
+                      <div class="panel panel-default" id="file-browser-panel">
+                        <div class="panel-body">
+                          <table class="table table-hover table-condensed table-responsive">
+                          	<thead>
+                          		<tr>
+                          			<th>
+                          				ID
+                          			</th>
+                          			<th>
+                          				Filename
+                          			</th>
+                          			<th>
+                          				Size
+                          			</th>
+                                <th>
+                          				Last Modified
+                          			</th>
+                          		</tr>
+                          	</thead>
+                          	<tbody>
+                          		<tr>
+                          			<td>
+                          				1
+                          			</td>
+                          			<td>
+                          				Test.txt
+                          			</td>
+                          			<td>
+                          				32Kb
+                          			</td>
+                                <td>
+                          				21/05/16 19:56:4
+                          			</td>
+                          		</tr>
+                              <tr>
+                          			<td>
+                          				3
+                          			</td>
+                          			<td>
+                          				Test2.dat
+                          			</td>
+                          			<td>
+                          				456Kb
+                          			</td>
+                                <td>
+                          				20/05/16 19:12:2
+                          			</td>
+                          		</tr>
+                          	</tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col-md-4">
                       <label>Function:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-ms-function" class="form-control">
-                        <option selected style="display:none;">App ID</option>
+                        <option selected="true" style="display:none;">App ID</option>
                         <option value="File_system" >File system</option>
                         <option value="Format" >Format</option>
                         <option value="Enable" >Enable</option>
@@ -604,7 +436,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-ms-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
+                        <option selected="true" style="display:none;">ACK</option>
                         <option value="1" >ACK</option>
                         <option value="0" >NO ACK</option>
                       </select>
@@ -612,41 +444,23 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-ms-dest-id" class="form-control">
-                        <option selected style="display:none;">Dest ID</option>
+                        <option selected="true" style="display:none;">Dest ID</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
                     </div>
                   </div>
-                  <div class="row" id="file-action-row">
+                  <div class="row">
                     <div class="col-md-4">
-                      <label>Action:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-ms-action" class="form-control">
-                        <option selected style="display:none;">Action</option>
-                        <option value="Delete" >Delete</option>
-                        <option value="All" >Delete all</option>
-                        <option value="Hard" >Hard delete</option>
-                        <option value="Reset" >Reset FATFS</option>
-                        <option value="Report" >Report</option>
-                        <option value="List" >List</option>
-                        <option value="Downlink" >Downlink</option>
-                        <option value="Uplink" >Uplink</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row" id="folder-select-row">
-                    <div class="col-md-4">
-                      <label>Store:</label>
+                      <label>Store ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-ms-sid" class="form-control">
-                        <option selected style="display:none;">Store ID</option>
+                        <option selected="true" style="display:none;">Store ID</option>
                         <option value="1" >SU_SCRIPT 1</option>
                         <option value="2" >SU_SCRIPT 2</option>
                         <option value="3" >SU_SCRIPT 3</option>
@@ -660,37 +474,33 @@
                         <option value="11" >EVENT_LOG</option>
                         <option value="12" >FOTOS</option>
                         <option value="13" >SCHEDULE</option>
-                        <option value="14" >SRAM</option>
                       </select>
                     </div>
                   </div>
-                  <div class="row" id="file-select-row">
+                  <div class="row">
+                    <div class="col-md-4">
+                      <label>Action:</label>
+                    </div>
+                    <div class="col-md-8">
+                      <select id="service-param-ms-action" class="form-control">
+                        <option selected="true" style="display:none;">Action</option>
+                        <option value="Delete" >Delete</option>
+                        <option value="All" >Delete all</option>
+                        <option value="Hard" >Hard delete</option>
+                        <option value="Report" >Report</option>
+                        <option value="List" >List</option>
+                        <option value="Downlink" >Downlink</option>
+                        <option value="Uplink" >Uplink</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="row">
                     <div class="col-md-4">
                       <label>Num/Iter:</label>
                     </div>
                     <div class="col-md-8">
                       <div class="text-center m-b-md">
                         <input class="form-control" type="text" id="service-param-service-ms-num">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row" id="file-multiple-row">
-                    <div class="col-md-4">
-                      <label>Num of files:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <div class="text-center m-b-md">
-                        <input class="form-control" type="text" id="service-param-service-ms-mult">
-                      </div>
-                    </div>
-                  </div>
-                  <div class="row" id="file-upload-row">
-                    <div class="col-md-4">
-                      <label>File:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <div class="text-center m-b-md">
-                        <input type="file" id="file-upload">
                       </div>
                     </div>
                   </div>
@@ -704,14 +514,14 @@
                     </div>
                   </div>
                 </div>
-                <div id="service-param-test">
+                <div id="service-param-test" style="display:none;">
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Application:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-test-app_id" class="form-control">
-                        <option selected style="display:none;">Application ID</option>
+                        <option selected="true" style="display:none;">Application ID:</option>
                         <option value="1" >OBC</option>
                         <option value="2" >EPS</option>
                         <option value="3" >ADCS</option>
@@ -721,11 +531,11 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-test-dest_id" class="form-control">
-                        <option selected style="display:none;">Destination ID</option>
+                        <option selected="true" style="display:none;">Destination ID:</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
@@ -744,23 +554,26 @@
                 <div id="service-param-power" style="display:none;">
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Application:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-dev-id" class="form-control">
-                        <option selected style="display:none;">App ID</option>
+                        <option selected="true" style="display:none;">App ID</option>
                         <option value="1" >OBC_DEV_ID</option>
                         <option value="2" >EPS_DEV_ID</option>
                         <option value="3" >ADCS_DEV_ID</option>
                         <option value="4" >COMMS_DEV_ID</option>
                         <option value="5" >IAC_DEV_ID</option>
                         <option value="6" >SU_DEV_ID</option>
+                        <option value="7" >GPS_DEV_ID</option>
                         <option value="8" >OBC_SD_DEV_ID</option>
                         <option value="9" >ADCS_SD_DEV_ID</option>
                         <option value="10" >ADCS_SENSORS</option>
                         <option value="11" >ADCS_GPS</option>
                         <option value="12" >ADCS_MAGNETO</option>
                         <option value="13" >ADCS_SPIN</option>
+                        <option value="14" >ADCS_GPS</option>
+                        <option value="15" >ADCS_GPS</option>
                       </select>
                     </div>
                   </div>
@@ -770,10 +583,9 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-function" class="form-control">
-                        <option selected style="display:none;">Type</option>
+                        <option selected="true" style="display:none;">Type</option>
                         <option value="1" >ON</option>
                         <option value="0" >OFF</option>
-                        <option value="2" >RESET</option>
                       </select>
                     </div>
                   </div>
@@ -783,7 +595,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-power-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
+                        <option selected="true" style="display:none;">ACK</option>
                         <option value="0" >NO ACK</option>
                         <option value="1" >ACK</option>
                       </select>
@@ -791,11 +603,11 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>Destination:</label>
+                      <label>Destination ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-power-dest_id" class="form-control">
-                        <option selected style="display:none;">Dest ID</option>
+                        <option selected="true" style="display:none;">Dest ID</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
@@ -811,18 +623,18 @@
                     </div>
                   </div>
                 </div>
-                <div id="service-param-time" style="display:none;">
+                <div id="service-param-time">
                   <div class="row">
                     <div class="col-md-4">
                       <label>Function:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-time-report" class="form-control">
-                        <option selected style="display:none;">Function</option>
-                        <option value="utc" >Get UTC time</option>
-                        <option value="qb50" >Get QB50 time</option>
+                        <option selected="true" style="display:none;">Function</option>
                         <option value="manual" >Set time in UTC</option>
                         <option value="auto" >Set current time in UTC</option>
+                        <option value="utc" >Get UTC time</option>
+                        <option value="qb50" >Get QB50 time</option>
                       </select>
                     </div>
                   </div>
@@ -832,7 +644,7 @@
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-time-dest_id" class="form-control">
-                        <option selected style="display:none;">Dest ID</option>
+                        <option selected="true" style="display:none;">Dest ID</option>
                         <option value="6" >GND</option>
                         <option value="7" >UMB</option>
                       </select>
@@ -840,29 +652,17 @@
                   </div>
                   <div class="row">
                     <div class="col-md-4">
-                      <label>ACK:</label>
-                    </div>
-                    <div class="col-md-8">
-                      <select id="service-param-time-ack" class="form-control">
-                        <option selected style="display:none;">Select ACK</option>
-                        <option value="0" >NO ACK</option>
-                        <option value="1" >ACK</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div class="row">
-                    <div class="col-md-4">
-                      <label>Application:</label>
+                      <label>Application ID:</label>
                     </div>
                     <div class="col-md-8">
                       <select id="service-param-time-app_id" class="form-control">
-                        <option selected style="display:none;">Application ID</option>
+                        <option selected="true" style="display:none;">Application ID:</option>
                         <option value="1" >OBC</option>
                         <option value="3" >ADCS</option>
                       </select>
                     </div>
                   </div>
-                  <div class="row" id="datetimepicker-time-row">
+                  <div class="row">
                     <div class="col-md-4">
                       <label>Time:</label>
                     </div>
@@ -887,10 +687,24 @@
                 </div>
               </div>
             </div>
+            <hr>
+            <div class="row">
+                <div class="box__input box has-advanced-upload">
+                   <svg class="box__icon" xmlns="http://www.w3.org/2000/svg" width="50" height="43" viewBox="0 0 50 43">
+                    <path d="M48.4 26.5c-.9 0-1.7.7-1.7 1.7v11.6h-43.3v-11.6c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v13.2c0 .9.7 1.7 1.7
+                            1.7h46.7c.9 0 1.7-.7 1.7-1.7v-13.2c0-1-.7-1.7-1.7-1.7zm-24.5 6.1c.3.3.8.5 1.2.5.4 0 .9-.2 1.2-.5l10-11.6c.7-.7.7-1.7
+                            0-2.4s-1.7-.7-2.4 0l-7.1 8.3v-25.3c0-.9-.7-1.7-1.7-1.7s-1.7.7-1.7 1.7v25.3l-7.1-8.3c-.7-.7-1.7-.7-2.4 0s-.7 1.7 0 2.4l10
+                             11.6z">
+                    </path>
+                  </svg>
+                  <input type="file" name="files[]" id="file" class="box__file" data-multiple-caption="{count} files selected" multiple="">
+                  <label for="file"><strong>Choose a file</strong></label>
+                </div>
+            </div>
           </div>
         </div>
       </div>
-      <div class="col-md-6">
+      <div class="col-md-5">
         <div class="panel panel-primary" id="response-panel">
           <div class="panel-heading">Terminal</div>
           <div class="panel-body" id="response-panel-body">
@@ -901,7 +715,7 @@
             <div class="row">
               <div class="col-md-6">
                 <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-default" id="save-log">
+                  <button type="button" class="btn btn-default">
                     <span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>
                   </button>
                   <button type="button" class="btn btn-default" id="clear-log">
@@ -926,28 +740,15 @@
                   </div>
                 </div>
               </div>
+              <div class="col-md-6">
+                <div id="backend_online"></div>
+              </div>
             </div>
           </div>
         </div>
         <div class="panel panel-primary" id="response-panel-wod">
           <div class="panel-heading">WOD</div>
           <div class="panel-body" id="response-panel-body-wod">
-            <ul class="list-unstyled" id="wod-list">
-            </ul>
-          </div>
-          <div class="panel-footer">
-            <div class="row">
-              <div class="col-md-6">
-                <div class="btn-group" role="group" aria-label="...">
-                  <button type="button" class="btn btn-default" id="save-wod-log">
-                    <span class="glyphicon glyphicon-save-file" aria-hidden="true"></span>
-                  </button>
-                  <button type="button" class="btn btn-default" id="clear-wod-log">
-                    <span class="glyphicon glyphicon-remove" aria-hidden="true"></span>
-                  </button>
-                </div>
-              </div>
-            </div>
           </div>
         </div>
       </div>
@@ -956,24 +757,7 @@
     </div>
   </div>
 
-  <!-- JSON Prettify Modal -->
-  <div class="modal fade" id="json-prettify" tabindex="-1" role="dialog" aria-labelledby="json-prettify">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-header">
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-          <h4 class="modal-title" id="json-prettify-label">JSON Prettify</h4>
-        </div>
-        <div class="modal-body"><pre></pre></div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-
 {% endblock %}
 {% block js %}
-<script src="{{ url_for('static', filename='js/FileSaver.js') }}"></script>
 <script src="{{ url_for('static', filename='js/upsat-control.js') }}"></script>
 {% endblock %}
