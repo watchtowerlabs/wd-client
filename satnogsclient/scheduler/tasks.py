@@ -4,7 +4,6 @@ import signal
 import time
 import sys
 import cPickle
-from datetime import datetime  # , timedelta
 from dateutil import parser
 from urlparse import urljoin
 from multiprocessing import Process
@@ -15,12 +14,10 @@ from satnogsclient.upsat.large_data_service import downlink
 from satnogsclient.upsat.wod import wod_decode
 import subprocess
 
-import pytz
 import requests
 
 from satnogsclient import settings
 from satnogsclient.observer.observer import Observer
-from satnogsclient.receiver import SignalReceiver
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.udpsocket import Udpsocket
 from satnogsclient.upsat import serial_handler, ecss_logic_utils
@@ -77,22 +74,6 @@ def spawn_observer(*args, **kwargs):
         raise RuntimeError('Error in observer setup.')
 
 
-def spawn_receiver(*args, **kwargs):
-    obj = kwargs.pop('obj')
-    logger.debug('Receiver args: {0}'.format(obj))
-    receiver = SignalReceiver(obj['id'], obj['frequency'])
-    logger.info('Spawning receiver worker.')
-    receiver.run()
-    end = parser.parse(obj['end'])
-
-    while True:
-        if datetime.now(pytz.utc) < end:
-            time.sleep(1)
-        else:
-            receiver.stop()
-            break
-
-
 def post_data():
     logger.info('Post data started')
     """PUT observation data back to Network API."""
@@ -142,7 +123,7 @@ def get_jobs():
         raise Exception('Status code: {0} on request: {1}'.format(response.status_code, url))
 
     for job in scheduler.get_jobs():
-        if job.name in [spawn_observer.__name__, spawn_receiver.__name__]:
+        if job.name in [spawn_observer.__name__]:
             job.remove()
 
     sock = Commsocket('127.0.0.1', settings.TASK_FEEDER_TCP_PORT)
@@ -153,7 +134,6 @@ def get_jobs():
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
-        # receiver_start = start - timedelta(seconds=settings.DEMODULATOR_INIT_TIME)
         logger.info('Adding new job: {0}'.format(job_id))
         logger.debug('Observation obj: {0}'.format(obj))
         scheduler.add_job(spawn_observer,
@@ -161,11 +141,6 @@ def get_jobs():
                           run_date=start,
                           id='observer_{0}'.format(job_id),
                           kwargs=kwargs)
-        # scheduler.add_job(spawn_receiver,
-        #                  'date',
-        #                  run_date=receiver_start,
-        #                  id='receiver_{0}'.format(job_id),
-        #                  kwargs=kwargs)
     tasks.reverse()
 
     while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
