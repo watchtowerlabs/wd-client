@@ -129,7 +129,7 @@ def get_jobs():
     sock = Commsocket('127.0.0.1', settings.TASK_FEEDER_TCP_PORT)
 
     tasks = []
-    for obj in response.json():
+    for obj in response.json()['results']:
         tasks.append(obj)
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
