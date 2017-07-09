@@ -17,6 +17,8 @@ from flask_socketio import SocketIO
 from satnogsclient.observer.commsocket import Commsocket
 from satnogsclient.observer.orbital import pinpoint
 
+from satnogsclient import settings
+
 
 logging.setLoggerClass(WebLogger)
 logger = logging.getLogger('default')
@@ -29,7 +31,7 @@ class Worker:
     """Class to facilitate as a worker for rotctl/rigctl."""
 
     # sleep time of loop (in seconds)
-    SLEEP_TIME = 0.1
+    _sleep_time = 0.1
 
     # loop flag
     _stay_alive = False
@@ -47,7 +49,8 @@ class Worker:
     observer_dict = {}
     satellite_dict = {}
 
-    def __init__(self, ip, port, time_to_stop=None, frequency=None, proc=None):
+    def __init__(self, ip, port, time_to_stop=None, frequency=None, proc=None,
+                 sleep_time=None):
         """Initialize worker class."""
         self._IP = ip
         self._PORT = port
@@ -57,6 +60,8 @@ class Worker:
             self._observation_end = time_to_stop
         if proc:
             self._gnu_proc = proc
+        if sleep_time:
+            self._sleep_time = sleep_time
 
     @property
     def is_alive(self):
@@ -127,7 +132,7 @@ class Worker:
                         'tle2': self.satellite_dict['tle2']}
                 socketio.emit('update_rotator', dict, namespace='/update_status')
                 self.send_to_socket(p, sock)
-                time.sleep(self.SLEEP_TIME)
+                time.sleep(self._sleep_time)
 
         sock.disconnect()
 
@@ -166,14 +171,20 @@ class Worker:
 class WorkerTrack(Worker):
 
     def send_to_socket(self, p, sock):
-        # Read az/alt and convert to radians
+        # Read az/alt of sat and convert to radians
         az = p['az'].conjugate() * 180 / math.pi
         alt = p['alt'].conjugate() * 180 / math.pi
         self._azimuth = az
         self._altitude = alt
-        msg = 'P {0} {1}\n'.format(az, alt)
-        logger.debug('Rotctld msg: {0}'.format(msg))
-        sock.send(msg)
+        # read current position of rotator, [0] az and [1] el
+        position = sock.send("p\n").split('\n')
+        # if the need to move exceeds threshold, then do it
+        if (position[0].startswith("RPRT") or
+            abs(az - float(position[0])) > settings.SATNOGS_ROT_THRESHOLD or
+                abs(alt - float(position[1])) > settings.SATNOGS_ROT_THRESHOLD):
+                    msg = 'P {0} {1}\n'.format(az, alt)
+                    logger.debug('Rotctld msg: {0}'.format(msg))
+                    sock.send(msg)
 
 
 class WorkerFreq(Worker):
