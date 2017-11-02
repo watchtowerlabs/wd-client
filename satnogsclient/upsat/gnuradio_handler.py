@@ -90,7 +90,7 @@ def exec_gnuradio(observation_file, waterfall_file, origin, freq, user_args, scr
     if client_settings.SATNOGS_BB_GAIN and "--bb-gain" not in arg_string:
         arg_string += '--bb-gain=' + client_settings.SATNOGS_BB_GAIN + ' '
     if client_settings.SATNOGS_ANTENNA and "--antenna" not in arg_string:
-        arg_string += '--antenna=' + client_settings.ANTENNA + ' '
+        arg_string += '--antenna=' + client_settings.SATNOGS_ANTENNA + ' '
     if client_settings.SATNOGS_DEV_ARGS and "--dev-args" not in arg_string:
         arg_string += '--dev-args=' + client_settings.SATNOGS_DEV_ARGS + ' '
     if client_settings.ENABLE_IQ_DUMP and "--enable-iq-dump" not in arg_string:
