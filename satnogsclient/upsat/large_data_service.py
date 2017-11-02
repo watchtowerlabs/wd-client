@@ -121,7 +121,7 @@ def downlink():
                 logger.info('[LD] Downlink thread awaits for next frame')
                 data = downlink_socket.recv_timeout(end_time - time.time())
                 logger.info('[LD] Downlink packet received!')
-            except:
+            except:  # noqa: E722
                 logger.info('[LD] Downlink operation not completed on time. Going to fallback operation')
                 ret = fallback(received_packets, prev_id)
                 prev_id = -1
