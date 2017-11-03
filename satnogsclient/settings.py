@@ -7,7 +7,7 @@ from os import environ, path
 def _cast_or_none(func, value):
     try:
         return func(value)
-    except ValueError:
+    except (ValueError, TypeError):
         return None
 
 

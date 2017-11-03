@@ -2,6 +2,7 @@ import os
 import traceback
 import cPickle
 import logging
+import socket
 
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
@@ -121,7 +122,7 @@ def downlink():
                 logger.info('[LD] Downlink thread awaits for next frame')
                 data = downlink_socket.recv_timeout(end_time - time.time())
                 logger.info('[LD] Downlink packet received!')
-            except:  # noqa: E722
+            except socket.timeout:
                 logger.info('[LD] Downlink operation not completed on time. Going to fallback operation')
                 ret = fallback(received_packets, prev_id)
                 prev_id = -1
