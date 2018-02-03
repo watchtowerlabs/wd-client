@@ -176,7 +176,7 @@ class Observer:
     def observation_decoded_data(self, observation_decoded_data):
         self._observation_decoded_data = observation_decoded_data
 
-    def setup(self, observation_id, tle, observation_end, frequency, origin, user_args, script_name):
+    def setup(self, observation_id, tle, observation_end, frequency, baud, origin, user_args, script_name):
         """
         Sets up required internal variables.
         * returns True if setup is ok
@@ -190,6 +190,7 @@ class Observer:
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
+        self.baud = baud
         self.origin = origin
 
         not_completed_prefix = 'receiving_satnogs'
@@ -268,6 +269,7 @@ class Observer:
             self.observation_waterfall_file,
             self.origin,
             self.frequency,
+            self.baud,
             self.user_args,
             self.script_name,
             self.observation_decoded_data)

@@ -51,7 +51,8 @@ def read_from_gnuradio():
             logger.error('Ecss Dictionary not properly constructed. Error occured. Key \'ser_type\' not in dictionary')
 
 
-def exec_gnuradio(observation_file, waterfall_file, origin, freq, user_args, script_name, decoded_data):
+def exec_gnuradio(observation_file, waterfall_file, origin, freq, baud,
+                  user_args, script_name, decoded_data):
     arguments = {'filename': observation_file,
                  'waterfall': waterfall_file,
                  'rx_device': client_settings.SATNOGS_RX_DEVICE,
@@ -73,6 +74,10 @@ def exec_gnuradio(observation_file, waterfall_file, origin, freq, user_args, scr
         arg_string += '--file-path=' + file_path + ' '
         if arguments['waterfall'] != "":
             arg_string += '--waterfall-file-path=' + waterfall_file_path + ' '
+
+        # If this is a CW observation pass the WPM parameter
+        if scriptname == client_settings.GNURADIO_CW_SCRIPT_FILENAME and baud > 0:
+            arg_string += '--wpm=' + str(baud)
     else:
         arg_string = user_args + ' '
     if client_settings.SATNOGS_RX_DEVICE and "--rx-sdr-device" not in arg_string:
