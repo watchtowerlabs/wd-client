@@ -2,11 +2,15 @@
 from satnogsclient.web.weblogger import WebLogger
 import logging
 import os
-
+from urlparse import urljoin
 from datetime import datetime
 from time import sleep
-from subprocess import call
+import subprocess
+import json
+import requests
 from flask_socketio import SocketIO
+
+import satnogsclient.config
 from satnogsclient import settings
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
 from satnogsclient.upsat import gnuradio_handler
@@ -280,6 +284,25 @@ class Observer:
         self.run_rig()
         # Polling gnuradio process status
         self.poll_gnu_proc_status()
+
+        # PUT client version and metadata
+        base_url = urljoin(settings.SATNOGS_NETWORK_API_URL, 'observations/')
+        headers = {'Authorization': 'Token {0}'.format(settings.SATNOGS_API_TOKEN)}
+        url = urljoin(base_url, str(self.observation_id))
+        if not url.endswith('/'):
+            url += '/'
+        resp = requests.put(
+            url, headers=headers,
+            data={'client_version': satnogsclient.config.VERSION,
+                  'client_metadata': json.dumps(gnuradio_handler.get_gnuradio_info())},
+            verify=settings.SATNOGS_VERIFY_SSL,
+            stream=True,
+            timeout=45)
+        if resp.status_code == 200:
+            logger.info('Success: status code 200')
+        else:
+            logger.error('Bad status code: %s', resp.status_code)
+
         if "satnogs_generic_iq_receiver.py" not in settings.GNURADIO_SCRIPT_FILENAME:
             logger.info('Rename encoded files for uploading.')
             self.rename_ogg_file()
@@ -332,12 +355,12 @@ class Observer:
 
     def plot_waterfall(self):
         if os.path.isfile(self.observation_waterfall_file):
-            plot = call("gnuplot -e \"inputfile='%s'\" \
-                         -e \"outfile='%s'\" -e \"height=1600\" \
-                        /usr/share/satnogs/scripts/satnogs_waterfall.gp" %
-                        (self.observation_waterfall_file,
-                         self.observation_waterfall_png),
-                        shell=True)
+            plot = subprocess.call("gnuplot -e \"inputfile='%s'\" \
+                                   -e \"outfile='%s'\" -e \"height=1600\" \
+                                   /usr/share/satnogs/scripts/satnogs_waterfall.gp" %
+                                   (self.observation_waterfall_file,
+                                    self.observation_waterfall_png),
+                                   shell=True)
             logger.info('Waterfall plot finished')
             if plot == 0 and settings.SATNOGS_REMOVE_RAW_FILES:
                 self.remove_waterfall_file()

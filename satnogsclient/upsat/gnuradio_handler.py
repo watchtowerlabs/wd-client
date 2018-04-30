@@ -3,6 +3,7 @@ import logging
 import cPickle
 import subprocess
 import os
+import json
 
 from satnogsclient.upsat import packet_settings
 from satnogsclient import settings as client_settings
@@ -49,6 +50,27 @@ def read_from_gnuradio():
                 ecss_feeder_sock.sendto(pickled, ('127.0.0.1', client_settings.ECSS_FEEDER_UDP_PORT))
         except KeyError:
             logger.error('Ecss Dictionary not properly constructed. Error occured. Key \'ser_type\' not in dictionary')
+
+
+def get_gnuradio_info():
+    process = subprocess.Popen(['python', '-m', 'satnogs.satnogs_info'],
+                               stdout=subprocess.PIPE)
+    gr_satnogs_info, _ = process.communicate()  # pylint: disable=W0612
+    client_metadata = {'radio': 'gr-satnogs'}
+    if process.returncode == 0:
+        # Convert to valid JSON
+        gr_satnogs_info = ''.join(gr_satnogs_info.partition('{')[1:])
+        gr_satnogs_info = ''.join(gr_satnogs_info.partition('}')[:2])
+        try:
+            gr_satnogs_info = json.loads(gr_satnogs_info)
+        except ValueError:
+            client_metadata['radio_version'] = 'invalid'
+        else:
+            if 'version' in gr_satnogs_info:
+                client_metadata['radio_version'] = gr_satnogs_info['version']
+            else:
+                client_metadata['radio_version'] = 'unknown'
+    return client_metadata
 
 
 def exec_gnuradio(observation_file, waterfall_file, origin, freq, baud,
