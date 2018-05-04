@@ -3,7 +3,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='satnogsclient',
-    version='0.5.3',
+    version='0.6',
     url='https://gitlab.com/librespacefoundation/satnogs/satnogs-client',
     author='SatNOGS project',
     author_email='dev@satnogs.org',
