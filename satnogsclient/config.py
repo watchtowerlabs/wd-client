@@ -1,3 +1,3 @@
 AUTHOR = "SatNOGS project"
 EMAIL = "dev@satnogs.org"
-VERSION = "0.6"
+VERSION = "0.6.1"
