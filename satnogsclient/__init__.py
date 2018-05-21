@@ -3,10 +3,14 @@ from os import environ
 
 from validators.url import url
 
+from ._version import get_versions
 from satnogsclient.settings import (SATNOGS_API_TOKEN, DEFAULT_LOGGING, SATNOGS_STATION_ID,
                                     SATNOGS_STATION_LAT, SATNOGS_STATION_LON, SATNOGS_STATION_ELEV,
                                     SATNOGS_NETWORK_API_URL)
 
+__version__ = get_versions()['version']
+
+del get_versions
 
 # Avoid validation when building docs
 if not environ.get('READTHEDOCS', False):

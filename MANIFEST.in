@@ -1,2 +1,4 @@
 recursive-include satnogsclient/web/templates *
 recursive-include satnogsclient/web/static *
+include versioneer.py
+include satnogsclient/_version.py
