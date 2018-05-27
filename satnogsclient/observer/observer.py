@@ -295,13 +295,27 @@ class Observer:
         client_metadata['latitude'] = settings.SATNOGS_STATION_LAT
         client_metadata['longitude'] = settings.SATNOGS_STATION_LON
         client_metadata['elevation'] = settings.SATNOGS_STATION_ELEV
-        resp = requests.put(
-            url, headers=headers,
-            data={'client_version': satnogsclient.config.VERSION,
-                  'client_metadata': json.dumps(client_metadata)},
-            verify=settings.SATNOGS_VERIFY_SSL,
-            stream=True,
-            timeout=45)
+
+        if "satnogs_generic_iq_receiver.py" not in settings.GNURADIO_SCRIPT_FILENAME:
+            LOGGER.info('Rename encoded files for uploading.')
+            self.rename_ogg_file()
+            self.rename_data_file()
+            LOGGER.info('Creating waterfall plot.')
+            self.plot_waterfall()
+
+        try:
+            resp = requests.put(
+                url, headers=headers,
+                data={'client_version': satnogsclient.config.VERSION,
+                      'client_metadata': json.dumps(client_metadata)},
+                verify=settings.SATNOGS_VERIFY_SSL,
+                stream=True,
+                timeout=45)
+        except requests.exceptions.ConnectionError:
+            LOGGER.error('%s: Connection Refused', url)
+        except requests.exceptions.Timeout:
+            LOGGER.error('%s: Connection Timeout - no metadata uploaded', url)
+
         if resp.status_code == 200:
             logger.info('Success: status code 200')
         else:
