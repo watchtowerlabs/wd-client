@@ -285,6 +285,13 @@ class Observer:
         # Polling gnuradio process status
         self.poll_gnu_proc_status()
 
+        if "satnogs_generic_iq_receiver.py" not in settings.GNURADIO_SCRIPT_FILENAME:
+            logger.info('Rename encoded files for uploading.')
+            self.rename_ogg_file()
+            self.rename_data_file()
+            logger.info('Creating waterfall plot.')
+            self.plot_waterfall()
+
         # PUT client version and metadata
         base_url = urljoin(settings.SATNOGS_NETWORK_API_URL, 'observations/')
         headers = {'Authorization': 'Token {0}'.format(settings.SATNOGS_API_TOKEN)}
@@ -295,13 +302,6 @@ class Observer:
         client_metadata['latitude'] = settings.SATNOGS_STATION_LAT
         client_metadata['longitude'] = settings.SATNOGS_STATION_LON
         client_metadata['elevation'] = settings.SATNOGS_STATION_ELEV
-
-        if "satnogs_generic_iq_receiver.py" not in settings.GNURADIO_SCRIPT_FILENAME:
-            logger.info('Rename encoded files for uploading.')
-            self.rename_ogg_file()
-            self.rename_data_file()
-            logger.info('Creating waterfall plot.')
-            self.plot_waterfall()
 
         try:
             resp = requests.put(
@@ -315,18 +315,13 @@ class Observer:
             logger.error('%s: Connection Refused', url)
         except requests.exceptions.Timeout:
             logger.error('%s: Connection Timeout - no metadata uploaded', url)
+        except requests.exceptions.RequestException as err:
+            logger.error('%s: Unexpected error: %s', url, err)
 
         if resp.status_code == 200:
             logger.info('Success: status code 200')
         else:
             logger.error('Bad status code: %s', resp.status_code)
-
-        if "satnogs_generic_iq_receiver.py" not in settings.GNURADIO_SCRIPT_FILENAME:
-            logger.info('Rename encoded files for uploading.')
-            self.rename_ogg_file()
-            self.rename_data_file()
-            logger.info('Creating waterfall plot.')
-            self.plot_waterfall()
 
     def run_rot(self):
         self.tracker_rot = WorkerTrack(ip=self.rot_ip,
