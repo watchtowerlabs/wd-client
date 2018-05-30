@@ -5,10 +5,12 @@ import os
 from urlparse import urljoin
 from datetime import datetime
 from time import sleep
-import subprocess
 import json
 import requests
 from flask_socketio import SocketIO
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 import satnogsclient.config
 from satnogsclient import settings
@@ -19,6 +21,7 @@ logging.setLoggerClass(WebLogger)
 logger = logging.getLogger('default')
 assert isinstance(logger, WebLogger)
 socketio = SocketIO(message_queue='redis://')
+plt.switch_backend('Agg')
 
 
 class Observer:
@@ -373,14 +376,41 @@ class Observer:
 
     def plot_waterfall(self):
         if os.path.isfile(self.observation_waterfall_file):
-            plot = subprocess.call("gnuplot -e \"inputfile='%s'\" \
-                                   -e \"outfile='%s'\" -e \"height=1600\" \
-                                   /usr/share/satnogs/scripts/satnogs_waterfall.gp" %
-                                   (self.observation_waterfall_file,
-                                    self.observation_waterfall_png),
-                                   shell=True)
+            logger.info('Read waterfall file')
+            wf_file = open(self.observation_waterfall_file)
+            nchan = int(np.fromfile(wf_file, dtype='float32', count=1)[0])
+            freq = np.fromfile(wf_file, dtype='float32', count=nchan)/1000.0
+            data = np.fromfile(wf_file, dtype='float32').reshape(-1, nchan+1)
+            wf_file.close()
+            t_idx, spec = data[:, :1], data[:, 1:]
+            tmin, tmax = np.min(t_idx), np.max(t_idx)
+            fmin, fmax = np.min(freq), np.max(freq)
+            c_idx = spec > -200.0
+            if np.sum(c_idx) > 100:
+                vmin = np.mean(spec[c_idx])-2.0*np.std(spec[c_idx])
+                vmax = np.mean(spec[c_idx])+6.0*np.std(spec[c_idx])
+            else:
+                vmin = -100
+                vmax = -50
+            logger.info('Plot waterfall file')
+            plt.figure(figsize=(10, 20))
+            plt.imshow(spec,
+                       origin='lower',
+                       aspect='auto',
+                       interpolation='None',
+                       extent=[fmin, fmax, tmin, tmax],
+                       vmin=vmin,
+                       vmax=vmax,
+                       cmap="jet")
+            plt.xlabel("Frequency (kHz)")
+            plt.ylabel("Time (seconds)")
+            fig = plt.colorbar(aspect=50)
+            fig.set_label("Power (dB)")
+            plt.savefig(self.observation_waterfall_png, bbox_inches='tight')
             logger.info('Waterfall plot finished')
-            if plot == 0 and settings.SATNOGS_REMOVE_RAW_FILES:
+            plt.close()
+            if os.path.isfile(self.observation_waterfall_png) and \
+               settings.SATNOGS_REMOVE_RAW_FILES:
                 self.remove_waterfall_file()
         else:
             logger.error('No waterfall data file found')
