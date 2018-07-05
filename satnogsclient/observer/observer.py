@@ -47,7 +47,6 @@ class Observer:
     _rig_ip = settings.SATNOGS_RIG_IP
     _rig_port = settings.SATNOGS_RIG_PORT
 
-    _post_exec_script = settings.SATNOGS_POST_OBSERVATION_SCRIPT
     # Variables from settings
     # Mainly present so we can support multiple ground stations from the client
 
@@ -261,7 +260,13 @@ class Observer:
         """Starts threads for rotcrl and rigctl."""
         if settings.SATNOGS_PRE_OBSERVATION_SCRIPT is not None:
             logger.info('Executing pre-observation script.')
-            os.system(settings.SATNOGS_PRE_OBSERVATION_SCRIPT)
+            pre_script = settings.SATNOGS_PRE_OBSERVATION_SCRIPT
+            pre_script = pre_script.replace("{{FREQ}}", str(self.frequency))
+            pre_script = pre_script.replace("{{TLE}}", json.dumps(self.tle))
+            pre_script = pre_script.replace("{{ID}}", str(self.observation_id))
+            pre_script = pre_script.replace("{{BAUD}}", str(self.baud))
+            pre_script = pre_script.replace("{{SCRIPT_NAME}}", self.script_name)
+            os.system(pre_script)
 
         # if it is APT we want to save with a prefix until the observation
         # is complete, then rename.
@@ -354,8 +359,14 @@ class Observer:
             sleep(30)
         logger.info('Observation Finished')
         logger.info('Executing post-observation script.')
-        if self._post_exec_script is not None:
-            os.system(self._post_exec_script)
+        if settings.SATNOGS_POST_OBSERVATION_SCRIPT is not None:
+            post_script = settings.SATNOGS_POST_OBSERVATION_SCRIPT
+            post_script = post_script.replace("{{FREQ}}", str(self.frequency))
+            post_script = post_script.replace("{{TLE}}", json.dumps(self.tle))
+            post_script = post_script.replace("{{ID}}", str(self.observation_id))
+            post_script = post_script.replace("{{BAUD}}", str(self.baud))
+            post_script = post_script.replace("{{SCRIPT_NAME}}", self.script_name)
+            os.system(post_script)
 
     def rename_ogg_file(self):
         if os.path.isfile(self.observation_raw_file):
