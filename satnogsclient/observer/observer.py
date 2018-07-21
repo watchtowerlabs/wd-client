@@ -407,7 +407,7 @@ class Observer:
                        extent=[fmin, fmax, tmin, tmax],
                        vmin=vmin,
                        vmax=vmax,
-                       cmap="jet")
+                       cmap="viridis")
             plt.xlabel("Frequency (kHz)")
             plt.ylabel("Time (seconds)")
             fig = plt.colorbar(aspect=50)
