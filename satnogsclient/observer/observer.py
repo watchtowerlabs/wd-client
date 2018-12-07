@@ -152,6 +152,12 @@ class Observer(object):
             self.observation_decoded_data =\
                  self.observation_receiving_decoded_data
 
+        # Prepare arguments for gnuradio
+        if settings.ENABLE_IQ_DUMP:
+            iq_dump_file = settings.IQ_DUMP_FILENAME
+        else:
+            iq_dump_file = None
+
         # start thread for rotctl
         LOGGER.info('Start rotctrl thread.')
         self.run_rot()
@@ -160,11 +166,9 @@ class Observer(object):
         self.run_rig()
         sleep(1)
         LOGGER.info('Start gnuradio thread.')
-        self._gnu_proc = gnuradio_handler.exec_gnuradio(self.observation_raw_file,
-                                                        self.observation_waterfall_file,
-                                                        self.frequency, self.baud,
-                                                        self.script_name,
-                                                        self.observation_decoded_data)
+        self._gnu_proc = exec_gnuradio(self.observation_raw_file, self.observation_waterfall_file,
+                                       iq_dump_file, self.frequency, self.baud, self.script_name,
+                                       self.observation_decoded_data)
         # Polling gnuradio process status
         self.poll_gnu_proc_status()
 

@@ -41,7 +41,8 @@ def get_gnuradio_info():
     return client_metadata
 
 
-def exec_gnuradio(observation_file, waterfall_file, freq, baud, script_name, decoded_data):
+def exec_gnuradio(observation_file, waterfall_file, iq_dump_file, freq, baud, script_name,
+                  decoded_data):
     if not script_name:
         script_name = client_settings.GNURADIO_SCRIPT_FILENAME
     device = client_settings.SATNOGS_SOAPY_RX_DEVICE
@@ -81,8 +82,8 @@ def exec_gnuradio(observation_file, waterfall_file, freq, baud, script_name, dec
         args += ['--bw=' + client_settings.SATNOGS_RX_BANDWIDTH]
     if client_settings.ENABLE_IQ_DUMP:
         args += ['--enable-iq-dump=' + str(int(client_settings.ENABLE_IQ_DUMP is True))]
-    if client_settings.IQ_DUMP_FILENAME:
-        args += ['--iq-file-path=' + client_settings.IQ_DUMP_FILENAME]
+    if iq_dump_file:
+        args += ['--iq-file-path=' + iq_dump_file]
     if not client_settings.DISABLE_DECODED_DATA:
         args += ['--decoded-data-file-path=' + decoded_data]
 
