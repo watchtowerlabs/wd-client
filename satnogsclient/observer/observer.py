@@ -310,6 +310,7 @@ class Observer:
         client_metadata['latitude'] = settings.SATNOGS_STATION_LAT
         client_metadata['longitude'] = settings.SATNOGS_STATION_LON
         client_metadata['elevation'] = settings.SATNOGS_STATION_ELEV
+        client_metadata['frequency'] = self.frequency
 
         try:
             resp = requests.put(
