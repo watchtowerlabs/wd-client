@@ -157,7 +157,7 @@ $(document).ready(function() {
     });
 
     status_socket.on('update_scheduled', function(data) {
-      update_scheduled_obs(data.scheduled_observation_list);
+      update_scheduled_obs(data);
     });
 
     status_socket.on('update_console', function(data) {
