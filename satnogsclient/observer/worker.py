@@ -221,9 +221,9 @@ class WorkerTrack(Worker):
             self._midpoint = WorkerTrack.find_midpoint(observer_dict,
                                                        satellite_dict,
                                                        datetime.now(pytz.utc))
-            logger.info("Antenna midpoint: AZ%.2f EL%.2f %s", *self._midpoint)
+            logger.info("Antenna midpoint: AZ{0:.2f} EL{1:.2f} {2}".format(*self._midpoint))
             self._flip = (self._midpoint[1] >= settings.SATNOGS_ROT_FLIP_ANGLE)
-            logger.info("Antenna flip: %s", self._flip)
+            logger.info("Antenna flip: {0}".format(self._flip))
 
     def send_to_socket(self, pin, sock):
         # Read az/alt of sat and convert to radians
