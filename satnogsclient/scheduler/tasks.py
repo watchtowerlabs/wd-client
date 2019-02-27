@@ -182,9 +182,11 @@ def get_jobs():
         raise Exception(
             'Status code: {0} on request: {1}'.format(response.status_code, url))
 
+    latest_jobs = [str(job['id']) for job in response.json()]
     for job in scheduler.get_jobs():
-        if job.name in [spawn_observer.__name__]:
-            job.remove()
+        if job.name == spawn_observer.__name__:
+            if job.id not in latest_jobs:
+                job.remove()
 
     sock = Commsocket('127.0.0.1', settings.TASK_FEEDER_TCP_PORT)
 
@@ -200,8 +202,9 @@ def get_jobs():
         scheduler.add_job(spawn_observer,
                           'date',
                           run_date=start,
-                          id='observer_{0}'.format(job_id),
-                          kwargs=kwargs)
+                          id='{0}'.format(job_id),
+                          kwargs=kwargs,
+                          replace_existing=True)
     tasks.reverse()
 
     while sys.getsizeof(json.dumps(tasks)) > sock.tasks_buffer_size:
