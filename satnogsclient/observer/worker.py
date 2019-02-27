@@ -239,9 +239,9 @@ class WorkerTrack(Worker):
         position = sock.send("p\n").split('\n')
         # if the need to move exceeds threshold, then do it
         if (position[0].startswith("RPRT") or
-            abs(az - float(position[0])) > settings.SATNOGS_ROT_THRESHOLD or
+            abs(azi - float(position[0])) > settings.SATNOGS_ROT_THRESHOLD or
                 abs(alt - float(position[1])) > settings.SATNOGS_ROT_THRESHOLD):
-                    msg = 'P {0} {1}\n'.format(az, alt)
+                    msg = 'P {0} {1}\n'.format(azi, alt)
                     logger.debug('Rotctld msg: {0}'.format(msg))
                     sock.send(msg)
 
