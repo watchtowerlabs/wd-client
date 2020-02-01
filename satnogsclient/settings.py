@@ -65,10 +65,10 @@ GNURADIO_AFSK_SALSAT_SCRIPT_FILENAME = 'satnogs_afsk_salsat.py'
 GNURADIO_AFSK_SNET_SCRIPT_FILENAME = 'satnogs_afsk_snet.py'
 GNURADIO_AMSAT_DUV_SCRIPT_FILENAME = 'satnogs_amsat_fox_duv_decoder.py'
 
-SATNOGS_ROT_IP = environ.get('SATNOGS_ROT_IP', '127.0.0.1')
-SATNOGS_ROT_MODEL = environ.get('SATNOGS_ROT_MODEL', 'ROT_MODEL_DUMMY')
-SATNOGS_ROT_BAUD = int(environ.get('SATNOGS_ROT_BAUD', 19200))
-SATNOGS_ROT_PORT = environ.get('SATNOGS_ROT_MODEL', '/dev/ttyUSB0')
+SATNOGS_ROT_IP = environ.get('SATNOGS_ROT_IP', None)
+SATNOGS_ROT_MODEL = environ.get('SATNOGS_ROT_MODEL', None)
+SATNOGS_ROT_BAUD = environ.get('SATNOGS_ROT_BAUD', None)
+SATNOGS_ROT_PORT = environ.get('SATNOGS_ROT_PORT', None)
 SATNOGS_RIG_IP = environ.get('SATNOGS_RIG_IP', '127.0.0.1')
 SATNOGS_RIG_PORT = int(environ.get('SATNOGS_RIG_PORT', 4532))
 SATNOGS_ROT_THRESHOLD = int(environ.get('SATNOGS_ROT_THRESHOLD', 4))

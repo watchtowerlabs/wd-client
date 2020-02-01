@@ -135,15 +135,17 @@ class Observer(object):
             self.observation_decoded_data =\
                  self.observation_receiving_decoded_data
 
-        # start thread for rotctl
+        # start thread for gnuradio
         LOGGER.info('Start gnuradio thread.')
         self._gnu_proc = gnuradio_handler.exec_gnuradio(self.observation_raw_file,
                                                         self.observation_waterfall_file,
                                                         self.frequency, self.baud,
                                                         self.script_name,
                                                         self.observation_decoded_data)
-        LOGGER.info('Start rotctrl thread.')
-        self.run_rot()
+        # start thread for rotctl
+        if settings.SATNOGS_ROT_MODEL:
+            LOGGER.info('Start rotctrl thread.')
+            self.run_rot()
         # start thread for rigctl
         LOGGER.info('Start rigctrl thread.')
         self.run_rig()

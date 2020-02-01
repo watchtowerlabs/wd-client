@@ -142,7 +142,7 @@ class WorkerTrack(Worker):
         Uses observer and satellite objects set by trackobject().
         Will exit when observation_end timestamp is reached.
         """
-        rotator = Rotator(settings.SATNOGS_ROT_MODEL, settings.SATNOGS_ROT_BAUD,
+        rotator = Rotator(settings.SATNOGS_ROT_MODEL, int(settings.SATNOGS_ROT_BAUD),
                           settings.SATNOGS_ROT_PORT)
         rotator.open()
 
