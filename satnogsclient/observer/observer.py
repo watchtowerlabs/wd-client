@@ -27,6 +27,15 @@ except ImportError:
 LOGGER = logging.getLogger(__name__)
 
 
+def shlex_join(split_command):
+    '''
+    Join the command, escape parts (might contain whitespaces)
+
+    Inverse operation to shlex.split (introduced in Python 3.8).
+    '''
+    return ' '.join(shlex.quote(x) for x in split_command)
+
+
 class Observer(object):
 
     _gnu_proc = None
@@ -155,7 +164,7 @@ class Observer(object):
 
         # Prepare arguments for gnuradio
         if settings.ENABLE_IQ_DUMP:
-            iq_dump_file = settings.IQ_DUMP_FILENAME
+            iq_dump_file = shlex_join(self.process_template(settings.IQ_DUMP_FILENAME))
         else:
             iq_dump_file = None
 
