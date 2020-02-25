@@ -16,7 +16,8 @@ import satnogsclient.config
 from satnogsclient import settings
 from satnogsclient.observer.waterfall import plot_waterfall
 from satnogsclient.observer.worker import WorkerFreq, WorkerTrack
-from satnogsclient.upsat import gnuradio_handler
+from satnogsclient.upsat.gnuradio_handler import exec_gnuradio, \
+    get_gnuradio_info
 
 try:
     from urllib.parse import urljoin
@@ -185,7 +186,7 @@ class Observer(object):
         url = urljoin(base_url, str(self.observation_id))
         if not url.endswith('/'):
             url += '/'
-        client_metadata = gnuradio_handler.get_gnuradio_info()
+        client_metadata = get_gnuradio_info()
         client_metadata['latitude'] = settings.SATNOGS_STATION_LAT
         client_metadata['longitude'] = settings.SATNOGS_STATION_LON
         client_metadata['elevation'] = settings.SATNOGS_STATION_ELEV
