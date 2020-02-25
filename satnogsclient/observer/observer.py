@@ -150,29 +150,44 @@ class Observer(object):
             self.observation_waterfall_png, self.observation_decoded_data
         ])
 
+    def process_template(self, input_string):
+        """
+        This function takes a string, splits it using a shell-like syntax and replaces all template
+        variables with their values for the given Observer object.
+
+        :param self: The Observer object
+        :param input_string: The template string
+
+        :return: The list of processed strings
+        """
+        script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[
+            flowgraphs.SATNOGS_FLOWGRAPH_MODE_DEFAULT]['script_name']
+        if self.mode in flowgraphs.SATNOGS_FLOWGRAPH_MODES:
+            script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[self.mode]['script_name']
+
+        replacements = [
+            ('{{FREQ}}', str(self.frequency)),
+            ('{{TLE}}', json.dumps(self.tle)),
+            ('{{TIMESTAMP}}', self.timestamp),
+            ('{{ID}}', str(self.observation_id)),
+            ('{{BAUD}}', str(self.baud)),
+            ('{{SCRIPT_NAME}}', script_name),
+        ]
+
+        output_list = []
+        for arg in shlex.split(input_string):
+            for key, val in replacements:
+                arg = arg.replace(key, val)
+            output_list.append(arg)
+
+        return output_list
+
     def observe(self):  # pylint: disable=R0915
         """Starts threads for rotcrl and rigctl."""
         if settings.SATNOGS_PRE_OBSERVATION_SCRIPT is not None:
             LOGGER.info('Executing pre-observation script.')
 
-            script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[
-                flowgraphs.SATNOGS_FLOWGRAPH_MODE_DEFAULT]['script_name']
-            if self.mode in flowgraphs.SATNOGS_FLOWGRAPH_MODES:
-                script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[self.mode]['script_name']
-
-            replacements = [
-                ('{{FREQ}}', str(self.frequency)),
-                ('{{TLE}}', json.dumps(self.tle)),
-                ('{{TIMESTAMP}}', self.timestamp),
-                ('{{ID}}', str(self.observation_id)),
-                ('{{BAUD}}', str(self.baud)),
-                ('{{SCRIPT_NAME}}', script_name),
-            ]
-            pre_script = []
-            for arg in shlex.split(settings.SATNOGS_PRE_OBSERVATION_SCRIPT):
-                for key, val in replacements:
-                    arg = arg.replace(key, val)
-                pre_script.append(arg)
+            pre_script = self.process_template(settings.SATNOGS_PRE_OBSERVATION_SCRIPT)
             subprocess.call(pre_script)
 
         # if it is APT we want to save with a prefix until the observation
@@ -291,25 +306,7 @@ class Observer(object):
         LOGGER.info('Observation Finished')
         LOGGER.info('Executing post-observation script.')
         if settings.SATNOGS_POST_OBSERVATION_SCRIPT is not None:
-
-            script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[
-                flowgraphs.SATNOGS_FLOWGRAPH_MODE_DEFAULT]['script_name']
-            if self.mode in flowgraphs.SATNOGS_FLOWGRAPH_MODES:
-                script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[self.mode]['script_name']
-
-            replacements = [
-                ('{{FREQ}}', str(self.frequency)),
-                ('{{TLE}}', json.dumps(self.tle)),
-                ('{{TIMESTAMP}}', self.timestamp),
-                ('{{ID}}', str(self.observation_id)),
-                ('{{BAUD}}', str(self.baud)),
-                ('{{SCRIPT_NAME}}', script_name),
-            ]
-            post_script = []
-            for arg in shlex.split(settings.SATNOGS_POST_OBSERVATION_SCRIPT):
-                for key, val in replacements:
-                    arg = arg.replace(key, val)
-                post_script.append(arg)
+            post_script = self.process_template(settings.SATNOGS_POST_OBSERVATION_SCRIPT)
             subprocess.call(post_script)
 
     def rename_ogg_file(self):
