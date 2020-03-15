@@ -123,6 +123,7 @@ SATNOGS_WATERFALL_MAX_VALUE = int(environ.get('SATNOGS_WATERFALL_MAX_VALUE', -50
 LOG_FORMAT = '%(name)s - %(levelname)s - %(message)s'
 LOG_LEVEL = environ.get('SATNOGS_LOG_LEVEL', 'WARNING')
 SCHEDULER_LOG_LEVEL = environ.get('SATNOGS_SCHEDULER_LOG_LEVEL', 'WARNING')
+SATNOGS_HAMLIB_DEBUG_LEVEL = environ.get('SATNOGS_HAMLIB_DEBUG_LEVEL', 'RIG_DEBUG_ERR')
 
 # Sentry
 SENTRY_DSN = environ.get('SENTRY_DSN',
@@ -174,6 +175,17 @@ def validate(logger):
 
     if SATNOGS_STATION_ELEV is None and SATNOGS_GPSD_CLIENT_ENABLED is False:
         logger.error('SATNOGS_STATION_ELEV not configured')
+        settings_valid = False
+
+    hamlib_debug_levels = [
+        'RIG_DEBUG_NONE', 'RIG_DEBUG_BUG', 'RIG_DEBUG_ERR', 'RIG_DEBUG_WARN', 'RIG_DEBUG_VERBOSE',
+        'RIG_DEBUG_TRACE'
+    ]
+
+    if SATNOGS_HAMLIB_DEBUG_LEVEL not in hamlib_debug_levels:
+        logger.error('Invalid SATNOGS_HAMLIB_DEBUG_LEVEL: %s\n'
+                     'Available levels: %s', SATNOGS_HAMLIB_DEBUG_LEVEL,
+                     ', '.join(hamlib_debug_levels))
         settings_valid = False
 
     return settings_valid
