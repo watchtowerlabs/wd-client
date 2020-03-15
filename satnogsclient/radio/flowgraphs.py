@@ -6,6 +6,7 @@ import subprocess
 import satnogsclient.settings as client_settings
 
 LOGGER = logging.getLogger(__name__)
+GNURADIO_LOGGER = logging.getLogger('gnuradio')
 
 SATNOGS_FLOWGRAPH_SCRIPTS = {
     'AFSK1K2': 'satnogs_afsk1200_ax25.py',
@@ -217,13 +218,19 @@ class Flowgraph():
                 if value is not None:
                     args.append('--{}={}'.format(parameter, value))
             try:
-                self.process = subprocess.Popen(args)
+                self.process = subprocess.Popen(args, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             except OSError:
                 LOGGER.exception('Could not start GNURadio python script')
         else:
             if self.process:
                 self.process.send_signal(signal.SIGINT)
-                _, _ = self.process.communicate()
+                stdout_data, stderr_data = self.process.communicate()
+
+            for msg in stdout_data:
+                GNURADIO_LOGGER.info(msg)
+    
+            for msg in stderr_data:
+                GNURADIO_LOGGER.error(msg)
 
     @property
     def info(self):

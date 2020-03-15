@@ -20,6 +20,8 @@ __version__ = config.VERSION
 
 logging.basicConfig(format=settings.LOG_FORMAT, level=getattr(logging, settings.LOG_LEVEL))
 LOGGER = logging.getLogger(__name__)
+GNURADIO_LOGGER = logging.getLogger('gnuradio')
+GNURADIO_LOGGER.setLevel(logging.INFO)
 
 if settings.SENTRY_ENABLED:
     sentry_sdk.init(settings.SENTRY_DSN, release='satnogs-client@{}'.format(__version__))
