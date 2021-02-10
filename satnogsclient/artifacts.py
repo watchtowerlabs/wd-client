@@ -32,9 +32,9 @@ class Artifacts():  # pylint: disable=R0903
         wf_group.attrs['offset_unit'] = 'dB'
         wf_group.attrs['scale_unit'] = 'dB/div'
         wf_group.attrs['data_unit'] = 'div'
-        wf_group.attrs['relative_time_unit'] = 'seconds'
-        wf_group.attrs['absolute_time_unit'] = 'seconds'
-        wf_group.attrs['frequency_unit'] = 'kHz'
+        wf_group.attrs['relative_time_unit'] = 'microseconds'
+        wf_group.attrs['absolute_time_unit'] = 'microseconds'
+        wf_group.attrs['frequency_unit'] = 'Hz'
 
         # Store waterfall datasets
         wf_group.create_dataset('offset',
@@ -56,13 +56,13 @@ class Artifacts():  # pylint: disable=R0903
 
         # Store waterfall labels
 
-        wf_group['offset'].dims[0].label = 'Time (seconds)'
-        wf_group['scale'].dims[0].label = 'Time (seconds)'
-        wf_group['relative_time'].dims[0].label = 'Time (seconds)'
-        wf_group['absolute_time'].dims[0].label = 'Time (seconds)'
-        wf_group['frequency'].dims[0].label = 'Frequency (kHz)'
-        wf_group['data'].dims[0].label = 'Frequency (kHz)'
-        wf_group['data'].dims[1].label = 'Time (seconds)'
+        wf_group['offset'].dims[0].label = 'Offset (dB)'
+        wf_group['scale'].dims[0].label = 'Scale'
+        wf_group['relative_time'].dims[0].label = 'Time (microseconds)'
+        wf_group['absolute_time'].dims[0].label = 'Time (microseconds)'
+        wf_group['frequency'].dims[0].label = 'Frequency (Hz)'
+        wf_group['data'].dims[0].label = 'Frequency (Hz)'
+        wf_group['data'].dims[1].label = 'Time (microseconds)'
 
         hdf5_file.close()
         self.artifacts_file.seek(0)
