@@ -496,6 +496,24 @@ DISABLE_DECODED_DATA
    Disable output of decoded data.
 
 
+UDP_DUMP_HOST
+~~~~~~~~~~~~~
+:Type: *string*
+:Default: *None*
+:Required: *No*
+:Description:
+   IP destination of UDP data with doppler corrected I/Q.
+
+
+UDP_DUMP_PORT
+~~~~~~~~~~~~~
+:Type: *integer*
+:Default: ``57356``
+:Required: *No*
+:Description:
+   Port for UDP data with doppler corrected I/Q.
+
+
 SATNOGS_WATERFALL_AUTORANGE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 :Type: *boolean*
