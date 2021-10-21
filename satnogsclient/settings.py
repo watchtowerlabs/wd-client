@@ -43,6 +43,8 @@ SATNOGS_OUTPUT_PATH = environ.get('SATNOGS_OUTPUT_PATH', '/tmp/.satnogs/data')
 SATNOGS_COMPLETE_OUTPUT_PATH = environ.get('SATNOGS_COMPLETE_OUTPUT_PATH', '')
 SATNOGS_INCOMPLETE_OUTPUT_PATH = environ.get('SATNOGS_INCOMPLETE_OUTPUT_PATH',
                                              '/tmp/.satnogs/data/incomplete')
+SATNOGS_ARTIFACTS_OUTPUT_PATH = environ.get('SATNOGS_ARTIFACTS_OUTPUT_PATH',
+                                            '/tmp/.satnogs/artifacts')
 
 for p in [
         SATNOGS_APP_PATH, SATNOGS_OUTPUT_PATH, SATNOGS_COMPLETE_OUTPUT_PATH,
@@ -52,6 +54,7 @@ for p in [
         os.mkdir(p)
 
 SATNOGS_REMOVE_RAW_FILES = bool(strtobool(environ.get('SATNOGS_REMOVE_RAW_FILES', 'True')))
+SATNOGS_KEEP_ARTIFACTS = bool(strtobool(environ.get('SATNOGS_KEEP_ARTIFACTS', 'False')))
 
 SATNOGS_VERIFY_SSL = bool(strtobool(environ.get('SATNOGS_VERIFY_SSL', 'True')))
 

@@ -2,6 +2,7 @@ from __future__ import absolute_import, division, print_function
 
 import json
 import logging
+import os
 import shlex
 import subprocess
 import uuid
@@ -28,22 +29,39 @@ except ImportError:
 LOGGER = logging.getLogger(__name__)
 
 
-def post_artifacts(artifacts_file, observation_id):
+def post_and_save_artifacts(artifacts_file, observation_id):
+    """
+    Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file,
+    saves it to disk if enabled, then tries to upload it to satnogs-db.
+    Finally closes this file.
+
+    :param artifacts_file: The Artifact file (opened at position 0).
+    :param observation_id: The observation id of the associated
+                           observation (for enhanced logging).
+
+    :type artifacts_file: TemporaryFile
+    :type observation_id: str
+
+    :returns: None
+    """
+    filename = str(uuid.uuid4()) + '.h5'
+
+    if settings.SATNOGS_KEEP_ARTIFACTS:
+        save_artifacts(artifacts_file, filename)
+
     url = urljoin(settings.ARTIFACTS_API_URL, 'artifacts/')
     headers = {'Authorization': 'Token {0}'.format(settings.ARTIFACTS_API_TOKEN)}
     if not url.endswith('/'):
         url += '/'
 
     try:
-        response = requests.post(url,
-                                 headers=headers,
-                                 files={
-                                     'artifact_file': (str(uuid.uuid4()) + '.h5', artifacts_file,
-                                                       'application/x-hdf5')
-                                 },
-                                 verify=settings.SATNOGS_VERIFY_SSL,
-                                 stream=True,
-                                 timeout=settings.ARTIFACTS_API_TIMEOUT)
+        response = requests.post(
+            url,
+            headers=headers,
+            files={'artifact_file': (filename, artifacts_file, 'application/x-hdf5')},
+            verify=settings.SATNOGS_VERIFY_SSL,
+            stream=True,
+            timeout=settings.ARTIFACTS_API_TIMEOUT)
         response.raise_for_status()
 
         LOGGER.info('Artifacts upload successful.')
@@ -65,6 +83,25 @@ def post_artifacts(artifacts_file, observation_id):
             LOGGER.error(
                 'Upload of artifacts for observation %s failed, '
                 'response status code: %s', observation_id, response.status_code)
+
+
+def save_artifacts(artifacts_file, filename):
+    """
+    Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file and
+    writes this file to disk.
+    Finally seeks back to the beginning of the file.
+
+    NOTE: Does NOT close this file.
+
+    Arguments:
+        artifacts_file: TemporaryFile, open at position 0
+        filename: str
+    """
+
+    with open(os.path.join(settings.SATNOGS_ARTIFACTS_OUTPUT_PATH, filename), 'wb') as f_out:
+        f_out.write(artifacts_file.read())
+
+    artifacts_file.seek(0)
 
 
 class Observer(object):
@@ -262,7 +299,7 @@ class Observer(object):
                 }
                 artifact = Artifacts(waterfall, metadata)
                 artifact.create()
-                SCHEDULER.add_job(post_artifacts,
+                SCHEDULER.add_job(post_and_save_artifacts,
                                   args=(artifact.artifacts_file, str(self.observation_id)))
             else:
                 LOGGER.warning(
