@@ -185,6 +185,7 @@ def get_jobs():
         response.raise_for_status()
     except (requests.ConnectionError, requests.Timeout, requests.TooManyRedirects):
         LOGGER.exception('An error occurred trying to GET observation jobs from network')
+        return
     except requests.exceptions.HTTPError as http_error:
         LOGGER.error(http_error)
         return
