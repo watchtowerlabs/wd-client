@@ -199,6 +199,12 @@ class Observer(object):
         # Run the gnuradio flowgraph, wait for it to complete
         self.run_flowgraph(flowgraph)
 
+        LOGGER.info('Tracking stopped.')
+        self.tracker_freq.trackstop()
+        self.tracker_rot.trackstop()
+        LOGGER.info('Observation Finished')
+        run_post_observation_script()
+
         # Rename files and create waterfall
         self.rename_ogg_file()
         self.rename_data_file()
@@ -285,10 +291,8 @@ class Observer(object):
         while flowgraph.enabled and datetime.now(pytz.utc) <= self.observation_end:
             sleep(1)
         flowgraph.enabled = False
-        LOGGER.info('Tracking stopped.')
-        self.tracker_freq.trackstop()
-        self.tracker_rot.trackstop()
-        LOGGER.info('Observation Finished')
+
+    def run_post_observation_script(self):
         LOGGER.info('Executing post-observation script.')
         if settings.SATNOGS_POST_OBSERVATION_SCRIPT is not None:
 
