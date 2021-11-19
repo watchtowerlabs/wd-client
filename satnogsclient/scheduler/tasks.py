@@ -43,18 +43,19 @@ def spawn_observer(**kwargs):
     LOGGER.debug('Observer args: %s', setup_kwargs)
     setup = observer.setup(**setup_kwargs)
 
-    if setup:
-        LOGGER.info('Spawning observer worker.')
-        timeout_timedelta = end - datetime.now(pytz.utc)
-        if timeout_timedelta.total_seconds() == 0:
-            timeout_timedelta = timedelta()
-        if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
-            LOGGER.error('Observer job lock acquiring timed out.')
-            return
-        observer.observe()
-        OBSERVER_LOCK.release()
-    else:
-        raise RuntimeError('Error in observer setup.')
+    if not setup:
+        LOGGER.error('Missing variable(s), observer setup failed.')
+        return
+
+    LOGGER.info('Spawning observer worker.')
+    timeout_timedelta = end - datetime.now(pytz.utc)
+    if timeout_timedelta.total_seconds() == 0:
+        timeout_timedelta = timedelta()
+    if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
+        LOGGER.error('Observer job lock acquiring timed out.')
+        return
+    observer.observe()
+    OBSERVER_LOCK.release()
 
 
 def keep_or_remove_file(filename):
