@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 import pytz
 import requests
-from dateutil import parser
+from dateutil import parser as date_parser
 
 from satnogsclient import settings
 from satnogsclient.locator import locator
@@ -28,7 +28,7 @@ OBSERVER_LOCK = threading.Lock()
 def spawn_observer(**kwargs):
     obj = kwargs.pop('obj')
     tle = {'tle0': obj['tle0'], 'tle1': obj['tle1'], 'tle2': obj['tle2']}
-    end = parser.parse(obj['end'])
+    end = date_parser.parse(obj['end'])
 
     observer = Observer()
 
@@ -193,7 +193,7 @@ def get_jobs():
                 job.remove()
 
     for obj in response.json():
-        start = parser.parse(obj['start'])
+        start = date_parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
         LOGGER.debug('Adding new job: %s', job_id)
