@@ -27,23 +27,17 @@ OBSERVER_LOCK = threading.Lock()
 
 def spawn_observer(**kwargs):
     obj = kwargs.pop('obj')
-    tle = {'tle0': obj['tle0'], 'tle1': obj['tle1'], 'tle2': obj['tle2']}
     end = date_parser.parse(obj['end'])
 
     observer = Observer()
 
-    # Get the baudrate. In case of CW baudrate equals the WPM
-    baud = 0
-    if 'baud' in obj:
-        baud = obj['baud']
-
     setup_kwargs = {
         'observation_id': obj['id'],
-        'tle': tle,
+        'tle': {'tle0': obj['tle0'], 'tle1': obj['tle1'], 'tle2': obj['tle2']},
         'observation_end': end,
         'frequency': obj['frequency'],
         'mode': obj['mode'],
-        'baud': baud
+        'baud': obj.get('baud', default=0)
     }
 
     LOGGER.debug('Observer args: %s', setup_kwargs)
