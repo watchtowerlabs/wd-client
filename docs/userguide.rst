@@ -50,3 +50,10 @@ Usage
 To execute the script, run it on the command line::
 
   $ satnogs-client
+
+
+Doppler-corrected I/Q Streaming via UDP
+---------------------------------------
+
+For realtime analysis during an observation each SatNOGS flowgraph offers streaming of doppler corrected I/Q data via an UDP sink.
+The destination of this sink can be configured by the environment variables `UDP_DUMP_HOST` and `UDP_DUMP_PORT`.
