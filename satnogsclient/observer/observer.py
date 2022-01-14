@@ -248,20 +248,25 @@ class Observer(object):
             LOGGER.error('%s: Unexpected error: %s', url, err)
 
         if settings.ARTIFACTS_ENABLED:
-            metadata = {
-                'observation_id': self.observation_id,
-                'frequency': str(self.frequency),
-                'tle': '{}\n{}\n{}\n'.format(self.tle['tle0'], self.tle['tle1'], self.tle['tle2']),
-                'location': {
-                    'latitude': self.location['lat'],
-                    'longitude': self.location['lon'],
-                    'altitude': self.location['elev']
+            if settings.ARTIFACTS_API_TOKEN is not None:
+                metadata = {
+                    'observation_id': self.observation_id,
+                    'frequency': str(self.frequency),
+                    'tle': '{}\n{}\n{}\n'.format(self.tle['tle0'], self.tle['tle1'],
+                                                 self.tle['tle2']),
+                    'location': {
+                        'latitude': self.location['lat'],
+                        'longitude': self.location['lon'],
+                        'altitude': self.location['elev']
+                    }
                 }
-            }
-            artifact = Artifacts(waterfall, metadata)
-            artifact.create()
-            SCHEDULER.add_job(post_artifacts,
-                              args=(artifact.artifacts_file, str(self.observation_id)))
+                artifact = Artifacts(waterfall, metadata)
+                artifact.create()
+                SCHEDULER.add_job(post_artifacts,
+                                  args=(artifact.artifacts_file, str(self.observation_id)))
+            else:
+                LOGGER.warning(
+                    'The ARTIFACTS_API_TOKEN setting is not set. The artifacts cannot be uploaded')
 
     def run_rot(self):
         self.tracker_rot = WorkerTrack(port=self.rot_port,
