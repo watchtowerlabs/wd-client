@@ -8,6 +8,10 @@ import numpy as np
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt  # isort:skip # noqa: E402 # pylint: disable=C0411,C0412,C0413
+import matplotlib.dates as mdates
+from matplotlib.dates import date2num
+
+from datetime import datetime, timedelta
 
 from argparse import ArgumentParser
 
@@ -116,6 +120,10 @@ class Waterfall():  # pylint: disable=R0903
         tmax = np.max(self.data['data']['tabs'] / 1000000.0)
         fmin = np.min(self.data['freq'] / 1000.0)
         fmax = np.max(self.data['freq'] / 1000.0)
+        timefmt = "%Y-%m-%dT%H:%M:%S.%fZ"
+        t0 = datetime.strptime(self.data['timestamp'].decode("utf-8"), timefmt)
+        dt_min = t0 + timedelta(seconds=tmin)
+        dt_max = t0 + timedelta(seconds=tmax)
         if vmin is None or vmax is None:
             vmin = -100
             vmax = -50
@@ -130,10 +138,14 @@ class Waterfall():  # pylint: disable=R0903
                    origin='lower',
                    aspect='auto',
                    interpolation='None',
-                   extent=[fmin, fmax, tmin, tmax],
+                   extent=[fmin, fmax, date2num(dt_min), date2num(dt_max)],
                    vmin=vmin,
                    vmax=vmax,
                    cmap='viridis')
+        ax = plt.gca()
+        ax.yaxis_date()
+        ax.yaxis.set_major_locator(mdates.MinuteLocator(interval=1))
+        ax.yaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
         plt.xlabel('Frequency (kHz)')
         plt.ylabel('Time (seconds)')
         fig = plt.colorbar(aspect=50)
