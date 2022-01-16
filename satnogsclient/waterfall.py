@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 import logging
 
 import matplotlib
@@ -6,6 +8,8 @@ import numpy as np
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt  # isort:skip # noqa: E402 # pylint: disable=C0411,C0412,C0413
+
+from argparse import ArgumentParser
 
 LOGGER = logging.getLogger(__name__)
 
@@ -136,3 +140,12 @@ class Waterfall():  # pylint: disable=R0903
         fig.set_label('Power (dB)')
         plt.savefig(figure_path, bbox_inches='tight')
         plt.close()
+
+
+if __name__ == "__main__":
+     parser = ArgumentParser(description="Make a waterfall plot")
+     parser.add_argument("data_path", help="Data path (dat file)")
+     parser.add_argument("png_path", help="Output path (png file")
+     args = parser.parse_args()
+     w = Waterfall(args.data_path)
+     w.plot(args.png_path)
