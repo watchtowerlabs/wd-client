@@ -1,19 +1,17 @@
 #!/usr/bin/env python3
 
 import logging
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
 
 import matplotlib
-import numpy as np
+import matplotlib.dates as mdates  # isort: skip
+import numpy as np  # isort: skip
+from matplotlib.dates import date2num
 
 matplotlib.use('Agg')
 
 import matplotlib.pyplot as plt  # isort:skip # noqa: E402 # pylint: disable=C0411,C0412,C0413
-import matplotlib.dates as mdates
-from matplotlib.dates import date2num
-
-from datetime import datetime, timedelta
-
-from argparse import ArgumentParser
 
 LOGGER = logging.getLogger(__name__)
 
@@ -120,10 +118,10 @@ class Waterfall():  # pylint: disable=R0903
         tmax = np.max(self.data['data']['tabs'] / 1000000.0)
         fmin = np.min(self.data['freq'] / 1000.0)
         fmax = np.max(self.data['freq'] / 1000.0)
-        timefmt = "%Y-%m-%dT%H:%M:%S.%fZ"
-        t0 = datetime.strptime(self.data['timestamp'].decode("utf-8"), timefmt)
-        dt_min = t0 + timedelta(seconds=tmin)
-        dt_max = t0 + timedelta(seconds=tmax)
+        timefmt = '%Y-%m-%dT%H:%M:%S.%fZ'
+        t_ref = datetime.strptime(self.data['timestamp'].decode('utf-8'), timefmt)
+        dt_min = t_ref + timedelta(seconds=tmin)
+        dt_max = t_ref + timedelta(seconds=tmax)
         if vmin is None or vmax is None:
             vmin = -100
             vmax = -50
@@ -138,29 +136,34 @@ class Waterfall():  # pylint: disable=R0903
                    origin='lower',
                    aspect='auto',
                    interpolation='None',
-                   extent=[fmin, fmax, date2num(dt_min), date2num(dt_max)],
+                   extent=[fmin, fmax, date2num(dt_min),
+                           date2num(dt_max)],
                    vmin=vmin,
                    vmax=vmax,
                    cmap='viridis')
-        ax = plt.gca()
-        ax.yaxis_date()
-        ax.yaxis.set_major_locator(mdates.MinuteLocator(interval=1))
-        ax.yaxis.set_major_formatter(mdates.DateFormatter("%H:%M"))
-        ax2 = ax.twinx()
-        ax2.set_ylim(tmin, tmax)
+        axis = plt.gca()
+        axis.yaxis_date()
+        axis.yaxis.set_major_locator(mdates.MinuteLocator(interval=1))
+        axis.yaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+        axis2 = axis.twinx()
+        axis2.set_ylim(tmin, tmax)
         plt.xlabel('Frequency (kHz)')
-        ax.set_ylabel('Time (UTC)')
-        ax2.set_ylabel('Time (seconds)')
+        axis.set_ylabel('Time (UTC)')
+        axis2.set_ylabel('Time (seconds)')
         fig = plt.colorbar(aspect=50, pad=0.1)
         fig.set_label('Power (dB)')
         plt.savefig(figure_path, bbox_inches='tight')
         plt.close()
 
 
-if __name__ == "__main__":
-     parser = ArgumentParser(description="Make a waterfall plot")
-     parser.add_argument("data_path", help="Data path (dat file)")
-     parser.add_argument("png_path", help="Output path (png file")
-     args = parser.parse_args()
-     w = Waterfall(args.data_path)
-     w.plot(args.png_path)
+def main():
+    parser = ArgumentParser(description='Make a waterfall plot')
+    parser.add_argument('data_path', help='Data path (dat file)')
+    parser.add_argument('png_path', help='Output path (png file)')
+    args = parser.parse_args()
+    waterfall = Waterfall(args.data_path)
+    waterfall.plot(args.png_path)
+
+
+if __name__ == '__main__':
+    main()
