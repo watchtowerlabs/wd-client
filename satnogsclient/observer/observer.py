@@ -312,7 +312,7 @@ class Observer(object):
         except requests.exceptions.RequestException as err:
             LOGGER.error('%s: Unexpected error: %s', url, err)
 
-        if settings.ARTIFACTS_ENABLED:
+        if settings.ARTIFACTS_ENABLED and waterfall is not None:
             if settings.ARTIFACTS_API_TOKEN is not None:
                 metadata = {
                     'observation_id': self.observation_id,
