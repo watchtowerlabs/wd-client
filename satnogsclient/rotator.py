@@ -16,6 +16,7 @@ class Rotator(object):
     :param port: The port of the rotator, e.g. "/dev/ttyUSB0"
     :type port: str
     """
+
     def __init__(self, model, baud, port):
         """
         Class constructor

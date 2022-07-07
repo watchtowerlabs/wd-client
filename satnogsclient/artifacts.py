@@ -8,6 +8,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Artifacts():  # pylint: disable=R0903
+
     def __init__(self, waterfall, metadata):
         """
         Constructor.

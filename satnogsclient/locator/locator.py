@@ -10,6 +10,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 class Locator(object):
+
     def __init__(self):
         self.timeout = settings.SATNOGS_GPSD_TIMEOUT
 

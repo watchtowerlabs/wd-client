@@ -98,6 +98,7 @@ class Waterfall():  # pylint: disable=R0903
     :param datafile_path: Path to data file
     :type datafile_path: str_array
     """
+
     def __init__(self, datafile_path):
         """
         Class constructor
