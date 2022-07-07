@@ -13,12 +13,6 @@ Modules reference
 .. automodule:: satnogsclient.locator.locator
 
 
-:mod:`satnogsclient.observer.commsocket`
-----------------------------------------
-
-.. automodule:: satnogsclient.observer.commsocket
-
-
 :mod:`satnogsclient.observer.observer`
 --------------------------------------
 

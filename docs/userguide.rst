@@ -525,7 +525,7 @@ UDP_DUMP_PORT
 
 
 SATNOGS_UPLOAD_AUDIO_FILES
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *boolean*
 :Default: *True*
@@ -535,7 +535,7 @@ SATNOGS_UPLOAD_AUDIO_FILES
 
 
 SATNOGS_UPLOAD_WATERFALL_FILES
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *boolean*
 :Default: *True*
@@ -620,6 +620,7 @@ LOG_LEVEL
 :Description:
    SatNOGS Client logging level.
    Valid values are:
+
      * ``CRITICAL``
      * ``ERROR``
      * ``WARNING``
@@ -635,6 +636,7 @@ SCHEDULER_LOG_LEVEL
 :Description:
    SatNOGS Client scheduler logging level.
    Valid values are:
+
      * ``CRITICAL``
      * ``ERROR``
      * ``WARNING``
