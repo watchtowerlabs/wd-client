@@ -1,9 +1,9 @@
 variables:
   GITLAB_CI_IMAGE_ALPINE: 'alpine:3.9'
-  GITLAB_CI_IMAGE_DEBIAN: 'debian:buster'
+  GITLAB_CI_IMAGE_DEBIAN: 'debian:bullseye'
   GITLAB_CI_IMAGE_SENTRY_CLI: 'getsentry/sentry-cli'
-  GITLAB_CI_APT_REPOSITORY: 'deb http://download.opensuse.org/repositories/home:/librespace:/satnogs/Debian_10/ /'
-  GITLAB_CI_APT_KEY_URL: 'https://download.opensuse.org/repositories/home:librespace:satnogs/Debian_10/Release.key'
+  GITLAB_CI_APT_REPOSITORY: 'deb http://download.opensuse.org/repositories/home:/librespace:/satnogs/Debian_11/ /'
+  GITLAB_CI_APT_KEY_URL: 'https://download.opensuse.org/repositories/home:librespace:satnogs/Debian_11/Release.key'
   GITLAB_CI_APT_PACKAGES: >-
     git
     tox
