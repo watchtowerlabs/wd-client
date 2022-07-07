@@ -620,6 +620,7 @@ LOG_LEVEL
 :Description:
    SatNOGS Client logging level.
    Valid values are:
+
      * ``CRITICAL``
      * ``ERROR``
      * ``WARNING``
@@ -635,6 +636,7 @@ SCHEDULER_LOG_LEVEL
 :Description:
    SatNOGS Client scheduler logging level.
    Valid values are:
+
      * ``CRITICAL``
      * ``ERROR``
      * ``WARNING``

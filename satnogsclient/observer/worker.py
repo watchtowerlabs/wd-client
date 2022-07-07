@@ -180,7 +180,7 @@ class WorkerTrack(Worker):
 
     def trackobject(self, *args):
         """
-        :param *args: Positional Arguments of parent class Worker
+        :param args: Positional Arguments of parent class Worker
         """
 
         super().trackobject(*args)
