@@ -525,7 +525,7 @@ UDP_DUMP_PORT
 
 
 SATNOGS_UPLOAD_AUDIO_FILES
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *boolean*
 :Default: *True*
@@ -535,7 +535,7 @@ SATNOGS_UPLOAD_AUDIO_FILES
 
 
 SATNOGS_UPLOAD_WATERFALL_FILES
-~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *boolean*
 :Default: *True*
