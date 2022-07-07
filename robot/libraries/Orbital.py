@@ -1,7 +1,6 @@
 import math
 
 import ephem
-
 from robot.api.deco import keyword, library
 
 PARAMETERS = {
@@ -44,6 +43,7 @@ def datetime_to_epoch(date):
 
 @library
 class Orbital:
+
     def _datetime_to_epoch(date):
         pass
 

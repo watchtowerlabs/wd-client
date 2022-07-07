@@ -143,6 +143,7 @@ class Flowgraph():
     :param output_data: Dictionary of output data
     :type output_data: dict
     """
+
     def __init__(self, device, sampling_rate, frequency, mode, baud, output_data):
         """
         Class constructor
