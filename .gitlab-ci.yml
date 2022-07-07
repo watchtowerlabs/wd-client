@@ -7,10 +7,10 @@ variables:
   GITLAB_CI_APT_PACKAGES: >-
     git
     tox
-    python3-numpy
+    libatlas3-base
+    libhdf5-103-1
     python3-gps
     python3-libhamlib2
-# debian:buster --> tox~=3.7.0
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
   GITLAB_CI_SIGN_OFF_EXCLUDE: '14373744f0235d920f42fd8167c6982b8de02ec8'
 stages:
