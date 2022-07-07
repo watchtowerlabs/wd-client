@@ -13,7 +13,10 @@ build:
   tools:
     python: '3.9'
   apt_packages:
-    - 'libhdf5-dev'
+    - 'libatlas3-base'
+    - 'libhdf5-103'
+    - 'python3-gps'
+    - 'python3-libhamlib2'
 sphinx:
   builder: 'html'
   fail_on_warning: true
