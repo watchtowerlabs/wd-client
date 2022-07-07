@@ -182,11 +182,9 @@ def get_jobs():
                                 headers=headers,
                                 verify=settings.SATNOGS_VERIFY_SSL,
                                 timeout=45)
+        response.raise_for_status()
     except (requests.ConnectionError, requests.Timeout, requests.TooManyRedirects):
         LOGGER.exception('An error occurred trying to GET observation jobs from network')
-
-    try:
-        response.raise_for_status()
     except requests.exceptions.HTTPError as http_error:
         LOGGER.error(http_error)
         return
