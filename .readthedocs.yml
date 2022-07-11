@@ -4,6 +4,7 @@ formats:
   - 'epub'
   - 'pdf'
 python:
+  system_packages: true
   install:
     - path: '.'
     - requirements: 'requirements.txt'
