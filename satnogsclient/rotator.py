@@ -11,7 +11,7 @@ class Rotator(object):
 
     :param model: Model of rotator e.g. "ROT_MODEL_EASYCOMM3" or "ROT_MODEL_DUMMY"
     :type model: str
-    :param baud: The baud rate of serial communication, e.g. 19200
+    :param baud: The baud rate of serial communication, e.g. 19200, is optional parameter
     :type baud: int
     :param port: The port of the rotator, e.g. "/dev/ttyUSB0"
     :type port: str
@@ -31,6 +31,9 @@ class Rotator(object):
     def get_info(self):
         """
         Return information about the rotator
+
+        :return: Information about the rotator
+        :rtype: str
         """
         return self.rot.get_info()
 
@@ -40,7 +43,7 @@ class Rotator(object):
         Return the position in degrees of azimuth and elevation
 
         :return: Position in degrees
-        :rtype: tuple(float, float)
+        :rtype: (float, float)
         """
         return self.rot.get_position()
 
@@ -68,18 +71,27 @@ class Rotator(object):
     def reset(self):
         """
         Move the rotator to home position and return the current position
+
+        :return: Current position in degrees
+        :rtype: (float, float)
         """
         return self.rot.reset(Hamlib.ROT_RESET_ALL)
 
     def stop(self):
         """
         Stop the rotator and return the current position
+
+        :return: Current position in degrees
+        :rtype: (float, float)
         """
         return self.rot.stop()
 
     def park(self):
         """
         Move the rotator to park position and return the current position
+
+        :return: Current position in degrees
+        :rtype: (float, float)
         """
         return self.rot.park()
 
@@ -87,8 +99,8 @@ class Rotator(object):
         """
         Move the rotator with speed (mdeg/s) to specific direction
 
-        :param direction: The direction of movent, e.g. ROT_MOVE_UP, ROT_MOVE_DOWN, ROT_MOVE_LEFT,
-                          ROT_MOVE_RIGHT
+        :param direction: The direction of movement, e.g. ROT_MOVE_UP, ROT_MOVE_DOWN,
+                          ROT_MOVE_LEFT, ROT_MOVE_RIGHT
         :type direction: str
         :param speed: The velocity set point in mdeg/s
         :type speed: int
