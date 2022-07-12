@@ -39,12 +39,14 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc', 'sphinx.ext.viewcode']
-autodoc_mock_imports = ['Hamlib']
-autodoc_default_options = {
-    'members': True,
-    'private-members': True,
-    'undoc-members': True
-}
+autodoc_mock_imports = [
+    'Hamlib',
+    'gps',
+    'h5py',
+    'numpy',
+    'matplotlib',
+]
+autodoc_default_options = {'members': True, 'private-members': True, 'undoc-members': True}
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
