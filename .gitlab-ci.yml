@@ -166,7 +166,7 @@ dependency_scanning:
   stage: security
   needs: []
   variables:
-    DS_DEFAULT_ANALYZERS: 'gemnasium,gemnasium-python'
+    DS_EXCLUDED_ANALYZERS: 'gemnasium-maven'
 sast:
   stage: security
   needs: []
