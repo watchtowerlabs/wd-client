@@ -1,28 +1,31 @@
 *** Settings ***
-Test Setup        Initialize Server And Client
-Test Teardown     Terminate Client And Server
-Test Timeout      30
-Library           OperatingSystem
-Library           Process
-Library           DateTime
-Library           String
-Library           HttpCtrl.Server
-Library           ${LIBRARY_PATH}Orbital.py
+Library             OperatingSystem
+Library             Process
+Library             DateTime
+Library             String
+Library             HttpCtrl.Server
+Library             ${LIBRARY_PATH}Orbital.py
+
+Test Setup          Initialize Server And Client
+Test Teardown       Terminate Client And Server
+Test Timeout        30
+
 
 *** Variables ***
-${LIBRARY_PATH}    libraries/
-${SATNOGS_API_TOKEN}    1234567890
-${SATNOGS_NETWORK_API_URL}    http://127.0.0.1:52342/
-${SATNOGS_STATION_ID}    123
-${SATNOGS_STATION_LAT}    10.0
-${SATNOGS_STATION_LON}    20.0
-${SATNOGS_STATION_ELEV}    123
-${SATNOGS_SOAPY_RX_DEVICE}    driver=rtlsdr
-${SATNOGS_RX_SAMP_RATE}    2.048e6
-${SATNOGS_ANTENNA}    RX
-${SATNOGS_LOG_LEVEL}    DEBUG
-${SATNOGS_NETWORK_API_QUERY_INTERVAL}    3
-${SATNOGS_NETWORK_API_POST_INTERVAL}    3
+${LIBRARY_PATH}                             libraries/
+${SATNOGS_API_TOKEN}                        1234567890
+${SATNOGS_NETWORK_API_URL}                  http://127.0.0.1:52342/
+${SATNOGS_STATION_ID}                       123
+${SATNOGS_STATION_LAT}                      10.0
+${SATNOGS_STATION_LON}                      20.0
+${SATNOGS_STATION_ELEV}                     123
+${SATNOGS_SOAPY_RX_DEVICE}                  driver=rtlsdr
+${SATNOGS_RX_SAMP_RATE}                     2.048e6
+${SATNOGS_ANTENNA}                          RX
+${SATNOGS_LOG_LEVEL}                        DEBUG
+${SATNOGS_NETWORK_API_QUERY_INTERVAL}       3
+${SATNOGS_NETWORK_API_POST_INTERVAL}        3
+
 
 *** Test Cases ***
 No Crash At Startup
@@ -39,7 +42,11 @@ Post Observation Data
     ${start} =    Get Current Date    time_zone=UTC    increment=1 second    result_format=%Y-%m-%dT%H:%M:%SZ
     ${end} =    Get Current Date    time_zone=UTC    increment=2 seconds    result_format=%Y-%m-%dT%H:%M:%SZ
     ${tle_date} =    Get Current Date    time_zone=UTC    increment=1 second    result_format=datetime
-    @{tle} =    Generate Fake Tle    ${SATNOGS_STATION_LAT}    ${SATNOGS_STATION_LON}    ${SATNOGS_STATION_ELEV}    ${tle_date}
+    @{tle} =    Generate Fake Tle
+    ...    ${SATNOGS_STATION_LAT}
+    ...    ${SATNOGS_STATION_LON}
+    ...    ${SATNOGS_STATION_ELEV}
+    ...    ${tle_date}
     ${transmitter} =    Generate Random String    length=22
     ${response} =    Catenate
     ...    \[
@@ -65,7 +72,11 @@ Prevent Concurrent Observations
     ${start} =    Get Current Date    time_zone=UTC    increment=1 seconds    result_format=%Y-%m-%dT%H:%M:%SZ
     ${end} =    Get Current Date    time_zone=UTC    increment=2 seconds    result_format=%Y-%m-%dT%H:%M:%SZ
     ${tle_date} =    Get Current Date    time_zone=UTC    increment=1 seconds    result_format=datetime
-    @{tle} =    Generate Fake Tle    ${SATNOGS_STATION_LAT}    ${SATNOGS_STATION_LON}    ${SATNOGS_STATION_ELEV}    ${tle_date}
+    @{tle} =    Generate Fake Tle
+    ...    ${SATNOGS_STATION_LAT}
+    ...    ${SATNOGS_STATION_LON}
+    ...    ${SATNOGS_STATION_ELEV}
+    ...    ${tle_date}
     ${transmitter1} =    Generate Random String    length=22
     ${transmitter2} =    Generate Random String    length=22
     ${response} =    Catenate
@@ -101,6 +112,7 @@ Prevent Concurrent Observations
     Wait For Post Data    timeout=7
     Fail On Post Data    timeout=7
 
+
 *** Keywords ***
 Start SatNOGS Client
     Set Environment Variable    SATNOGS_API_TOKEN    ${SATNOGS_API_TOKEN}
@@ -131,9 +143,11 @@ Request For Jobs
     ${method} =    Get Request Method
     ${url} =    Get Request Url
     ${body} =    Get Request Body
-    Run Keyword If    '${method}' == 'PUT'    Reply By    200
+    IF    '${method}' == 'PUT'    Reply By    200
     Should Be Equal    ${method}    GET
-    Should Be Equal    ${url}    /jobs/?ground_station=${SATNOGS_STATION_ID}&lat=${SATNOGS_STATION_LAT}&lon=${SATNOGS_STATION_LON}&alt=${SATNOGS_STATION_ELEV}
+    Should Be Equal
+    ...    ${url}
+    ...    /jobs/?ground_station=${SATNOGS_STATION_ID}&lat=${SATNOGS_STATION_LAT}&lon=${SATNOGS_STATION_LON}&alt=${SATNOGS_STATION_ELEV}
     Should Be Equal    ${body}    ${None}
 
 Wait For Request For Jobs
@@ -146,7 +160,7 @@ Post Data
     ${method} =    Get Request Method
     ${url} =    Get Request Url
     ${body} =    Get Request Body
-    Run Keyword If    '${method}' == 'GET'    Reply By    200    []
+    IF    '${method}' == 'GET'    Reply By    200    []
     Should Be Equal    ${method}    PUT
 
 Wait For Post Data
