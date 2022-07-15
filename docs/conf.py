@@ -63,6 +63,14 @@ exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store']
 #
 html_theme = 'sphinx_rtd_theme'
 
+html_context = {
+    "display_gitlab": True,
+    "gitlab_user": "librespacefoundation",
+    "gitlab_repo": "satnogs/satnogs-client",
+    "gitlab_version": "master",
+    "conf_py_path": "/docs/",
+}
+
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
