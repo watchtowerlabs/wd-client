@@ -201,6 +201,16 @@ SATNOGS_INCOMPLETE_OUTPUT_PATH
    Path for moving incomplete output files.
 
 
+SATNOGS_ARTIFACTS_OUTPUT_PATH
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+:Type: *path*
+:Default: ``/tmp/.satnogs/artifacts``
+:Required: *No*
+:Description:
+   Path for Artifact files.
+
+
+
 SATNOGS_REMOVE_RAW_FILES
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -209,6 +219,17 @@ SATNOGS_REMOVE_RAW_FILES
 :Required: *No*
 :Description:
    Remove raw data files used for generating waterfalls.
+
+
+SATNOGS_KEEP_ARTIFACTS
+~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: *boolean*
+:Default: *False*
+:Required: *No*
+:Description:
+   Do not remove Artifact files after successfully uploading them.
+
 
 
 SATNOGS_VERIFY_SSL
