@@ -88,23 +88,35 @@ def post_data():
                 or fil.startswith('receiving_data') or os.stat(file_path).st_size == 0):
             continue
         if fil.startswith('satnogs'):
+            # This file is an audio file
             if not settings.SATNOGS_UPLOAD_AUDIO_FILES:
                 keep_or_remove_file(fil)
                 continue
             observation = {'payload': open(file_path, 'rb')}
         elif fil.startswith('waterfall'):
+            # This file is a waterfall image
             if not settings.SATNOGS_UPLOAD_WATERFALL_FILES:
                 keep_or_remove_file(fil)
                 continue
             observation = {'waterfall': open(file_path, 'rb')}
         elif fil.startswith('data'):
+            # This file is a data frame
+            # Check if it is serialized using json OR raw data
             try:
                 with open(file_path, 'r') as json_string:
                     data = json.load(json_string)
+                if not isinstance(data, dict) or 'pdu' not in data.keys():
+                    # File can accidentally be parsed as json, but is missing the expected fields.
+                    # Thus we assume it is a raw data frame
+                    raise ValueError
+
+                # This file is a json-encoded data frame
                 observation = {'demoddata': (fil, base64.b64decode(data['pdu']))}
             except ValueError:
+                # This file is a raw data frame
                 observation = {'demoddata': open(file_path, 'rb')}
         else:
+            # This file is of unknown type
             LOGGER.debug('Ignore file: %s', fil)
             continue
         if '_' not in fil:
