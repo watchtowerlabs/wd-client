@@ -7,7 +7,6 @@ disable=
     C0115, # missing-class-docstring
     C0116, # missing-function-docstring
     C0209, # consider-using-f-string
-    E1101, # no-member
     R0205, # useless-object-inheritance
     R0402, # consider-using-from-import
     R0801, # duplicate-code

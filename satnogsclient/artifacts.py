@@ -59,32 +59,36 @@ class Artifacts():  # pylint: disable=R0903
         wf_group.attrs['frequency_unit'] = 'kHz'
 
         # Store waterfall datasets
-        wf_group.create_dataset('offset',
-                                data=self._waterfall_data['compressed']['offset'],
-                                compression='gzip')
-        wf_group.create_dataset('scale',
-                                data=self._waterfall_data['compressed']['scale'],
-                                compression='gzip')
-        wf_group.create_dataset('data',
-                                data=self._waterfall_data['compressed']['values'],
-                                compression='gzip')
-        wf_group.create_dataset('relative_time',
-                                data=self._waterfall_data['trel'],
-                                compression='gzip')
-        wf_group.create_dataset('absolute_time',
-                                data=self._waterfall_data['data']['tabs'],
-                                compression='gzip')
-        wf_group.create_dataset('frequency', data=self._waterfall_data['freq'], compression='gzip')
+        _dataset = wf_group.create_dataset('offset',
+                                           data=self._waterfall_data['compressed']['offset'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Time (seconds)'
 
-        # Store waterfall labels
+        _dataset = wf_group.create_dataset('scale',
+                                           data=self._waterfall_data['compressed']['scale'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Time (seconds)'
 
-        wf_group['offset'].dims[0].label = 'Time (seconds)'
-        wf_group['scale'].dims[0].label = 'Time (seconds)'
-        wf_group['relative_time'].dims[0].label = 'Time (seconds)'
-        wf_group['absolute_time'].dims[0].label = 'Time (seconds)'
-        wf_group['frequency'].dims[0].label = 'Frequency (kHz)'
-        wf_group['data'].dims[0].label = 'Frequency (kHz)'
-        wf_group['data'].dims[1].label = 'Time (seconds)'
+        _dataset = wf_group.create_dataset('data',
+                                           data=self._waterfall_data['compressed']['values'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Frequency (kHz)'
+        _dataset.dims[1].label = 'Time (seconds)'
+
+        _dataset = wf_group.create_dataset('relative_time',
+                                           data=self._waterfall_data['trel'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Time (seconds)'
+
+        _dataset = wf_group.create_dataset('absolute_time',
+                                           data=self._waterfall_data['data']['tabs'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Time (seconds)'
+
+        _dataset = wf_group.create_dataset('frequency',
+                                           data=self._waterfall_data['freq'],
+                                           compression='gzip')
+        _dataset.dims[0].label = 'Frequency (kHz)'
 
         hdf5_file.close()
         self.artifacts_file.seek(0)
