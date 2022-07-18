@@ -29,6 +29,29 @@ except ImportError:
 LOGGER = logging.getLogger(__name__)
 
 
+def rx_device_for_frequency(rx_device_spec, frequency):
+    devices = rx_device_spec.split(' ')
+    if len(devices) == 1:
+        return devices[0]
+    for range_device in devices:
+        try:
+            freq_range, device = range_device.split(':')
+        except ValueError as exc:
+            raise ValueError('Invalid device entry in SATNOGS_SOAPY_RX_DEVICE: '
+                             'expected format <min. freq.>-<max. freq.>:<driver spec>; got %r' %
+                             range_device) from exc
+        try:
+            f_min_mhz, f_max_mhz = freq_range.split('-')
+        except ValueError as exc:
+            raise ValueError('Invalid frequency range entry in '
+                             'SATNOGS_SOAPY_RX_DEVICE: expected format '
+                             '<min. freq.>-<max. freq.>; got %r' % freq_range) from exc
+        if float(f_min_mhz) <= (frequency / 10**6) <= float(f_max_mhz):
+            return device
+    raise LookupError('No device found for %.2f MHz in SATNOGS_SOAPY_RX_DEVICE = %r' %
+                      (frequency / 10**6, rx_device_spec))
+
+
 def post_and_save_artifacts(artifacts_file, observation_id):
     """Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file,
     saves it to disk if enabled, then tries to upload it to satnogs-db.
@@ -106,7 +129,7 @@ class Observer(object):
     # Mainly present so we can support multiple ground stations from the client
 
     def __init__(self):
-        self.location = None
+        self.location = {}
         self.rot_port = settings.SATNOGS_ROT_PORT
         self.rig_ip = settings.SATNOGS_RIG_IP
         self.rig_port = settings.SATNOGS_RIG_PORT
@@ -115,6 +138,7 @@ class Observer(object):
         self.timestamp = None
         self.observation_end = None
         self.frequency = None
+        self.rx_device = None
         self.mode = None
         self.baud = None
         self.observation_raw_file = None
@@ -137,6 +161,7 @@ class Observer(object):
         self.tle = tle
         self.observation_end = observation_end
         self.frequency = frequency
+        self.rx_device = rx_device_for_frequency(settings.SATNOGS_SOAPY_RX_DEVICE, frequency)
         self.baud = baud
         self.mode = mode
 
@@ -211,7 +236,7 @@ class Observer(object):
         # is complete, then rename.
         if self.mode == 'APT':
             self.observation_decoded_data =\
-                 self.observation_receiving_decoded_data
+                self.observation_receiving_decoded_data
 
         # start thread for rotctl
         LOGGER.info('Start rotctrl thread.')
@@ -222,8 +247,7 @@ class Observer(object):
         sleep(1)
         LOGGER.info('Start gnuradio thread.')
         flowgraph = satnogsclient.radio.flowgraphs.Flowgraph(
-            settings.SATNOGS_SOAPY_RX_DEVICE, settings.SATNOGS_RX_SAMP_RATE, self.frequency,
-            self.mode, self.baud, {
+            self.rx_device, settings.SATNOGS_RX_SAMP_RATE, self.frequency, self.mode, self.baud, {
                 'audio': self.observation_raw_file,
                 'waterfall': self.observation_waterfall_file,
                 'decoded': self.observation_decoded_data
