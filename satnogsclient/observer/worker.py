@@ -237,6 +237,7 @@ class WorkerFreq(Worker):
         Uses observer and satellite objects set by trackobject().
         Will exit when observation_end timestamp is reached.
         """
+        Hamlib.rig_set_debug(getattr(Hamlib, settings.SATNOGS_HAMLIB_DEBUG_LEVEL))
         rig = Rig(Hamlib.RIG_MODEL_NETRIGCTL, '{}:{}'.format(self._ip, self._port))
         rig.open()
 
