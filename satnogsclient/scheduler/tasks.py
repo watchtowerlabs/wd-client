@@ -103,7 +103,7 @@ def post_data():
             # This file is a data frame
             # Check if it is serialized using json OR raw data
             try:
-                with open(file_path, 'r') as json_string:
+                with open(file_path, 'r', encoding='utf-8') as json_string:
                     data = json.load(json_string)
                 if not isinstance(data, dict) or 'pdu' not in data.keys():
                     # File can accidentally be parsed as json, but is missing the expected fields.
