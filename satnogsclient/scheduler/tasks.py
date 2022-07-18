@@ -9,7 +9,7 @@ from datetime import datetime, timedelta
 
 import pytz
 import requests
-from dateutil import parser
+from dateutil import parser as date_parser
 
 from satnogsclient import settings
 from satnogsclient.locator import locator
@@ -27,45 +27,35 @@ OBSERVER_LOCK = threading.Lock()
 
 def spawn_observer(**kwargs):
     obj = kwargs.pop('obj')
-    tle = {'tle0': obj['tle0'], 'tle1': obj['tle1'], 'tle2': obj['tle2']}
-    end = parser.parse(obj['end'])
+    end = date_parser.parse(obj['end'])
 
     observer = Observer()
-    observer.location = {
-        'lon': settings.SATNOGS_STATION_LON,
-        'lat': settings.SATNOGS_STATION_LAT,
-        'elev': settings.SATNOGS_STATION_ELEV
-    }
-
-    # Get the baudrate. In case of CW baudrate equals the WPM
-    baud = 0
-    if 'baud' in obj:
-        baud = obj['baud']
 
     setup_kwargs = {
         'observation_id': obj['id'],
-        'tle': tle,
+        'tle': {'tle0': obj['tle0'], 'tle1': obj['tle1'], 'tle2': obj['tle2']},
         'observation_end': end,
         'frequency': obj['frequency'],
         'mode': obj['mode'],
-        'baud': baud
+        'baud': obj.get('baud', default=0)
     }
 
     LOGGER.debug('Observer args: %s', setup_kwargs)
     setup = observer.setup(**setup_kwargs)
 
-    if setup:
-        LOGGER.info('Spawning observer worker.')
-        timeout_timedelta = end - datetime.now(pytz.utc)
-        if timeout_timedelta.total_seconds() == 0:
-            timeout_timedelta = timedelta()
-        if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
-            LOGGER.error('Observer job lock acquiring timed out.')
-            return
-        observer.observe()
-        OBSERVER_LOCK.release()
-    else:
-        raise RuntimeError('Error in observer setup.')
+    if not setup:
+        LOGGER.error('Missing variable(s), observer setup failed.')
+        return
+
+    LOGGER.info('Spawning observer worker.')
+    timeout_timedelta = end - datetime.now(pytz.utc)
+    if timeout_timedelta.total_seconds() == 0:
+        timeout_timedelta = timedelta()
+    if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
+        LOGGER.error('Observer job lock acquiring timed out.')
+        return
+    observer.observe()
+    OBSERVER_LOCK.release()
 
 
 def keep_or_remove_file(filename):
@@ -209,7 +199,7 @@ def get_jobs():
                 job.remove()
 
     for obj in response.json():
-        start = parser.parse(obj['start'])
+        start = date_parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
         LOGGER.debug('Adding new job: %s', job_id)
