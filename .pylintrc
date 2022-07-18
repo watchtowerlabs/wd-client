@@ -17,4 +17,3 @@ disable=
     R1732, # consider-using-with
     W0221, # arguments-differ (due to https://github.com/PyCQA/pylint/issues/1482, fixed in pylint>=2.5.0)
     W0402, # deprecated-module
-    W1514, # unspecified-encoding
