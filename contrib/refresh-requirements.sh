@@ -29,6 +29,8 @@ sort
 virtualenv
 "
 
+export LC_ALL=C
+
 # Check for required utilities
 for req in $REQUIREMENTS; do
 	if ! which "$req" >/dev/null; then
