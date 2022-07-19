@@ -1,6 +1,6 @@
 #!/bin/sh -e
 #
-# Script to refresh requirements.txt file
+# Script to refresh requirement files
 #
 # Copyright (C) 2019-2022 Libre Space Foundation <https://libre.space/>
 #
@@ -64,7 +64,7 @@ EOF
 done
 
 # Create requirements file from installed dependencies
-"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" >> requirements.txt
+"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort >> requirements.txt
 
 # Install development package with dependencies
 "$PIP_COMMAND" install --no-cache-dir .[dev]
@@ -73,7 +73,7 @@ done
 echo "-r requirements.txt" >> requirements-dev.txt
 _tmp_requirements_dev=$(mktemp)
 "$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements_dev"
-sort < requirements.txt | comm -13 - "$_tmp_requirements_dev" >> requirements-dev.txt
+comm -13 - "$_tmp_requirements_dev" < requirements.txt >> requirements-dev.txt
 
 # Create constraints file from installed dependencies
 cat "$_tmp_requirements_dev" >> constraints.txt
