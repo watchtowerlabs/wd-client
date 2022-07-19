@@ -64,7 +64,9 @@ EOF
 done
 
 # Create requirements file from installed dependencies
-"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort >> requirements.txt
+_tmp_requirements=$(mktemp)
+"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements"
+cat "$_tmp_requirements" >> requirements.txt
 
 # Install development package with dependencies
 "$PIP_COMMAND" install --no-cache-dir .[dev]
@@ -73,10 +75,13 @@ done
 echo "-r requirements.txt" >> requirements-dev.txt
 _tmp_requirements_dev=$(mktemp)
 "$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements_dev"
-comm -13 - "$_tmp_requirements_dev" < requirements.txt >> requirements-dev.txt
+comm -13 - "$_tmp_requirements_dev" < "$_tmp_requirements" >> requirements-dev.txt
 
 # Create constraints file from installed dependencies
 cat "$_tmp_requirements_dev" >> constraints.txt
+
+# Cleanup
+rm -f "$_tmp_requirements"
 rm -f "$_tmp_requirements_dev"
 
 # Set compatible release packages
