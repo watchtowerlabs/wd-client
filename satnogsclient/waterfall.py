@@ -25,6 +25,7 @@ def _read_waterfall(datafile_path):
 
     :param datafile_path: Path to data file
     :type datafile_path: str
+    :raises EmptyArrayError: Empty waterfall data
     :return: Waterfall data
     :rtype: dict
     """
@@ -111,8 +112,10 @@ class Waterfall():  # pylint: disable=R0903
 
         :param figure_path: Path of figure file to save
         :type figure_path: str
-        :param value_range: Minimum and maximum value range
-        :type value_range: tuple
+        :param vmin: Minimum value range
+        :type vmin: int
+        :param vmax: Maximum value range
+        :type vmax: int
         """
         tmin = np.min(self.data['data']['tabs'] / 1000000.0)
         tmax = np.max(self.data['data']['tabs'] / 1000000.0)

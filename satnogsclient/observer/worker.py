@@ -58,8 +58,10 @@ class Worker(object):
 
         :param observer_dict: Location of the Observer,
                               example: {'lon': 0.0, 'lat': 0.0, 'elev':0.0}
+        :type observer_dict: dict
         :param satellite_dict: TLE of the satellite,
                                example: {'tle0': '', 'tle1': '', 'tle2': ''}
+        :type satellite_dict: dict
         """
         self.observer_dict = observer_dict
         self.satellite_dict = satellite_dict
@@ -253,10 +255,13 @@ class WorkerFreq(Worker):
     def trackobject(self, frequency, observer_dict, satellite_dict):
         """
         :param frequency: Frequency of original signal in Hz
+        :type frequency: int
         :param observer_dict: Location of the Observer
                               example: {'lon': 0.0, 'lat': 0.0, 'elev:0.0}
+        :type observer_dict: dict
         :param satellite_dict: TLE of the satellite
                                example: {'tle0': '', 'tle1': '', 'tle2': ''}
+        :type satellite_dict: dict
         """
         self._frequency = frequency
 

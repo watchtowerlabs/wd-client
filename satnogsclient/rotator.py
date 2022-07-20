@@ -61,8 +61,8 @@ class Rotator(object):
         """
         Return the configuration of a register
 
-        :param pos: Number of the register
-        :type pos: int
+        :param cmd: Number of the register
+        :type cmd: int
         :return: Value of register
         :rtype: str
         """
