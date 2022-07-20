@@ -36,13 +36,11 @@ def post_and_save_artifacts(artifacts_file, observation_id):
     Finally closes this file.
 
     :param artifacts_file: The Artifact file (opened at position 0).
+    :type artifacts_file: file
     :param observation_id: The observation id of the associated
                            observation (for enhanced logging).
-
-    :type artifacts_file: TemporaryFile
     :type observation_id: str
 
-    :returns: None
     """
     filename = str(uuid.uuid4()) + '.h5'
 
@@ -93,9 +91,10 @@ def save_artifacts(artifacts_file, filename):
 
     NOTE: Does NOT close this file.
 
-    Arguments:
-        artifacts_file: TemporaryFile, open at position 0
-        filename: str
+    :param artifacts_file: TemporaryFile, open at position 0
+    :type artifacts_file: file
+    :param filename: Filename of artifacts file
+    :type filename: str
     """
 
     with open(os.path.join(settings.SATNOGS_ARTIFACTS_OUTPUT_PATH, filename), 'wb') as f_out:
