@@ -14,14 +14,11 @@ SCALE_IN_STDS = 8.0
 
 
 class EmptyArrayError(Exception):
-    """
-    Empty data array exception
-    """
+    """Empty data array exception"""
 
 
 def _read_waterfall(datafile_path):
-    """
-    Read waterfall data file
+    """Read waterfall data file
 
     :param datafile_path: Path to data file
     :type datafile_path: str
@@ -52,8 +49,7 @@ def _read_waterfall(datafile_path):
 
 
 def _compress_waterfall(waterfall):
-    """
-    Compress spectra of waterfall
+    """Compress spectra of waterfall
 
     :param waterfall: Watefall data
     :type waterfall: dict
@@ -70,8 +66,7 @@ def _compress_waterfall(waterfall):
 
 
 def _get_waterfall(datafile_path):
-    """
-    Get waterfall data
+    """Get waterfall data
 
     :param datafile_path: Path to data file
     :type datafile_path: str_array
@@ -93,22 +88,18 @@ def _get_waterfall(datafile_path):
 
 
 class Waterfall():  # pylint: disable=R0903
-    """
-    Parse waterfall data file
+    """Parse waterfall data file
 
     :param datafile_path: Path to data file
     :type datafile_path: str_array
     """
 
     def __init__(self, datafile_path):
-        """
-        Class constructor
-        """
+        """Class constructor"""
         self.data = _get_waterfall(datafile_path)
 
     def plot(self, figure_path, vmin=None, vmax=None):
-        """
-        Plot waterfall into a figure
+        """Plot waterfall into a figure
 
         :param figure_path: Path of figure file to save
         :type figure_path: str

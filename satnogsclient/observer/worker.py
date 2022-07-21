@@ -20,7 +20,6 @@ LOGGER = logging.getLogger(__name__)
 
 class Worker(object):
     """Class to facilitate as a worker for rotctl/rigctl."""
-
     # sleep time of loop (in seconds)
     _sleep_time = 0.1
 
@@ -52,8 +51,7 @@ class Worker(object):
         self._stay_alive = value
 
     def trackobject(self, observer_dict, satellite_dict):
-        """
-        Sets tracking object.
+        """Sets tracking object.
         Can also be called while tracking to manipulate observation.
 
         :param observer_dict: Location of the Observer,
@@ -67,8 +65,7 @@ class Worker(object):
         self.satellite_dict = satellite_dict
 
     def trackstart(self):
-        """
-        Starts the thread that communicates tracking info to remote socket.
+        """Starts the thread that communicates tracking info to remote socket.
         Stops by calling trackstop()
         """
         self.is_alive = True
@@ -90,9 +87,7 @@ class Worker(object):
         raise NotImplementedError
 
     def trackstop(self):
-        """
-        Sets object flag to false and stops the tracking thread.
-        """
+        """Sets object flag to false and stops the tracking thread."""
         self.is_alive = False
         self.track.join()
         LOGGER.info('Tracking stopped.')
@@ -106,8 +101,7 @@ class WorkerTrack(Worker):
     _flip = False
 
     def __init__(self, port, **kwargs):
-        """
-        Initialize WorkerTrack class.
+        """Initialize WorkerTrack class.
 
         :param port: Serial port for Hamlib-controlled rotator OR the network address
                      of a rotctld instance (e.g. 'localhost:4533')
@@ -118,8 +112,7 @@ class WorkerTrack(Worker):
         super().__init__(**kwargs)
 
     def _communicate_tracking_info(self):
-        """
-        Runs as a daemon thread, communicating tracking info to remote socket.
+        """Runs as a daemon thread, communicating tracking info to remote socket.
         Uses observer and satellite objects set by trackobject().
         Will exit when observation_end timestamp is reached.
         """
@@ -181,10 +174,10 @@ class WorkerTrack(Worker):
         return (azi, alt)
 
     def trackobject(self, *args):
-        """
+        """Track object
+
         :param args: Positional Arguments of parent class Worker
         """
-
         super().trackobject(*args)
 
         if settings.SATNOGS_ROT_FLIP and settings.SATNOGS_ROT_FLIP_ANGLE:
@@ -220,22 +213,19 @@ class WorkerFreq(Worker):
     _frequency = None
 
     def __init__(self, ip, port, **kwargs):
-        """
-        Initialize WorkerFreq class.
+        """Initialize WorkerFreq class.
 
         :param ip: Hamlib rigctld ip
         :param port: Hamlib rigctld port
         :param *kwargs: Keyword arguments of parent class Worker
         """
-
         self._ip = ip
         self._port = port
 
         super().__init__(**kwargs)
 
     def _communicate_tracking_info(self):
-        """
-        Runs as a daemon thread, communicating tracking info to remote socket.
+        """Runs as a daemon thread, communicating tracking info to remote socket.
         Uses observer and satellite objects set by trackobject().
         Will exit when observation_end timestamp is reached.
         """
@@ -253,7 +243,8 @@ class WorkerFreq(Worker):
         rig.close()
 
     def trackobject(self, frequency, observer_dict, satellite_dict):
-        """
+        """Track object
+
         :param frequency: Frequency of original signal in Hz
         :type frequency: int
         :param observer_dict: Location of the Observer

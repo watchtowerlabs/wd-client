@@ -11,8 +11,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def pinpoint(observer_dict, satellite_dict, timestamp=None):
-    """
-    Provides azimuth and altitude of tracked object.
+    """Provides azimuth and altitude of tracked object.
 
     args:
         observer_dict: dictionary with details of observation point.

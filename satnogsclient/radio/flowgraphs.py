@@ -127,8 +127,7 @@ SATNOGS_FLOWGRAPH_MODE_DEFAULT = 'FM'
 
 
 class Flowgraph():
-    """
-    Execute SatNOGS Flowgraphs
+    """Execute SatNOGS Flowgraphs
 
     :param device: SoapySDR device
     :type device: str
@@ -145,9 +144,7 @@ class Flowgraph():
     """
 
     def __init__(self, device, sampling_rate, frequency, mode, baud, output_data):
-        """
-        Class constructor
-        """
+        """Class constructor"""
         self.parameters = {
             'soapy-rx-device': device,
             'samp-rate-rx': str(sampling_rate),
@@ -194,8 +191,7 @@ class Flowgraph():
 
     @property
     def enabled(self):
-        """
-        Get flowgraph running status
+        """Get flowgraph running status
 
         :return: Flowgraph running status
         :rtype: bool
@@ -206,8 +202,7 @@ class Flowgraph():
 
     @enabled.setter
     def enabled(self, status):
-        """
-        Start or stop running of flowgraph
+        """Start or stop running of flowgraph
 
         :param status: Running status
         :type status: bool
@@ -228,8 +223,7 @@ class Flowgraph():
 
     @property
     def info(self):
-        """
-        Get information and parameters of flowgraph and radio
+        """Get information and parameters of flowgraph and radio
 
         :return: Information about flowgraph and radio
         :rtype: dict

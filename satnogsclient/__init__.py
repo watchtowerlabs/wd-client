@@ -1,6 +1,4 @@
-"""
-SatNOGS Client module initialization
-"""
+"""SatNOGS Client module initialization"""
 from __future__ import absolute_import, division, print_function
 
 import logging
@@ -28,10 +26,7 @@ if settings.SENTRY_ENABLED:
 
 
 def main():
-    """
-    Main function
-    """
-
+    """Main function"""
     if not settings.validate(LOGGER):
         LOGGER.error('Settings are invalid, exiting...')
         sys.exit(-1)
