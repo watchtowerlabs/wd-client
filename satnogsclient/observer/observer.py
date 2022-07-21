@@ -30,8 +30,7 @@ LOGGER = logging.getLogger(__name__)
 
 
 def post_and_save_artifacts(artifacts_file, observation_id):
-    """
-    Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file,
+    """Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file,
     saves it to disk if enabled, then tries to upload it to satnogs-db.
     Finally closes this file.
 
@@ -84,8 +83,7 @@ def post_and_save_artifacts(artifacts_file, observation_id):
 
 
 def save_artifacts(artifacts_file, filename):
-    """
-    Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file and
+    """Accepts a TemporaryFile `artifacts_file` opened at the beginning of the file and
     writes this file to disk.
     Finally seeks back to the beginning of the file.
 
@@ -96,7 +94,6 @@ def save_artifacts(artifacts_file, filename):
     :param filename: Filename of artifacts file
     :type filename: str
     """
-
     with open(os.path.join(settings.SATNOGS_ARTIFACTS_OUTPUT_PATH, filename), 'wb') as f_out:
         f_out.write(artifacts_file.read())
 
@@ -131,12 +128,10 @@ class Observer(object):
         self.tracker_rot = None
 
     def setup(self, observation_id, tle, observation_end, frequency, mode, baud):
-        """
-        Sets up required internal variables.
+        """Sets up required internal variables.
         * returns True if setup is ok
         * returns False if issue is encountered
         """
-
         # Set attributes
         self.observation_id = observation_id
         self.tle = tle

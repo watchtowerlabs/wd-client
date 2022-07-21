@@ -1,6 +1,4 @@
-"""
-SatNOGS Client settings file
-"""
+"""SatNOGS Client settings file"""
 from __future__ import absolute_import, division, print_function
 
 import os
@@ -139,8 +137,7 @@ REQUIRED_VARIABLES = [
 
 
 def validate(logger):
-    """
-    Validate the provided settings:
+    """Validate the provided settings:
     - Check for the existance of all required variables
     - Validate format of the provided value for some required variables
 
