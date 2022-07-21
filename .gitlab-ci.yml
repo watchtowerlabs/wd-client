@@ -12,7 +12,7 @@ variables:
     python3-gps
     python3-libhamlib2
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
-  GITLAB_CI_SIGN_OFF_EXCLUDE: '14373744f0235d920f42fd8167c6982b8de02ec8'
+  GITLAB_CI_SIGN_OFF_EXCLUDE: '67bc3fe50fe2d7a2cac426589c6325041b333c4e'
 stages:
   - static
   - build
