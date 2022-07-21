@@ -56,7 +56,7 @@ def spawn_observer(**kwargs):
     if observer.setup(**setup_kwargs):
         LOGGER.info('Spawning observer worker.')
         timeout_timedelta = end - datetime.now(pytz.utc)
-        if timeout_timedelta.total_seconds() == 0:
+        if timeout_timedelta.total_seconds() <= 0:
             timeout_timedelta = timedelta()
         if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
             LOGGER.error('Observer job lock acquiring timed out.')
