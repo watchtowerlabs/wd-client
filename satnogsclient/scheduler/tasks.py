@@ -52,9 +52,8 @@ def spawn_observer(**kwargs):
     }
 
     LOGGER.debug('Observer args: %s', setup_kwargs)
-    setup = observer.setup(**setup_kwargs)
 
-    if setup:
+    if observer.setup(**setup_kwargs):
         LOGGER.info('Spawning observer worker.')
         timeout_timedelta = end - datetime.now(pytz.utc)
         if timeout_timedelta.total_seconds() == 0:
@@ -71,7 +70,7 @@ def spawn_observer(**kwargs):
 def keep_or_remove_file(filename):
     # If set, move uploaded file to `SATNOGS_COMPLETE_OUTPUT_PATH`,
     # otherwise delete it
-    if settings.SATNOGS_COMPLETE_OUTPUT_PATH != '':
+    if settings.SATNOGS_COMPLETE_OUTPUT_PATH:
         os.rename(os.path.join(settings.SATNOGS_OUTPUT_PATH, filename),
                   os.path.join(settings.SATNOGS_COMPLETE_OUTPUT_PATH, filename))
     else:
@@ -85,7 +84,7 @@ def post_data():
     for fil in next(os.walk(settings.SATNOGS_OUTPUT_PATH))[2]:
         file_path = os.path.join(*[settings.SATNOGS_OUTPUT_PATH, fil])
         if (fil.startswith('receiving_satnogs') or fil.startswith('receiving_waterfall')
-                or fil.startswith('receiving_data') or os.stat(file_path).st_size == 0):
+                or fil.startswith('receiving_data') or not os.stat(file_path).st_size):
             continue
         if fil.startswith('satnogs'):
             # This file is an audio file

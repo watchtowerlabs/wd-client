@@ -46,7 +46,7 @@ SATNOGS_ARTIFACTS_OUTPUT_PATH = environ.get('SATNOGS_ARTIFACTS_OUTPUT_PATH',
 
 for p in (SATNOGS_APP_PATH, SATNOGS_OUTPUT_PATH, SATNOGS_COMPLETE_OUTPUT_PATH,
           SATNOGS_INCOMPLETE_OUTPUT_PATH):
-    if p != '' and not os.path.exists(p):
+    if p and not os.path.exists(p):
         os.mkdir(p)
 
 SATNOGS_REMOVE_RAW_FILES = bool(strtobool(environ.get('SATNOGS_REMOVE_RAW_FILES', 'True')))
@@ -170,7 +170,7 @@ def validate(logger):
         logger.error('SATNOGS_STATION_LON not configured')
         settings_valid = False
 
-    if SATNOGS_STATION_ELEV is None and SATNOGS_GPSD_CLIENT_ENABLED is False:
+    if not (SATNOGS_STATION_ELEV or SATNOGS_GPSD_CLIENT_ENABLED):
         logger.error('SATNOGS_STATION_ELEV not configured')
         settings_valid = False
 

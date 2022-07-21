@@ -216,10 +216,9 @@ class Flowgraph():
                 self.process = subprocess.Popen(args)
             except OSError:
                 LOGGER.exception('Could not start GNURadio python script')
-        else:
-            if self.process:
-                self.process.send_signal(signal.SIGINT)
-                _, _ = self.process.communicate()
+        elif self.process:
+            self.process.send_signal(signal.SIGINT)
+            _, _ = self.process.communicate()
 
     @property
     def info(self):

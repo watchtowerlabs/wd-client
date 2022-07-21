@@ -201,9 +201,10 @@ class Observer(object):
             ]
             pre_script = []
             for arg in shlex.split(settings.SATNOGS_PRE_OBSERVATION_SCRIPT):
+                repl_arg = arg
                 for key, val in replacements:
-                    arg = arg.replace(key, val)
-                pre_script.append(arg)
+                    repl_arg = repl_arg.replace(key, val)
+                pre_script.append(repl_arg)
             subprocess.call(pre_script)
 
         # if it is APT we want to save with a prefix until the observation
@@ -343,9 +344,10 @@ class Observer(object):
             ]
             post_script = []
             for arg in shlex.split(settings.SATNOGS_POST_OBSERVATION_SCRIPT):
+                repl_arg = arg
                 for key, val in replacements:
-                    arg = arg.replace(key, val)
-                post_script.append(arg)
+                    repl_arg = repl_arg.replace(key, val)
+                post_script.append(repl_arg)
             subprocess.call(post_script)
 
     def rename_ogg_file(self):

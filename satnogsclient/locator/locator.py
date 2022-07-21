@@ -26,7 +26,7 @@ class Locator(object):
     def update_location(self):
         if settings.SATNOGS_GPSD_CLIENT_ENABLED is not True:
             return
-        no_timeout = (self.timeout == 0)
+        no_timeout = (not self.timeout)
         if (settings.SATNOGS_STATION_LAT is None or settings.SATNOGS_STATION_LON is None
                 or settings.SATNOGS_STATION_ELEV is None):
             no_timeout = True
