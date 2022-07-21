@@ -52,9 +52,8 @@ def spawn_observer(**kwargs):
     }
 
     LOGGER.debug('Observer args: %s', setup_kwargs)
-    setup = observer.setup(**setup_kwargs)
 
-    if setup:
+    if observer.setup(**setup_kwargs):
         LOGGER.info('Spawning observer worker.')
         timeout_timedelta = end - datetime.now(pytz.utc)
         if timeout_timedelta.total_seconds() == 0:
