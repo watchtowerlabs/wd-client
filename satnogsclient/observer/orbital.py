@@ -25,7 +25,7 @@ def pinpoint(observer_dict, satellite_dict, timestamp=None):
     # Disable until pylint 2.4 is released, see
     # https://github.com/PyCQA/pylint/issues/2807
     # observer object
-    if all(x in observer_dict for x in ['lat', 'lon', 'elev']):
+    if all(x in observer_dict for x in ('lat', 'lon', 'elev')):
         LOGGER.debug('Observer data: %s', observer_dict)
         observer = ephem.Observer()
         observer.lon = str(observer_dict['lon'])
@@ -36,7 +36,7 @@ def pinpoint(observer_dict, satellite_dict, timestamp=None):
         return {'ok': False}
 
     # satellite object
-    if all(x in satellite_dict for x in ['tle0', 'tle1', 'tle2']):
+    if all(x in satellite_dict for x in ('tle0', 'tle1', 'tle2')):
         LOGGER.debug('Satellite data: %s', satellite_dict)
         tle0 = str(satellite_dict['tle0'])
         tle1 = str(satellite_dict['tle1'])
