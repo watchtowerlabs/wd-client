@@ -362,6 +362,19 @@ SATNOGS_SOAPY_RX_DEVICE
    SoapySDR device driver to use for RX.
    This setting must be defined in the form ``driver=<name>`` where ``<name>`` is the name of the SoapySDR device driver to use.
 
+   It also allows setting different devices for specific frequency ranges.
+
+   The format for multiple devices is a space delimited list of frequency range -- device pairs:
+   
+   ``<min. freq.>-<max. freq>:driver=<name> <min. freq.>-<max. freq.>:driver=<name> ...``
+
+   Where frequencies are in MHz and ``<name>`` is the name of the SoapySDR device driver to use for the specified frequency
+   range.
+
+   Example: two RTL-SDR receivers: one for VHF (135..148 MHz), another for UHF (430..470 MHz).
+
+   ``135-148:driver=rtlsdr,serial=1 430-470:driver=rtlsdr,serial=2``
+
 
 SATNOGS_RX_SAMP_RATE
 ~~~~~~~~~~~~~~~~~~~~
