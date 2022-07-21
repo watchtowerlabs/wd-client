@@ -40,7 +40,7 @@ def _read_waterfall(datafile_path):
     }
     data_dtypes = np.dtype([('tabs', 'int64'), ('spec', 'float32', (waterfall['nchan'], ))])
     waterfall['data'] = np.fromfile(datafile, dtype=data_dtypes)
-    if waterfall['data'].size == 0:
+    if not waterfall['data'].size:
         raise EmptyArrayError
 
     datafile.close()
