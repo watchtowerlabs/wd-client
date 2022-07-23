@@ -238,9 +238,10 @@ class Observer(object):
             self.observation_decoded_data =\
                 self.observation_receiving_decoded_data
 
-        # start thread for rotctl
-        LOGGER.info('Start rotctrl thread.')
-        self.run_rot()
+        if settings.SATNOGS_ROT_ENABLED:
+            LOGGER.info('Start rotctrl thread.')
+            self.run_rot()
+
         # start thread for rigctl
         LOGGER.info('Start rigctrl thread.')
         self.run_rig()

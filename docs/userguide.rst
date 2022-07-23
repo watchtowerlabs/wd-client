@@ -269,6 +269,15 @@ SATNOGS_NETWORK_API_POST_INTERVAL
 :Description:
    Interval (in seconds) for posting observation data to SatNOGS Network API.
 
+SATNOGS_ROT_ENABLED
+~~~~~~~~~~~~~~~~~~~
+
+:Type: *boolean*
+:Default: *True*
+:Required: *No*
+:Description:
+   Enable SatNOGS Client to connect to an antenna rotator using the Hamlib library.
+
 
 SATNOGS_ROT_MODEL
 ~~~~~~~~~~~~~~~~~
