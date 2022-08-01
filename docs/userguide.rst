@@ -194,6 +194,7 @@ SATNOGS_COMPLETE_OUTPUT_PATH
 
 SATNOGS_INCOMPLETE_OUTPUT_PATH
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *path*
 :Default: ``/tmp/.satnogs/data/incomplete``
 :Required: *No*
@@ -203,12 +204,12 @@ SATNOGS_INCOMPLETE_OUTPUT_PATH
 
 SATNOGS_ARTIFACTS_OUTPUT_PATH
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *path*
 :Default: ``/tmp/.satnogs/artifacts``
 :Required: *No*
 :Description:
    Path for Artifact files.
-
 
 
 SATNOGS_REMOVE_RAW_FILES
@@ -229,7 +230,6 @@ SATNOGS_KEEP_ARTIFACTS
 :Required: *No*
 :Description:
    Do not remove Artifact files after successfully uploading them.
-
 
 
 SATNOGS_VERIFY_SSL
@@ -254,6 +254,7 @@ SATNOGS_NETWORK_API_URL
 
 SATNOGS_NETWORK_API_QUERY_INTERVAL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: ``60``
 :Required: *No*
@@ -268,6 +269,7 @@ SATNOGS_NETWORK_API_POST_INTERVAL
 :Required: *No*
 :Description:
    Interval (in seconds) for posting observation data to SatNOGS Network API.
+
 
 SATNOGS_ROT_ENABLED
 ~~~~~~~~~~~~~~~~~~~
@@ -364,6 +366,7 @@ SATNOGS_ROT_FLIP_ANGLE
 
 SATNOGS_SOAPY_RX_DEVICE
 ~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *None*
 :Required: *Yes*
@@ -387,6 +390,7 @@ SATNOGS_SOAPY_RX_DEVICE
 
 SATNOGS_RX_SAMP_RATE
 ~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: *None*
 :Required: *Yes*
@@ -397,6 +401,7 @@ SATNOGS_RX_SAMP_RATE
 
 SATNOGS_RX_BANDWIDTH
 ~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -407,6 +412,7 @@ SATNOGS_RX_BANDWIDTH
 
 SATNOGS_DOPPLER_CORR_PER_SEC
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -416,6 +422,7 @@ SATNOGS_DOPPLER_CORR_PER_SEC
 
 SATNOGS_LO_OFFSET
 ~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -426,6 +433,7 @@ SATNOGS_LO_OFFSET
 
 SATNOGS_PPM_ERROR
 ~~~~~~~~~~~~~~~~~
+
 :Type: *float*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -436,6 +444,7 @@ SATNOGS_PPM_ERROR
 
 SATNOGS_GAIN_MODE
 ~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: ``Overall``
 :Required: *No*
@@ -446,6 +455,7 @@ SATNOGS_GAIN_MODE
 
 SATNOGS_RF_GAIN
 ~~~~~~~~~~~~~~~
+
 :Type: *float*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -456,6 +466,7 @@ SATNOGS_RF_GAIN
 
 SATNOGS_ANTENNA
 ~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *None*
 :Required: *Yes*
@@ -466,6 +477,7 @@ SATNOGS_ANTENNA
 
 SATNOGS_DEV_ARGS
 ~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -476,6 +488,7 @@ SATNOGS_DEV_ARGS
 
 SATNOGS_STREAM_ARGS
 ~~~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -486,6 +499,7 @@ SATNOGS_STREAM_ARGS
 
 SATNOGS_TUNE_ARGS
 ~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -495,6 +509,7 @@ SATNOGS_TUNE_ARGS
 
 SATNOGS_OTHER_SETTINGS
 ~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -504,6 +519,7 @@ SATNOGS_OTHER_SETTINGS
 
 SATNOGS_DC_REMOVAL
 ~~~~~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -513,6 +529,7 @@ SATNOGS_DC_REMOVAL
 
 SATNOGS_BB_FREQ
 ~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -522,6 +539,7 @@ SATNOGS_BB_FREQ
 
 ENABLE_IQ_DUMP
 ~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *False*
 :Required: *No*
@@ -533,6 +551,7 @@ ENABLE_IQ_DUMP
 
 IQ_DUMP_FILENAME
 ~~~~~~~~~~~~~~~~
+
 :Type: *path*
 :Default: *None*
 :Required: *No*
@@ -542,6 +561,7 @@ IQ_DUMP_FILENAME
 
 DISABLE_DECODED_DATA
 ~~~~~~~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *False*
 :Required: *No*
@@ -551,6 +571,7 @@ DISABLE_DECODED_DATA
 
 UDP_DUMP_HOST
 ~~~~~~~~~~~~~
+
 :Type: *host*
 :Default: *Flowgraph-defined*
 :Required: *No*
@@ -560,6 +581,7 @@ UDP_DUMP_HOST
 
 UDP_DUMP_PORT
 ~~~~~~~~~~~~~
+
 :Type: *port*
 :Default: ``57356``
 :Required: *No*
@@ -589,6 +611,7 @@ SATNOGS_UPLOAD_WATERFALL_FILES
 
 SATNOGS_WATERFALL_AUTORANGE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *True*
 :Required: *No*
@@ -598,6 +621,7 @@ SATNOGS_WATERFALL_AUTORANGE
 
 SATNOGS_WATERFALL_MIN_VALUE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: ``-100``
 :Required: *No*
@@ -607,6 +631,7 @@ SATNOGS_WATERFALL_MIN_VALUE
 
 SATNOGS_WATERFALL_MAX_VALUE
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: ``-50``
 :Required: *No*
@@ -616,6 +641,7 @@ SATNOGS_WATERFALL_MAX_VALUE
 
 SATNOGS_ARTIFACTS_ENABLED
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *False*
 :Required: *No*
@@ -635,6 +661,7 @@ SATNOGS_ARTIFACTS_API_URL
 
 SATNOGS_ARTIFACTS_API_POST_INTERVAL
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: ``180``
 :Required: *No*
@@ -657,6 +684,7 @@ SATNOGS_ARTIFACTS_API_TOKEN
 
 LOG_LEVEL
 ~~~~~~~~~
+
 :Type: *string*
 :Default: ``WARNING``
 :Required: *No*
@@ -673,6 +701,7 @@ LOG_LEVEL
 
 SCHEDULER_LOG_LEVEL
 ~~~~~~~~~~~~~~~~~~~
+
 :Type: *string*
 :Default: ``WARNING``
 :Required: *No*
@@ -689,6 +718,7 @@ SCHEDULER_LOG_LEVEL
 
 SENTRY_DSN
 ~~~~~~~~~~
+
 :Type: *string*
 :Default: d50342fb75aa8f3945e2f846b77a0cdb7c7d2275
 :Required: *No*
@@ -698,6 +728,7 @@ SENTRY_DSN
 
 SENTRY_ENABLED
 ~~~~~~~~~~~~~~
+
 :Type: *boolean*
 :Default: *False*
 :Required: *No*
