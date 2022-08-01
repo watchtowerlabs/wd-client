@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://gitlab.com/librespacefoundation/satnogs/satnogs-client/-/raw/master/config/specs/development.json",
+  "title": "SatNOGS Station Configuration",
+  "description": "A configuration object for a SatNOGS Station",
+  "type": "object",
+  "properties": {
+    "satnogs_api_token": {
+      "description": "SatNOGS Network API Token",
+      "type": "string"
+    },
+    "satnogs_soapy_rx_device": {
+      "description": "Soapy RX Device",
+      "type": "string"
+    },
+    "satnogs_antenna": {
+      "description": "SatNOGS Radio Antenna",
+      "type": "string"
+    },
+    "satnogs_rx_samp_rate": {
+      "description": "RX sampling rate in Hz",
+      "type": "number"
+    },
+    "satnogs_station_id": {
+      "description": "Station ID",
+      "type": "integer"
+    },
+    "satnogs_station_elev": {
+      "description": "Station Elevation above ground in meter",
+      "type": "number"
+    },
+    "satnogs_station_lat": {
+      "description": "Station Latitude in decimal degrees",
+      "type": "number"
+    },
+    "satnogs_station_lon": {
+      "description": "Station Longitude in decimal degrees",
+      "type": "number"
+    }
+  },
+  "required": [  
+      "satnogs_api_token",
+      "satnogs_soapy_rx_device",
+      "satnogs_antenna",
+      "satnogs_rx_samp_rate",
+      "satnogs_station_elev",
+      "satnogs_station_id",
+      "satnogs_station_lat",
+      "satnogs_station_lon"
+    ],
+  "additional_properties": true
+}
