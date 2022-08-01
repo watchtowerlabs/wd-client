@@ -40,6 +40,30 @@
       "type": "number",
       "minimum": -180,
       "maximum": 180
+    },
+    "satnogs_network_api_url": {
+      "description": "",
+      "type": "string"
+    },
+    "satnogs_network_api_query_interval": {
+      "description": "network API query interval",
+      "type": "number"
+    },
+    "satnogs_network_api_post_interval": {
+      "description": "network API post interval",
+      "type": "number"
+    },
+    "satnogs_verify_ssl": {
+      "description": "Verify SatNOGS network SSL certificate",
+      "type": "boolean"
+    },
+    "satnogs_rig_ip": {
+      "description": "Hamlib rigctld IP",
+      "type": "string"
+    },
+    "satnogs_rig_port": {
+      "description": "Hamlib rigctld port",
+      "type": "number"
     }
   },
   "required": [  
