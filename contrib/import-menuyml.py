@@ -1,11 +1,11 @@
 #!/usr/bin/env python
 import json
+
 import yaml
 
 MENU_FILENAME = '../config/satnogsconfig/menu.yml'
 JSONMENU_FILENAME = 'config/menu.json'
 OUTPUT_FILENAME = 'config/menu-new.json'
-
 
 if __name__ == '__main__':
     with open(JSONMENU_FILENAME, 'r') as fjson:

@@ -3,43 +3,57 @@
     "type": "string",
     "default": "None",
     "required": true,
-    "description": "SatNOGS Network API token associated with an account in SatNOGS Network.\nThis token is secret.\nIt can be found in SatNOGS Network user page."
+    "description": "SatNOGS Network API token associated with an account in SatNOGS Network.\nThis token is secret.\nIt can be found in SatNOGS Network user page.",
+    "input_method": "variablebox",
+    "short_description": "Define API token"
   },
   "SATNOGS_PRE_OBSERVATION_SCRIPT": {
     "type": "path",
     "default": "None",
     "required": false,
-    "description": "A path to an executable to be executed before an observation job is started.\nExecution of this script blocks the observation job."
+    "description": "A path to an executable to be executed before an observation job is started.\nExecution of this script blocks the observation job.",
+    "input_method": "variablebox",
+    "short_description": "Define pre-observation script"
   },
   "SATNOGS_POST_OBSERVATION_SCRIPT": {
     "type": "path",
     "default": "None",
     "required": false,
-    "description": "A path to an executable to be executed after an observation job has finished.\nExecution of this script blocks the completion of an observation job."
+    "description": "A path to an executable to be executed after an observation job has finished.\nExecution of this script blocks the completion of an observation job.",
+    "input_method": "variablebox",
+    "short_description": "Define post-observation script"
   },
   "SATNOGS_STATION_ID": {
     "type": "integer",
     "default": "None",
     "required": true,
-    "description": "The ID of the SatNOGS Network station this client will act as.\nThe station must be owned by the user with the defined API token."
+    "description": "The ID of the SatNOGS Network station this client will act as.\nThe station must be owned by the user with the defined API token.",
+    "input_method": "variablebox",
+    "short_description": "Define station ID"
   },
   "SATNOGS_STATION_LAT": {
     "type": "float",
     "default": "None",
     "required": true,
-    "description": "Latitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+    "description": "Latitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy.",
+    "input_method": "variablebox",
+    "short_description": "Define station latitude"
   },
   "SATNOGS_STATION_LON": {
     "type": "float",
     "default": "None",
     "required": true,
-    "description": "Longitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+    "description": "Longitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy.",
+    "input_method": "variablebox",
+    "short_description": "Define station longitude"
   },
   "SATNOGS_STATION_ELEV": {
     "type": "integer",
     "default": "None",
     "required": true,
-    "description": "Elevation of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+    "description": "Elevation of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy.",
+    "input_method": "variablebox",
+    "short_description": "Define station elevation"
   },
   "SATNOGS_GPSD_CLIENT_ENABLED": {
     "type": "boolean",
@@ -69,25 +83,45 @@
     "type": "path",
     "default": "/tmp/.satnogs",
     "required": false,
-    "description": "Base path for storing output files."
+    "description": "Base path for storing output files.",
+    "input_method": "variablebox",
+    "short_description": "Define application data path",
+    "init": "/tmp/.satnogs",
+    "categories": [
+      "Paths"
+    ]
   },
   "SATNOGS_OUTPUT_PATH": {
     "type": "path",
     "default": "/tmp/.satnogs/data",
     "required": false,
-    "description": "Path for storing output files."
+    "description": "Path for storing output files.",
+    "input_method": "variablebox",
+    "short_description": "Define output data path",
+    "init": "/tmp/.satnogs/data",
+    "categories": [
+      "Paths"
+    ]
   },
   "SATNOGS_COMPLETE_OUTPUT_PATH": {
     "type": "path",
     "default": "",
     "required": false,
-    "description": "Path to move output files once they are completed.\nPreserving output files is disabled if set to empty."
+    "description": "Path to move output files once they are completed.\nPreserving output files is disabled if set to empty.",
+    "input_method": "variablebox",
+    "short_description": "Define completed data path"
   },
   "SATNOGS_INCOMPLETE_OUTPUT_PATH": {
     "type": "path",
     "default": "/tmp/.satnogs/data/incomplete",
     "required": false,
-    "description": "Path for moving incomplete output files."
+    "description": "Path for moving incomplete output files.",
+    "input_method": "variablebox",
+    "short_description": "Define incompleted data path",
+    "init": "/tmp/.satnogs/data/incomplete",
+    "categories": [
+      "Paths"
+    ]
   },
   "SATNOGS_ARTIFACTS_OUTPUT_PATH": {
     "type": "path",
@@ -99,7 +133,9 @@
     "type": "boolean",
     "default": "True",
     "required": false,
-    "description": "Remove raw data files used for generating waterfalls."
+    "description": "Remove raw data files used for generating waterfalls.",
+    "input_method": "variableyesno",
+    "short_description": "Remove raw files"
   },
   "SATNOGS_KEEP_ARTIFACTS": {
     "type": "boolean",
@@ -111,25 +147,45 @@
     "type": "boolean",
     "default": "True",
     "required": false,
-    "description": "Verify SSL certificates for HTTPS requests."
+    "description": "Verify SSL certificates for HTTPS requests.",
+    "input_method": "variableyesno",
+    "short_description": "Verify SatNOGS network SSL certificate"
   },
   "SATNOGS_NETWORK_API_URL": {
     "type": "url",
     "default": "https://network.satnogs.org/api/",
     "required": false,
-    "description": "URL pointing to API of SatNOGS Network."
+    "description": "URL pointing to API of SatNOGS Network.",
+    "input_method": "variablebox",
+    "short_description": "Define network API URL",
+    "init": "https://network.satnogs.org/api/",
+    "categories": [
+      "Network"
+    ]
   },
   "SATNOGS_NETWORK_API_QUERY_INTERVAL": {
     "type": "integer",
     "default": "60",
     "required": false,
-    "description": "Interval (in seconds) for pulling jobs form SatNOGS Network API."
+    "description": "Interval (in seconds) for pulling jobs form SatNOGS Network API.",
+    "input_method": "variablebox",
+    "short_description": "Define network API query interval",
+    "init": "60",
+    "categories": [
+      "Network"
+    ]
   },
   "SATNOGS_NETWORK_API_POST_INTERVAL": {
     "type": "integer",
     "default": "180",
     "required": false,
-    "description": "Interval (in seconds) for posting observation data to SatNOGS Network API."
+    "description": "Interval (in seconds) for posting observation data to SatNOGS Network API.",
+    "input_method": "variablebox",
+    "short_description": "Define network API post interval",
+    "init": "180",
+    "categories": [
+      "Network"
+    ]
   },
   "SATNOGS_ROT_ENABLED": {
     "type": "boolean",
@@ -141,223 +197,345 @@
     "type": "string",
     "default": "ROT_MODEL_DUMMY",
     "required": false,
-    "description": "Rotator model to control.\nThis value must be the model string of a Hamlib rotator."
+    "description": "Rotator model to control.\nThis value must be the model string of a Hamlib rotator.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rotator model",
+    "init": "ROT_MODEL_DUMMY",
+    "categories": [
+      "Rotator"
+    ]
   },
   "SATNOGS_ROT_BAUD": {
     "type": "integer",
     "default": "19200",
     "required": false,
-    "description": "Hamlib rotator serial interface baud rate."
+    "description": "Hamlib rotator serial interface baud rate.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rotator baud rate",
+    "init": "19200",
+    "categories": [
+      "Rotator"
+    ]
   },
   "SATNOGS_ROT_PORT": {
     "type": "path",
     "default": "/dev/ttyUSB0",
     "required": false,
-    "description": "Path to Hamlib rotator serial port device.\nThe device must be accessible to the user which SatNOGS Client is running."
+    "description": "Path to Hamlib rotator serial port device.\nThe device must be accessible to the user which SatNOGS Client is running.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rotctld port",
+    "init": "/dev/ttyUSB0",
+    "categories": [
+      "Rotator"
+    ]
   },
   "SATNOGS_RIG_IP": {
     "type": "host",
     "default": "127.0.0.1",
     "required": false,
-    "description": "Hostname or IP address of Hamlib rotctld."
+    "description": "Hostname or IP address of Hamlib rotctld.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rigctld IP",
+    "init": "127.0.0.1",
+    "categories": [
+      "Radio"
+    ]
   },
   "SATNOGS_RIG_PORT": {
     "type": "integer",
     "default": "4532",
     "required": false,
-    "description": "Hamlib rigctld TCP port."
+    "description": "Hamlib rigctld TCP port.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rigctld port",
+    "init": "4532",
+    "categories": [
+      "Radio"
+    ]
   },
   "SATNOGS_ROT_THRESHOLD": {
     "type": "integer",
     "default": "4",
     "required": false,
-    "description": "Azimuth/elevation threshold for moving the rotator.\nPosition changes below this threshold will not cause the rotator to move."
+    "description": "Azimuth/elevation threshold for moving the rotator.\nPosition changes below this threshold will not cause the rotator to move.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rotator command threshold",
+    "init": "4",
+    "categories": [
+      "Rotator"
+    ]
   },
   "SATNOGS_ROT_FLIP": {
     "type": "boolean",
     "default": "False",
     "required": false,
-    "description": "Enable rotator flipping during high elevation passes."
+    "description": "Enable rotator flipping during high elevation passes.",
+    "input_method": "variableyesno",
+    "short_description": "Enable Hamlib rotator flip"
   },
   "SATNOGS_ROT_FLIP_ANGLE": {
     "type": "integer",
     "default": "75",
     "required": false,
-    "description": "Elevation angle above which the rotator will flip."
+    "description": "Elevation angle above which the rotator will flip.",
+    "input_method": "variablebox",
+    "short_description": "Define Hamlib rotator flip angle",
+    "init": "75",
+    "categories": [
+      "Rotator"
+    ]
   },
   "SATNOGS_SOAPY_RX_DEVICE": {
     "type": "string",
     "default": "None",
     "required": true,
-    "description": "SoapySDR device driver to use for RX.\nThis setting must be defined in the form ``driver=<name>`` where ``<name>`` is the name of the SoapySDR device driver to use.\n\nIt also allows setting different devices for specific frequency ranges.\n\nThe format for multiple devices is a space delimited list of frequency range -- device pairs:\n``<min. freq.>-<max. freq>:driver=<name> <min. freq.>-<max. freq.>:driver=<name> ...``\n\nWhere frequencies are in MHz and ``<name>`` is the name of the SoapySDR device driver to use for the specified frequency\nrange.\n\nExample: two RTL-SDR receivers: one for VHF (135..148 MHz), another for UHF (430..470 MHz).\n\n``135-148:driver=rtlsdr,serial=1 430-470:driver=rtlsdr,serial=2``"
+    "description": "SoapySDR device driver to use for RX.\nThis setting must be defined in the form ``driver=<name>`` where ``<name>`` is the name of the SoapySDR device driver to use.\n\nIt also allows setting different devices for specific frequency ranges.\n\nThe format for multiple devices is a space delimited list of frequency range -- device pairs:\n``<min. freq.>-<max. freq>:driver=<name> <min. freq.>-<max. freq.>:driver=<name> ...``\n\nWhere frequencies are in MHz and ``<name>`` is the name of the SoapySDR device driver to use for the specified frequency\nrange.\n\nExample: two RTL-SDR receivers: one for VHF (135..148 MHz), another for UHF (430..470 MHz).\n\n``135-148:driver=rtlsdr,serial=1 430-470:driver=rtlsdr,serial=2``",
+    "input_method": "variablebox",
+    "short_description": "Define Soapy RX device"
   },
   "SATNOGS_RX_SAMP_RATE": {
     "type": "integer",
     "default": "None",
     "required": true,
-    "description": "SoapySDR device sample rate.\nValid sample rates for attached devices can be queried using ``SoapySDRUtil --probe``."
+    "description": "SoapySDR device sample rate.\nValid sample rates for attached devices can be queried using ``SoapySDRUtil --probe``.",
+    "input_method": "variablebox",
+    "short_description": "Define RX sampling rate"
   },
   "SATNOGS_RX_BANDWIDTH": {
     "type": "integer",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device RF bandwidth.\nThis setting configures the RF filter on devices that support it."
+    "description": "SoapySDR device RF bandwidth.\nThis setting configures the RF filter on devices that support it.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio RF Bandwidth (Hz)"
   },
   "SATNOGS_DOPPLER_CORR_PER_SEC": {
     "type": "integer",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "Number of Doppler corrections per second requested by SatNOGS Radio."
+    "description": "Number of Doppler corrections per second requested by SatNOGS Radio.",
+    "input_method": "variablebox",
+    "short_description": "Define doppler corrections per sec"
   },
   "SATNOGS_LO_OFFSET": {
     "type": "integer",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device local oscillator offset to apply.\nThis setting is used to shift the carrier away from the DC spike."
+    "description": "SoapySDR device local oscillator offset to apply.\nThis setting is used to shift the carrier away from the DC spike.",
+    "input_method": "variablebox",
+    "short_description": "Define local oscillator offset (Hz)"
   },
   "SATNOGS_PPM_ERROR": {
     "type": "float",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device oscillator frequency error correction to apply.\nThis setting is defined in parts per million."
+    "description": "SoapySDR device oscillator frequency error correction to apply.\nThis setting is defined in parts per million.",
+    "input_method": "variablebox",
+    "short_description": "Define frequency correction (ppm)"
   },
   "SATNOGS_GAIN_MODE": {
     "type": "string",
     "default": "Overall",
     "required": false,
-    "description": "SoapySDR device gain mode.\nValid values are: ``Overall``, ``Specific``, ``Settings Field``."
+    "description": "SoapySDR device gain mode.\nValid values are: ``Overall``, ``Specific``, ``Settings Field``.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio Gain mode (Overall, Settings Field)",
+    "init": "Overall",
+    "categories": [
+      "Radio"
+    ]
   },
   "SATNOGS_RF_GAIN": {
     "type": "float",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device overall gain, in dB.\nDevice drivers set individual, device specific gains to approximate linearity on the overall gain."
+    "description": "SoapySDR device overall gain, in dB.\nDevice drivers set individual, device specific gains to approximate linearity on the overall gain.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio RF Gain"
   },
   "SATNOGS_ANTENNA": {
     "type": "string",
     "default": "None",
     "required": true,
-    "description": "SoapySDR device antenna to use for RX.\nValid antennas for attached devices can be queried using ``SoapySDRUtil --probe``."
+    "description": "SoapySDR device antenna to use for RX.\nValid antennas for attached devices can be queried using ``SoapySDRUtil --probe``.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio Antenna"
   },
   "SATNOGS_DEV_ARGS": {
     "type": "string",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device arguments.\nValid device arguments for attached devices can be queried using ``SoapySDRUtil --probe``."
+    "description": "SoapySDR device arguments.\nValid device arguments for attached devices can be queried using ``SoapySDRUtil --probe``.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio device arguments"
   },
   "SATNOGS_STREAM_ARGS": {
     "type": "string",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR stream arguments.\nValid stream arguments for attached devices can be queried using ``SoapySDRUtil --probe``."
+    "description": "SoapySDR stream arguments.\nValid stream arguments for attached devices can be queried using ``SoapySDRUtil --probe``.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio stream arguments"
   },
   "SATNOGS_TUNE_ARGS": {
     "type": "string",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR channel tune arguments."
+    "description": "SoapySDR channel tune arguments.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio tune arguments"
   },
   "SATNOGS_OTHER_SETTINGS": {
     "type": "string",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR channel other settings."
+    "description": "SoapySDR channel other settings.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio other settings field options"
   },
   "SATNOGS_DC_REMOVAL": {
     "type": "boolean",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device automatic DC offset suppression."
+    "description": "SoapySDR device automatic DC offset suppression.",
+    "input_method": "variableyesno",
+    "short_description": "Enable automatic DC removal"
   },
   "SATNOGS_BB_FREQ": {
     "type": "string",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "SoapySDR device baseband CORDIC frequency for devices that support it."
+    "description": "SoapySDR device baseband CORDIC frequency for devices that support it.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS Radio baseband frequency correction"
   },
   "ENABLE_IQ_DUMP": {
     "type": "boolean",
     "default": "False",
     "required": false,
-    "description": "Create I/Q data dumps for every observation.\nUse this feature with caution.\nEnabling this setting will store large amount of data on the filesystem."
+    "description": "Create I/Q data dumps for every observation.\nUse this feature with caution.\nEnabling this setting will store large amount of data on the filesystem.",
+    "input_method": "variableyesno",
+    "short_description": "Enable IQ dump"
   },
   "IQ_DUMP_FILENAME": {
     "type": "path",
     "default": "None",
     "required": false,
-    "description": "Path to file for storing I/Q data dumps."
+    "description": "Path to file for storing I/Q data dumps.",
+    "input_method": "variablebox",
+    "short_description": "Define IQ dump filename"
   },
   "DISABLE_DECODED_DATA": {
     "type": "boolean",
     "default": "False",
     "required": false,
-    "description": "Disable output of decoded data."
+    "description": "Disable output of decoded data.",
+    "input_method": "variableyesno",
+    "short_description": "Disable decoded data"
   },
   "UDP_DUMP_HOST": {
     "type": "host",
     "default": "Flowgraph-defined",
     "required": false,
-    "description": "IP destination of UDP data with Doppler corrected I/Q."
+    "description": "IP destination of UDP data with Doppler corrected I/Q.",
+    "input_method": "variablebox",
+    "short_description": "Destination host for UDP sink"
   },
   "UDP_DUMP_PORT": {
     "type": "port",
     "default": "57356",
     "required": false,
-    "description": "Port for UDP data with Doppler corrected I/Q."
+    "description": "Port for UDP data with Doppler corrected I/Q.",
+    "input_method": "variablebox",
+    "short_description": "Destination port for UDP sink"
   },
   "SATNOGS_UPLOAD_AUDIO_FILES": {
     "type": "boolean",
     "default": "True",
     "required": false,
-    "description": "Enable/Disable uploading audio files to SatNOGS network."
+    "description": "Enable/Disable uploading audio files to SatNOGS network.",
+    "input_method": "variableyesno",
+    "short_description": "Enable uploading audio to SatNOGS network."
   },
   "SATNOGS_UPLOAD_WATERFALL_FILES": {
     "type": "boolean",
     "default": "True",
     "required": false,
-    "description": "Enable/Disable uploading waterfalls to SatNOGS network."
+    "description": "Enable/Disable uploading waterfalls to SatNOGS network.",
+    "input_method": "variableyesno",
+    "short_description": "Enable uploading waterfalls to SatNOGS network."
   },
   "SATNOGS_WATERFALL_AUTORANGE": {
     "type": "boolean",
     "default": "True",
     "required": false,
-    "description": "Automatically set power level range of waterfall images."
+    "description": "Automatically set power level range of waterfall images.",
+    "input_method": "variableyesno",
+    "short_description": "Enable waterfall power range adjustment"
   },
   "SATNOGS_WATERFALL_MIN_VALUE": {
     "type": "integer",
     "default": "-100",
     "required": false,
-    "description": "Minimum power level of waterfall images."
+    "description": "Minimum power level of waterfall images.",
+    "input_method": "variablebox",
+    "short_description": "Define waterfall minimum power",
+    "init": "-100",
+    "categories": [
+      "Waterfall"
+    ]
   },
   "SATNOGS_WATERFALL_MAX_VALUE": {
     "type": "integer",
     "default": "-50",
     "required": false,
-    "description": "Maximum power level of waterfall images."
+    "description": "Maximum power level of waterfall images.",
+    "input_method": "variablebox",
+    "short_description": "Define Waterfall maximum power",
+    "init": "-50",
+    "categories": [
+      "Waterfall"
+    ]
   },
   "SATNOGS_ARTIFACTS_ENABLED": {
     "type": "boolean",
     "default": "False",
     "required": false,
-    "description": "Enable generation and uploading of HDF5 artifacts files to SatNOGS DB."
+    "description": "Enable generation and uploading of HDF5 artifacts files to SatNOGS DB.",
+    "input_method": "variableyesno",
+    "short_description": "Enable uploading of artifacts"
   },
   "SATNOGS_ARTIFACTS_API_URL": {
     "type": "url",
     "default": "https://db.satnogs.org/api/",
     "required": false,
-    "description": "URL pointing to API of SatNOGS DB for uploading artifacts."
+    "description": "URL pointing to API of SatNOGS DB for uploading artifacts.",
+    "input_method": "variablebox",
+    "short_description": "Define artifacts server API URL",
+    "init": "https://db.satnogs.org/api/",
+    "categories": [
+      "Artifacts"
+    ]
   },
   "SATNOGS_ARTIFACTS_API_POST_INTERVAL": {
     "type": "integer",
     "default": "180",
     "required": false,
-    "description": "Interval (in seconds) for posting artifacts to SatNOGS DB."
+    "description": "Interval (in seconds) for posting artifacts to SatNOGS DB.",
+    "input_method": "variablebox",
+    "short_description": "Define artifacts server API post interval",
+    "init": "180",
+    "categories": [
+      "Artifacts"
+    ]
   },
   "SATNOGS_ARTIFACTS_API_TOKEN": {
     "type": "string",
     "default": "None",
     "required": false,
-    "description": "SatNOGS DB API token associated with an account in SatNOGS DB.\nThis token is secret.\nIt is used to upload artifacts to SatNOGS DB.\nIt can be found in SatNOGS DB user page."
+    "description": "SatNOGS DB API token associated with an account in SatNOGS DB.\nThis token is secret.\nIt is used to upload artifacts to SatNOGS DB.\nIt can be found in SatNOGS DB user page.",
+    "input_method": "variablebox",
+    "short_description": "Define artifacts server API token"
   },
   "LOG_LEVEL": {
     "type": "string",
@@ -375,12 +553,20 @@
     "type": "string",
     "default": "d50342fb75aa8f3945e2f846b77a0cdb7c7d2275",
     "required": false,
-    "description": "Sentry Data Source Name used for sending events to application monitoring and error tracking server."
+    "description": "Sentry Data Source Name used for sending events to application monitoring and error tracking server.",
+    "input_method": "variablebox",
+    "short_description": "Define SatNOGS client Sentry DSN",
+    "init": "d50342fb75aa8f3945e2f846b77a0cdb7c7d2275",
+    "categories": [
+      "Debug"
+    ]
   },
   "SENTRY_ENABLED": {
     "type": "boolean",
     "default": "False",
     "required": false,
-    "description": "Enable sending events to Sentry application monitoring and error tracking server."
+    "description": "Enable sending events to Sentry application monitoring and error tracking server.",
+    "input_method": "variableyesno",
+    "short_description": "Enable SatNOGS client Sentry error monitoring"
   }
 }
