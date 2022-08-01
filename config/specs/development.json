@@ -64,6 +64,206 @@
     "satnogs_rig_port": {
       "description": "Hamlib rigctld port",
       "type": "number"
+    },
+    "satnogs_pre_observation_script": {
+      "description": "Define pre-observation script",
+      "type": "string"
+    },
+    "satnogs_post_observation_script": {
+      "description": "Define post-observation script",
+      "type": "string"
+    },
+    "satnogs_gpsd_client_enabled": {
+      "description": "",
+      "type": "boolean"
+    },
+    "satnogs_gpsd_host": {
+      "description": "",
+      "type": "string"
+    },
+    "satnogs_gpsd_port": {
+      "description": "",
+      "type": "integer"
+    },
+    "satnogs_gpsd_timeout": {
+      "description": "",
+      "type": "integer"
+    },
+    "satnogs_app_path": {
+      "description": "Define application data path",
+      "type": "string"
+    },
+    "satnogs_output_path": {
+      "description": "Define output data path",
+      "type": "string"
+    },
+    "satnogs_complete_output_path": {
+      "description": "Define completed data path",
+      "type": "string"
+    },
+    "satnogs_incomplete_output_path": {
+      "description": "Define incompleted data path",
+      "type": "string"
+    },
+    "satnogs_artifacts_output_path": {
+      "description": "",
+      "type": "string"
+    },
+    "satnogs_remove_raw_files": {
+      "description": "Remove raw files",
+      "type": "boolean"
+    },
+    "satnogs_keep_artifacts": {
+      "description": "",
+      "type": "boolean"
+    },
+    "satnogs_rot_enabled": {
+      "description": "",
+      "type": "boolean"
+    },
+    "satnogs_rot_model": {
+      "description": "Define Hamlib rotator model",
+      "type": "string"
+    },
+    "satnogs_rot_baud": {
+      "description": "Define Hamlib rotator baud rate",
+      "type": "integer"
+    },
+    "satnogs_rot_port": {
+      "description": "Define Hamlib rotctld port",
+      "type": "string"
+    },
+    "satnogs_rot_threshold": {
+      "description": "Define Hamlib rotator command threshold",
+      "type": "integer"
+    },
+    "satnogs_rot_flip": {
+      "description": "Enable Hamlib rotator flip",
+      "type": "boolean"
+    },
+    "satnogs_rot_flip_angle": {
+      "description": "Define Hamlib rotator flip angle",
+      "type": "integer"
+    },
+    "satnogs_rx_bandwidth": {
+      "description": "Define SatNOGS Radio RF Bandwidth (Hz)",
+      "type": "integer"
+    },
+    "satnogs_doppler_corr_per_sec": {
+      "description": "Define doppler corrections per sec",
+      "type": "integer"
+    },
+    "satnogs_lo_offset": {
+      "description": "Define local oscillator offset (Hz)",
+      "type": "integer"
+    },
+    "satnogs_ppm_error": {
+      "description": "Define frequency correction (ppm)",
+      "type": "number"
+    },
+    "satnogs_gain_mode": {
+      "description": "Define SatNOGS Radio Gain mode (Overall, Settings Field)",
+      "type": "string"
+    },
+    "satnogs_rf_gain": {
+      "description": "Define SatNOGS Radio RF Gain",
+      "type": "number"
+    },
+    "satnogs_dev_args": {
+      "description": "Define SatNOGS Radio device arguments",
+      "type": "string"
+    },
+    "satnogs_stream_args": {
+      "description": "Define SatNOGS Radio stream arguments",
+      "type": "string"
+    },
+    "satnogs_tune_args": {
+      "description": "Define SatNOGS Radio tune arguments",
+      "type": "string"
+    },
+    "satnogs_other_settings": {
+      "description": "Define SatNOGS Radio other settings field options",
+      "type": "string"
+    },
+    "satnogs_dc_removal": {
+      "description": "Enable automatic DC removal",
+      "type": "boolean"
+    },
+    "satnogs_bb_freq": {
+      "description": "Define SatNOGS Radio baseband frequency correction",
+      "type": "string"
+    },
+    "enable_iq_dump": {
+      "description": "Enable IQ dump",
+      "type": "boolean"
+    },
+    "iq_dump_filename": {
+      "description": "Define IQ dump filename",
+      "type": "string"
+    },
+    "disable_decoded_data": {
+      "description": "Disable decoded data",
+      "type": "boolean"
+    },
+    "udp_dump_host": {
+      "description": "Destination host for UDP sink",
+      "type": "string"
+    },
+    "udp_dump_port": {
+      "description": "Destination port for UDP sink",
+      "type": "integer"
+    },
+    "satnogs_upload_audio_files": {
+      "description": "Enable uploading audio to SatNOGS network.",
+      "type": "boolean"
+    },
+    "satnogs_upload_waterfall_files": {
+      "description": "Enable uploading waterfalls to SatNOGS network.",
+      "type": "boolean"
+    },
+    "satnogs_waterfall_autorange": {
+      "description": "Enable waterfall power range adjustment",
+      "type": "boolean"
+    },
+    "satnogs_waterfall_min_value": {
+      "description": "Define waterfall minimum power",
+      "type": "integer"
+    },
+    "satnogs_waterfall_max_value": {
+      "description": "Define Waterfall maximum power",
+      "type": "integer"
+    },
+    "satnogs_artifacts_enabled": {
+      "description": "Enable uploading of artifacts",
+      "type": "boolean"
+    },
+    "satnogs_artifacts_api_url": {
+      "description": "Define artifacts server API URL",
+      "type": "string"
+    },
+    "satnogs_artifacts_api_post_interval": {
+      "description": "Define artifacts server API post interval",
+      "type": "integer"
+    },
+    "satnogs_artifacts_api_token": {
+      "description": "Define artifacts server API token",
+      "type": "string"
+    },
+    "log_level": {
+      "description": "",
+      "type": "string"
+    },
+    "scheduler_log_level": {
+      "description": "",
+      "type": "string"
+    },
+    "sentry_dsn": {
+      "description": "Define SatNOGS client Sentry DSN",
+      "type": "string"
+    },
+    "sentry_enabled": {
+      "description": "Enable SatNOGS client Sentry error monitoring",
+      "type": "boolean"
     }
   },
   "required": [  
