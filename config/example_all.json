@@ -1,0 +1,16 @@
+{
+  "satnogs_api_token": "0123456789abcdef0123456789abcdef01234567",
+  "satnogs_soapy_rx_device": "driver=rtlsdr",
+  "satnogs_antenna": "RX",
+  "satnogs_rx_samp_rate": 2.048e6,
+  "satnogs_station_id": 9999,
+  "satnogs_station_elev": 100,
+  "satnogs_station_lat": 37.971,
+  "satnogs_station_lon": 23.725,
+  "satnogs_network_api_url": "https://network.satnogs.org/api/",
+  "satnogs_network_api_query_interval": 60,
+  "satnogs_network_api_post_interval": 180,
+  "satnogs_verify_ssl": true,
+  "satnogs_rig_ip": "127.0.0.1",
+  "satnogs_rig_port": 4532
+}

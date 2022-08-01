@@ -59,6 +59,7 @@ static_config_schema:
     - apt-get -qy install python3-jsonschema
   script:
     - jsonschema --instance config/example.json config/specs/development.json
+    - jsonschema --instance config/example_all.json config/specs/development.json
 
 # 'build' stage
 docs:
