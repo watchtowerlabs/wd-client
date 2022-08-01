@@ -263,7 +263,8 @@ SATNOGS_NETWORK_API_QUERY_INTERVAL
 
 
 SATNOGS_NETWORK_API_POST_INTERVAL
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 :Type: *integer*
 :Default: ``180``
 :Required: *No*
@@ -377,7 +378,7 @@ SATNOGS_SOAPY_RX_DEVICE
    It also allows setting different devices for specific frequency ranges.
 
    The format for multiple devices is a space delimited list of frequency range -- device pairs:
-   
+
    ``<min. freq.>-<max. freq>:driver=<name> <min. freq.>-<max. freq.>:driver=<name> ...``
 
    Where frequencies are in MHz and ``<name>`` is the name of the SoapySDR device driver to use for the specified frequency
@@ -720,7 +721,7 @@ SENTRY_DSN
 ~~~~~~~~~~
 
 :Type: *string*
-:Default: d50342fb75aa8f3945e2f846b77a0cdb7c7d2275
+:Default: ``d50342fb75aa8f3945e2f846b77a0cdb7c7d2275``
 :Required: *No*
 :Description:
    Sentry Data Source Name used for sending events to application monitoring and error tracking server.
