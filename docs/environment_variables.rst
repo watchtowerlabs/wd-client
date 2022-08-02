@@ -642,8 +642,8 @@ SATNOGS_ARTIFACTS_API_TOKEN
    It can be found in SatNOGS DB user page.
 
 
-LOG_LEVEL
-~~~~~~~~~
+SATNOGS_LOG_LEVEL
+~~~~~~~~~~~~~~~~~
 
 :Type: *string*
 :Default: ``WARNING``
@@ -659,8 +659,8 @@ LOG_LEVEL
      * ``DEBUG``
 
 
-SCHEDULER_LOG_LEVEL
-~~~~~~~~~~~~~~~~~~~
+SATNOGS_SCHEDULER_LOG_LEVEL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *string*
 :Default: ``WARNING``
