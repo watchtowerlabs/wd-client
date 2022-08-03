@@ -695,5 +695,3 @@ SENTRY_ENABLED
 :Required: *No*
 :Description:
    Enable sending events to Sentry application monitoring and error tracking server.
-
-
