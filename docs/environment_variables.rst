@@ -162,16 +162,6 @@ SATNOGS_INCOMPLETE_OUTPUT_PATH
    Path for moving incomplete output files.
 
 
-SATNOGS_ARTIFACTS_OUTPUT_PATH
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-:Type: *path*
-:Default: ``/tmp/.satnogs/artifacts``
-:Required: *No*
-:Description:
-   Path for Artifact files.
-
-
 SATNOGS_REMOVE_RAW_FILES
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -189,7 +179,17 @@ SATNOGS_KEEP_ARTIFACTS
 :Default: *False*
 :Required: *No*
 :Description:
-   Do not remove Artifact files after successfully uploading them.
+   Do not remove artifact files after successfully uploading them.
+
+
+SATNOGS_ARTIFACTS_OUTPUT_PATH
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+:Type: *path*
+:Default: ``/tmp/.satnogs/artifacts``
+:Required: *No*
+:Description:
+   Path for storing artifact files.
 
 
 SATNOGS_VERIFY_SSL
@@ -274,26 +274,6 @@ SATNOGS_ROT_PORT
    The device must be accessible to the user which SatNOGS Client is running.
 
 
-SATNOGS_RIG_IP
-~~~~~~~~~~~~~~
-
-:Type: *host*
-:Default: ``127.0.0.1``
-:Required: *No*
-:Description:
-   Hostname or IP address of Hamlib rotctld.
-
-
-SATNOGS_RIG_PORT
-~~~~~~~~~~~~~~~~
-
-:Type: *integer*
-:Default: ``4532``
-:Required: *No*
-:Description:
-   Hamlib rigctld TCP port.
-
-
 SATNOGS_ROT_THRESHOLD
 ~~~~~~~~~~~~~~~~~~~~~
 
@@ -323,6 +303,26 @@ SATNOGS_ROT_FLIP_ANGLE
 :Required: *No*
 :Description:
    Elevation angle above which the rotator will flip.
+
+
+SATNOGS_RIG_IP
+~~~~~~~~~~~~~~
+
+:Type: *host*
+:Default: ``127.0.0.1``
+:Required: *No*
+:Description:
+   Hostname or IP address of Hamlib rotctld.
+
+
+SATNOGS_RIG_PORT
+~~~~~~~~~~~~~~~~
+
+:Type: *integer*
+:Default: ``4532``
+:Required: *No*
+:Description:
+   Hamlib rigctld TCP port.
 
 
 SATNOGS_SOAPY_RX_DEVICE
@@ -642,8 +642,8 @@ SATNOGS_ARTIFACTS_API_TOKEN
    It can be found in SatNOGS DB user page.
 
 
-LOG_LEVEL
-~~~~~~~~~
+SATNOGS_LOG_LEVEL
+~~~~~~~~~~~~~~~~~
 
 :Type: *string*
 :Default: ``WARNING``
@@ -659,8 +659,8 @@ LOG_LEVEL
      * ``DEBUG``
 
 
-SCHEDULER_LOG_LEVEL
-~~~~~~~~~~~~~~~~~~~
+SATNOGS_SCHEDULER_LOG_LEVEL
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 :Type: *string*
 :Default: ``WARNING``
