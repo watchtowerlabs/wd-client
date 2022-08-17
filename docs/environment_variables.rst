@@ -138,7 +138,21 @@ SATNOGS_OUTPUT_PATH
 :Default: ``/tmp/.satnogs/data``
 :Required: *No*
 :Description:
-   Path for storing output files.
+   Path for storing "output files". Output files are:
+
+     * Audio recordings (``satnogs_{obs_id}_{timestamp}.ogg``)
+     * Waterfall Images (``waterfall_{obs_id}_{timestamp}.png``)
+     * Decoded frames (``data_{obs_id}``), either raw, json-encoded
+
+       or png image data from the APT demodulator
+
+   Temporary (potentially incomplete) files are:
+
+     * incomplete audio recordings (``receiving_satnogs_{obs_id}_{timestamp}.ogg``)
+     * incomplete APT images (``receiving_data_{]obs_id}_{timestamp}.png``)
+     * Waterfall data files (``receiving_waterfall_{]obs_id}_{timestamp}.dat``)
+
+   SatNOGS Artifacts are handled seperately.
 
 
 SATNOGS_COMPLETE_OUTPUT_PATH
@@ -149,7 +163,9 @@ SATNOGS_COMPLETE_OUTPUT_PATH
 :Required: *No*
 :Description:
    Path to move output files once they are completed.
-   Preserving output files is disabled if set to empty.
+   If set to empty, output files are deleted (default).
+   Make sure to have enough storage available as the selected folder will
+   continuously grow (about 30MB for a 5 minute observation).
 
 
 SATNOGS_INCOMPLETE_OUTPUT_PATH
