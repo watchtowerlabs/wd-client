@@ -22,7 +22,7 @@ To activate the virtualenv after it is created run::
 
 To install SatNOGS Client for development run in the project root directory::
 
-  $ pip install -e .
+  $ pip install -e .[dev]
 
 
 Configuration
