@@ -4,9 +4,9 @@ Developer guide
 Installation
 ------------
 
-To install the required dependencies in Debian run::
+To install the required dependencies in Debian Bullseye run::
 
-  $ apt-get install python3-libhamlib2
+  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-libhamlib
 
 
 It is recommended to install the client in a virtualenv.
