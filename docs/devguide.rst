@@ -76,6 +76,8 @@ The following ``tox`` environments are available:
   * ``build`` - Build source and binary distributions
   * ``upload`` - Upload source and binary distributions to PyPI
   * ``docs`` - Build documentation
+  * ``deps`` - Check for broken dependencies
+  * ``pytest`` - Execute application tests
   * ``robot-lint`` - Lint system test cases and suites
   * ``robot-tidy`` - Reformat system test cases and suites
   * ``robot`` - Execute system testing
