@@ -6,7 +6,7 @@ Installation
 
 To install the required dependencies in Debian Bullseye run::
 
-  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-libhamlib
+  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-hamlib
 
 
 It is recommended to install the client in a virtualenv.

@@ -19,7 +19,7 @@ Debian
 
 To install the required dependencies in Debian Bullseye run::
 
-  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-libhamlib
+  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-hamlib
 
 
 SatNOGS Client

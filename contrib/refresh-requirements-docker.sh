@@ -24,7 +24,7 @@ tox \
 libatlas3-base \
 libhdf5-103-1 \
 python3-gps \
-python3-libhamlib2 \
+python3-hamlib \
 "
 
 REQUIREMENTS="docker"
