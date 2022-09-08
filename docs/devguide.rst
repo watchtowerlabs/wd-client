@@ -57,10 +57,6 @@ Automation
 ----------
 
 ``tox`` is used to automate development tasks.
-To install ``tox`` run::
-
-  $ pip install tox
-
 To execute the default list of tasks run::
 
   $ tox
