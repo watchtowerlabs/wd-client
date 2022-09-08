@@ -17,7 +17,7 @@ build:
     - 'libatlas3-base'
     - 'libhdf5-103'
     - 'python3-gps'
-    - 'python3-libhamlib2'
+    - 'python3-hamlib'
 sphinx:
   builder: 'html'
   fail_on_warning: true

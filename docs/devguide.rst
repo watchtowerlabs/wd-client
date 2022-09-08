@@ -4,9 +4,9 @@ Developer guide
 Installation
 ------------
 
-To install the required dependencies in Debian run::
+To install the required dependencies in Debian Bullseye run::
 
-  $ apt-get install python3-libhamlib2
+  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-hamlib
 
 
 It is recommended to install the client in a virtualenv.
@@ -22,7 +22,7 @@ To activate the virtualenv after it is created run::
 
 To install SatNOGS Client for development run in the project root directory::
 
-  $ pip install -e .
+  $ pip install -e .[dev]
 
 
 Configuration
@@ -57,10 +57,6 @@ Automation
 ----------
 
 ``tox`` is used to automate development tasks.
-To install ``tox`` run::
-
-  $ pip install tox
-
 To execute the default list of tasks run::
 
   $ tox
@@ -80,6 +76,8 @@ The following ``tox`` environments are available:
   * ``build`` - Build source and binary distributions
   * ``upload`` - Upload source and binary distributions to PyPI
   * ``docs`` - Build documentation
+  * ``deps`` - Check for broken dependencies
+  * ``pytest`` - Execute application tests
   * ``robot-lint`` - Lint system test cases and suites
   * ``robot-tidy`` - Reformat system test cases and suites
   * ``robot`` - Execute system testing

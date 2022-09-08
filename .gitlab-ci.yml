@@ -10,7 +10,7 @@ variables:
     libatlas3-base
     libhdf5-103-1
     python3-gps
-    python3-libhamlib2
+    python3-hamlib
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
   GITLAB_CI_SIGN_OFF_EXCLUDE: '67bc3fe50fe2d7a2cac426589c6325041b333c4e'
 stages:

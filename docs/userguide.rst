@@ -5,7 +5,10 @@ Requirements
 ------------
 
 - Python 3.6+
-- Hamlib 3.3+ Python bindings
+- Hamlib 4.0+ Python bindings
+- GPSD 3.22+ Python bindings
+- ATLAS 3.10+ library
+- HDF5 1.10+ library
 
 
 Installation
@@ -14,9 +17,9 @@ Installation
 Debian
 ^^^^^^
 
-To install the required dependencies in Debian run::
+To install the required dependencies in Debian Bullseye run::
 
-  $ apt-get install python3-libhamlib2
+  $ apt-get install libatlas3-base libhdf5-103-1 python3-gps python3-hamlib
 
 
 SatNOGS Client
