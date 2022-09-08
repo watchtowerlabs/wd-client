@@ -10,12 +10,12 @@ python:
     - requirements: 'requirements.txt'
     - requirements: 'docs/requirements.txt'
 build:
-  os: 'ubuntu-20.04'
+  os: 'ubuntu-22.04'
   tools:
     python: '3.9'
   apt_packages:
     - 'libatlas3-base'
-    - 'libhdf5-103'
+    - 'libhdf5-103-1'
     - 'python3-gps'
     - 'python3-hamlib'
 sphinx:
