@@ -34,7 +34,7 @@ sign_off:
     --invert-grep
     --format="Detected commit '%h' with missing or bad sign-off! Please read 'CONTRIBUTING.md'."
     --exit-code
-    "$(rev=$(git rev-parse -q --verify "$GITLAB_CI_SIGN_OFF_EXCLUDE^{commit}") && echo "$rev..")"
+    $(rev=$(git rev-parse -q --verify "$GITLAB_CI_SIGN_OFF_EXCLUDE^{commit}") && echo "$rev..")
 
 static:
   stage: static
