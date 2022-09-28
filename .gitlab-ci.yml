@@ -7,10 +7,6 @@ variables:
   GITLAB_CI_APT_PACKAGES: >-
     git
     tox
-    libatlas3-base
-    libhdf5-103-1
-    python3-gps
-    python3-hamlib
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
   GITLAB_CI_SIGN_OFF_EXCLUDE: 'a3fe97202e64477cc59554f2f76299e41a3113f7'
 stages:
@@ -47,6 +43,7 @@ static:
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - xargs -r -a packages.debian apt-get -y install
   script:
     - tox -e "flake8,isort,yapf,pylint,robot-lint"
 
@@ -62,6 +59,7 @@ docs:
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - xargs -r -a packages.debian apt-get -y install
   script:
     - rm -rf docs/_build
     - tox -e "docs"
@@ -81,6 +79,7 @@ build:
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - xargs -r -a packages.debian apt-get -y install
   script:
     - rm -rf dist
     - tox -e "build"
@@ -102,6 +101,7 @@ test:
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - xargs -r -a packages.debian apt-get -y install
   script:
     - rm -rf robot/output
     - tox -e "pytest,deps,robot"
@@ -122,6 +122,7 @@ deploy:
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - xargs -r -a packages.debian apt-get -y install
   script:
     - rm -rf dist
     - tox -e "upload"

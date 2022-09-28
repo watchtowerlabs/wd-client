@@ -18,14 +18,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 DOCKER_IMAGE="debian:bullseye"
-SYSTEM_PACKAGES=" \
-git \
-tox \
-libatlas3-base \
-libhdf5-103-1 \
-python3-gps \
-python3-hamlib \
-"
 
 REQUIREMENTS="docker"
 
@@ -47,7 +39,8 @@ fi
 {
 	cat << EOF
 apt-get -y update
-apt-get -qy install virtualenv $SYSTEM_PACKAGES
+apt-get -qy install virtualenv git
+[ -f /projectdir/packages.debian ] && xargs -r -a /projectdir/packages.debian apt-get -qy install
 umask $(umask)
 cd /projectdir
 EOF
