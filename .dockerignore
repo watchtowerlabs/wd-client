@@ -1,0 +1,15 @@
+*
+!constraints.txt
+!CONTRIBUTING.md
+!.git
+!.gitattributes
+!.gitignore
+!LICENSE
+!MANIFEST.in
+!packages.debian
+!README.md
+!requirements.txt
+!satnogsclient
+!setup.cfg
+!setup.py
+!versioneer.py
