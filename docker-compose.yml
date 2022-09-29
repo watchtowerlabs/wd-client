@@ -1,0 +1,6 @@
+version: '3.7'
+services:
+  satnogs_client:
+    build:
+      context: .
+    image: 'satnogs-client'
