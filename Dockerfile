@@ -27,7 +27,7 @@ RUN groupadd -r -g ${SATNOGS_CLIENT_UID} satnogs-client \
 	&& useradd -r -u ${SATNOGS_CLIENT_UID} \
 		-g satnogs-client \
 		-d ${SATNOGS_CLIENT_VARSTATEDIR} \
-		-s /bin/false \
+		-s /usr/bin/false \
 		-G audio,dialout,plugdev \
 		satnogs-client
 
