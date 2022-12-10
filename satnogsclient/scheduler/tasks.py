@@ -61,8 +61,10 @@ def spawn_observer(**kwargs):
         if not OBSERVER_LOCK.acquire(timeout=timeout_timedelta.total_seconds()):
             LOGGER.error('Observer job lock acquiring timed out.')
             return
-        observer.observe()
-        OBSERVER_LOCK.release()
+        try:
+            observer.observe()
+        finally:
+            OBSERVER_LOCK.release()
     else:
         raise RuntimeError('Error in observer setup.')
 
