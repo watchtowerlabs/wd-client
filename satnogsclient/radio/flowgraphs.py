@@ -155,6 +155,7 @@ class Flowgraph():
             'doppler-correction-per-sec': client_settings.SATNOGS_DOPPLER_CORR_PER_SEC,
             'lo-offset': client_settings.SATNOGS_LO_OFFSET,
             'ppm': client_settings.SATNOGS_PPM_ERROR,
+            'rigctl-host': str(client_settings.SATNOGS_RIG_IP),
             'rigctl-port': str(client_settings.SATNOGS_RIG_PORT),
             'gain-mode': client_settings.SATNOGS_GAIN_MODE,
             'gain': client_settings.SATNOGS_RF_GAIN,
