@@ -31,11 +31,6 @@ def spawn_observer(**kwargs):
     end = parser.parse(obj['end'])
 
     observer = Observer()
-    observer.location = {
-        'lon': settings.SATNOGS_STATION_LON,
-        'lat': settings.SATNOGS_STATION_LAT,
-        'elev': settings.SATNOGS_STATION_ELEV
-    }
 
     # Get the baudrate. In case of CW baudrate equals the WPM
     baud = 0

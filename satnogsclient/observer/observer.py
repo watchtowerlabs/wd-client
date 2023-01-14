@@ -129,7 +129,11 @@ class Observer(object):
     # Mainly present so we can support multiple ground stations from the client
 
     def __init__(self):
-        self.location = {}
+        self.location = {
+            'lon': settings.SATNOGS_STATION_LON,
+            'lat': settings.SATNOGS_STATION_LAT,
+            'elev': settings.SATNOGS_STATION_ELEV
+        }
         self.rot_port = settings.SATNOGS_ROT_PORT
         self.rig_ip = settings.SATNOGS_RIG_IP
         self.rig_port = settings.SATNOGS_RIG_PORT
