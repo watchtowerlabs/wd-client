@@ -44,16 +44,19 @@ class Locator(object):
                            port=settings.SATNOGS_GPSD_PORT)
             gpsd.next()
             LOGGER.info('Waiting for GPS (timeout %ds)', self.timeout)
-            while gpsd.fix.mode != gps.MODE_3D and (time.time() < end_time or no_timeout):
+            while gpsd.fix.mode not in [gps.MODE_2D, gps.MODE_3D] \
+                    and (time.time() < end_time or no_timeout):
                 self.show_location(gpsd)
                 gpsd.next()
         except StopIteration:
             LOGGER.info('GPSD connection failed')
             return
-        if gpsd.fix.mode == gps.MODE_3D:
+        if gps.isfinite(gpsd.fix.latitude) \
+                and gps.isfinite(gpsd.fix.longitude) \
+                and gps.isfinite(gpsd.fix.altitude):
             settings.SATNOGS_STATION_LAT = gpsd.fix.latitude
             settings.SATNOGS_STATION_LON = gpsd.fix.longitude
-            settings.SATNOGS_STATION_ELEV = gpsd.fix.altitude
+            settings.SATNOGS_STATION_ELEV = max(0, gpsd.fix.altitude)
             LOGGER.info('Updating coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
                         settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
         else:
