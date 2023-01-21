@@ -51,7 +51,8 @@ class Locator(object):
         except StopIteration:
             LOGGER.info('GPSD connection failed')
             return
-        if gps.isfinite(gpsd.fix.latitude) \
+        if gpsd.fix.mode in [gps.MODE_2D, gps.MODE_3D]\
+                and gps.isfinite(gpsd.fix.latitude) \
                 and gps.isfinite(gpsd.fix.longitude) \
                 and gps.isfinite(gpsd.fix.altitude):
             settings.SATNOGS_STATION_LAT = gpsd.fix.latitude
@@ -60,4 +61,4 @@ class Locator(object):
             LOGGER.info('Updating coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
                         settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
         else:
-            LOGGER.info('GPS timeout, using last known coordinates')
+            LOGGER.info('GPS data invalid, using last known coordinates')
