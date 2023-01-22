@@ -55,7 +55,10 @@ class Locator(object):
                 and gps.isfinite(gpsd.fix.altitude):
             settings.SATNOGS_STATION_LAT = gpsd.fix.latitude
             settings.SATNOGS_STATION_LON = gpsd.fix.longitude
-            settings.SATNOGS_STATION_ELEV = max(0, gpsd.fix.altitude)
+            if gpsd.fix.altitude >= 0:
+                settings.SATNOGS_STATION_ELEV = gpsd.fix.altitude
+            elif settings.SATNOGS_STATION_ELEV is None:
+                settings.SATNOGS_STATION_ELEV = 0
             LOGGER.info('Updating coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
                         settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
         else:
