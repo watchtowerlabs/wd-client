@@ -42,12 +42,10 @@ class Locator(object):
             gpsd = gps.gps(mode=gps.WATCH_ENABLE,
                            host=settings.SATNOGS_GPSD_HOST,
                            port=settings.SATNOGS_GPSD_PORT)
-            gpsd.next()
             LOGGER.info('Waiting for GPS (timeout %ds)', self.timeout)
-            while gpsd.fix.mode not in [gps.MODE_2D, gps.MODE_3D] \
+            while gpsd.read() == 0 and gpsd.fix.mode not in [gps.MODE_2D, gps.MODE_3D] \
                     and (time.time() < end_time or no_timeout):
                 self.show_location(gpsd)
-                gpsd.next()
         except StopIteration:
             LOGGER.info('GPSD connection failed')
             return
