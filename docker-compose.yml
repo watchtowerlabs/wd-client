@@ -3,4 +3,6 @@ services:
   satnogs_client:
     build:
       context: .
+      args:
+        GNURADIO_IMAGE_TAG: '${GNURADIO_IMAGE_TAG:-satnogs}'
     image: 'satnogs-client'

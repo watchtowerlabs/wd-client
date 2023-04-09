@@ -1,6 +1,6 @@
 # SatNOGS Client image
 #
-# Copyright (C) 2022 Libre Space Foundation <https://libre.space/>
+# Copyright (C) 2022-2023 Libre Space Foundation <https://libre.space/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ARG GNURADIO_IMAGE_TAG=3.8.2.0
+ARG GNURADIO_IMAGE_TAG=satnogs
 FROM librespace/gnuradio:${GNURADIO_IMAGE_TAG}
 LABEL org.opencontainers.image.authors='SatNOGS project <dev@satnogs.org>'
 

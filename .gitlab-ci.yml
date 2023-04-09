@@ -139,6 +139,8 @@ deploy:
 docker:
   stage: deploy
   image: ${GITLAB_CI_IMAGE_DOCKER}
+  variables:
+    GNURADIO_IMAGE_TAG: 'satnogs'
   before_script:
     - docker run --privileged --rm ${GITLAB_CI_IMAGE_BINFMT} --uninstall qemu-*
     - docker run --privileged --rm ${GITLAB_CI_IMAGE_BINFMT} --install all
