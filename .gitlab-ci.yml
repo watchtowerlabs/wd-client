@@ -213,6 +213,7 @@ include:
   - template: Security/SAST.gitlab-ci.yml
   - template: Security/Secret-Detection.gitlab-ci.yml
   - template: Security/License-Scanning.gitlab-ci.yml
+  - template: Security/Container-Scanning.gitlab-ci.yml
 dependency_scanning:
   stage: security
   needs: []
@@ -227,3 +228,13 @@ secret_detection:
 license_scanning:
   stage: security
   needs: []
+container_scanning:
+  stage: security
+  needs:
+    - job: docker
+      artifacts: false
+  variables:
+    CI_APPLICATION_REPOSITORY: ${CI_REGISTRY_IMAGE}/satnogs-client
+    CI_APPLICATION_TAG: ${CI_COMMIT_REF_NAME}
+  rules:
+    - if: $CI_REGISTRY_IMAGE && $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
