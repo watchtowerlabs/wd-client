@@ -147,9 +147,15 @@ docker:
   services:
     - ${GITLAB_CI_IMAGE_DOCKER}-dind
   script:
+    - |
+      cat << EOF > /etc/buildkitd.toml
+      [worker.oci]
+      max-parallelism = 1
+      EOF
     - >-
       docker buildx
       create
+      --config /etc/buildkitd.toml
       --use
       --name container
       --driver docker-container
