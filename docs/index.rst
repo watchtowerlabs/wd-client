@@ -16,6 +16,7 @@ Table of Contents
 
    userguide
    devguide
+   docker
    modules
 
 Indices and tables
