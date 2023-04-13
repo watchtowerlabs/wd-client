@@ -85,3 +85,21 @@ The following ``tox`` environments are available:
 To execute a single environment run::
 
   $ tox -e <environment>
+
+Dependency update
+-----------------
+
+Run the following script to update the list of dependencies::
+
+  $ ./contrib/refresh-requirements-docker.sh
+
+This will populate some files with updated content which then must be committed.
+
+Test auto-generated Documentation
+---------------------------------
+
+Run the following script to auto-generate the documentation for environment variables::
+
+  $ ./contrib/refresh-docs.py
+
+This will generate the file ``docs/environment_variables.rst`` based on ``docs/environment_variables.json``.
