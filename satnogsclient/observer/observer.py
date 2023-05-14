@@ -234,7 +234,11 @@ class Observer(object):
                 for key, val in replacements:
                     repl_arg = repl_arg.replace(key, val)
                 pre_script.append(repl_arg)
-            subprocess.call(pre_script)
+            try:
+                subprocess.call(pre_script)
+            except (subprocess.CalledProcessError, FileNotFoundError, PermissionError,
+                    OSError) as err:
+                LOGGER.error('pre-observation script: %s', err)
 
         # if it is APT we want to save with a prefix until the observation
         # is complete, then rename.
@@ -377,7 +381,11 @@ class Observer(object):
                 for key, val in replacements:
                     repl_arg = repl_arg.replace(key, val)
                 post_script.append(repl_arg)
-            subprocess.call(post_script)
+            try:
+                subprocess.call(post_script)
+            except (subprocess.CalledProcessError, FileNotFoundError, PermissionError,
+                    OSError) as err:
+                LOGGER.error('post-observation script: %s', err)
 
     def rename_ogg_file(self):
         observation_raw_file_path = Path(self.observation_raw_file)
