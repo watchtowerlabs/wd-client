@@ -58,6 +58,8 @@ def spawn_observer(**kwargs):
             return
         try:
             observer.observe()
+        except Exception:  # pylint: disable=broad-except
+            LOGGER.error('Caught exception from observe()')
         finally:
             OBSERVER_LOCK.release()
     else:
