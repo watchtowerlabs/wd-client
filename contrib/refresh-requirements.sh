@@ -2,7 +2,7 @@
 #
 # Script to refresh requirement files
 #
-# Copyright (C) 2019-2022 Libre Space Foundation <https://libre.space/>
+# Copyright (C) 2019-2023 Libre Space Foundation <https://libre.space/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -49,46 +49,67 @@ fi
 # Create virtualenv
 virtualenv "$VIRTUALENV_DIR"
 
-# Install package with dependencies
-"$PIP_COMMAND" install --no-cache-dir --force-reinstall .
+if [ -f setup.py ]; then
+	# Install package with dependencies
+	"$PIP_COMMAND" install --no-cache-dir --force-reinstall .
 
-# Create file header warnings
-for filename in constraints.txt requirements.txt requirements-dev.txt; do
-	cat << EOF > "$filename"
+	# Create file header warnings
+	for filename in constraints.txt requirements.txt requirements-dev.txt; do
+		cat << EOF > "$filename"
 # This is a generated file; DO NOT EDIT!
 #
 # Please edit 'setup.cfg' to modify top-level dependencies and run
-# './contrib/refresh-requirements.sh to regenerate this file
+# './contrib/refresh-requirements.sh' to regenerate this file
 
 EOF
-done
+	done
 
-# Create requirements file from installed dependencies
-_tmp_requirements=$(mktemp)
-"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements"
-cat "$_tmp_requirements" >> requirements.txt
+	# Create requirements file from installed dependencies
+	_tmp_requirements=$(mktemp)
+	"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements"
+	cat "$_tmp_requirements" >> requirements.txt
 
-# Install development package with dependencies
-"$PIP_COMMAND" install --no-cache-dir .[dev]
+	# Install development package with dependencies
+	"$PIP_COMMAND" install --no-cache-dir .[dev]
 
-# Create development requirements file from installed dependencies
-echo "-r requirements.txt" >> requirements-dev.txt
-_tmp_requirements_dev=$(mktemp)
-"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements_dev"
-comm -13 - "$_tmp_requirements_dev" < "$_tmp_requirements" >> requirements-dev.txt
+	# Create development requirements file from installed dependencies
+	echo "-r requirements.txt" >> requirements-dev.txt
+	_tmp_requirements_dev=$(mktemp)
+	"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort > "$_tmp_requirements_dev"
+	comm -13 - "$_tmp_requirements_dev" < "$_tmp_requirements" >> requirements-dev.txt
 
-# Create constraints file from installed dependencies
-cat "$_tmp_requirements_dev" >> constraints.txt
+	# Create constraints file from installed dependencies
+	cat "$_tmp_requirements_dev" >> constraints.txt
 
-# Cleanup
-rm -f "$_tmp_requirements"
-rm -f "$_tmp_requirements_dev"
+	# Cleanup
+	rm -f "$_tmp_requirements"
+	rm -f "$_tmp_requirements_dev"
 
-# Set compatible release packages
-if [ -n "$COMPATIBLE_REGEXP" ]; then
-	sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' requirements.txt
-	sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' requirements-dev.txt
-	sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' constraints.txt
+	# Set compatible release packages
+	if [ -n "$COMPATIBLE_REGEXP" ]; then
+		sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' requirements.txt
+		sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' requirements-dev.txt
+		sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' constraints.txt
+	fi
+else
+	# Install requirements
+	"$PIP_COMMAND" install --no-cache-dir --force-reinstall -r requirements.txt
+
+	# Create file header warning
+	cat << EOF > constraints.txt
+# This is a generated file; DO NOT EDIT!
+#
+# Please edit 'requirements.txt' and run './contrib/refresh-requirements.sh'
+# to regenerate this file
+
+EOF
+	# Create constraints file from installed dependencies
+	"$PIP_COMMAND" freeze | grep -v "$EXCLUDE_REGEXP" | sort >> constraints.txt
+
+	# Set compatible release packages
+	if [ -n "$COMPATIBLE_REGEXP" ]; then
+		sed -i 's/'"$COMPATIBLE_REGEXP"'==\([0-9]\+\)\(\.[0-9]\+\)\+$/\1~=\2.0/' constraints.txt
+	fi
 fi
 
 # Verify dependency compatibility
