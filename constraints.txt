@@ -93,6 +93,7 @@ typing-extensions==4.6.0
 tzlocal==5.0.1
 urllib3==1.26.16
 validators==0.20.0
+versioneer==0.28
 virtualenv==20.23.0
 webencodings==0.5.1
 wrapt==1.15.0

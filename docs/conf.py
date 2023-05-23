@@ -19,11 +19,13 @@ import time
 
 sys.path.insert(0, os.path.abspath('.'))
 
+os.chdir('..')
 import versioneer
 
 __version__ = versioneer.get_versions()['version']
 
 del versioneer
+os.chdir('docs')
 
 # -- Project information -----------------------------------------------------
 
