@@ -1,10 +1,16 @@
 from __future__ import absolute_import, division, print_function
 
-from setuptools import setup
+from os import getenv
 
 import versioneer
+from setuptools import setup
 
-setup(
-    version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
-)
+setup_args = {
+    'version': versioneer.get_version(),
+    'cmdclass': versioneer.get_cmdclass(),
+}
+
+if getenv('READTHEDOCS') == 'True':
+    setup_args['install_requires'] = ['setuptools']
+
+setup(**setup_args)
