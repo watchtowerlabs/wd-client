@@ -10,6 +10,7 @@ variables:
   GITLAB_CI_APT_PACKAGES: >-
     git
     tox
+    python3-venv
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
   GITLAB_CI_SIGN_OFF_EXCLUDE: 'a3fe97202e64477cc59554f2f76299e41a3113f7'
 stages:
