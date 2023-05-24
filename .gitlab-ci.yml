@@ -9,7 +9,7 @@ variables:
   GITLAB_CI_APT_KEY_URL: 'https://download.opensuse.org/repositories/home:librespace:satnogs/Debian_11/Release.key'
   GITLAB_CI_APT_PACKAGES: >-
     git
-    tox
+    python3-pip
     python3-venv
   GITLAB_CI_OBS_PROJECT: 'home:librespace:satnogs'
   GITLAB_CI_SIGN_OFF_EXCLUDE: 'a3fe97202e64477cc59554f2f76299e41a3113f7'
@@ -32,6 +32,7 @@ default:
     - apt-get -q update
     - apt-get -y install $GITLAB_CI_APT_PACKAGES
     - xargs -r -a packages.debian apt-get -y install
+    - pip install -cconstraints.txt tox
 
 # 'static' stage
 sign_off:
