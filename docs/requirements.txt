@@ -1,2 +1,1 @@
-Sphinx>2
-sphinx_rtd_theme==1.0.0
+sphinx_rtd_theme
