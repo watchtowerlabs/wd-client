@@ -1,6 +1,6 @@
 [MASTER]
 ignore=_version.py
-load-plugins=pylint.extensions.docparams
+load-plugins=pylint.extensions.docparams,pylint.extensions.no_self_use
 
 [MESSAGES CONTROL]
 disable=
