@@ -85,3 +85,25 @@ The following ``tox`` environments are available:
 To execute a single environment run::
 
   $ tox -e <environment>
+
+
+Dependency Management
+---------------------
+
+Dependencies of the package are defined in the ``setup.cfg`` file.
+Only top-level dependencies shall be defined, with the exception of overrides needed to workaround dependency incompatibilities.
+Each dependency is defined using the appropriate compatible version specifier.
+The compatible version specifiers shall be such that any newer compatible version can be installed, taking into account the versioning schema followed by each dependency.
+The ``dev`` extra contains packages and tools required for development, testing and packaging.
+When a dependency has been added, removed or updated in ``setup.cfg``, the requirement files must be manually regenerated.
+To regenerate these files run::
+
+  $ ./contrib/refresh-requirements-docker.sh
+
+The script will update the following files:
+
+  * ``requirements.txt`` - List of resolved dependencies for the package
+  * ``requirements-dev.txt`` - List of resolved dependencies for the development tools
+  * ``constraints.txt`` - List of resolved dependency constraints for both the package and development tools
+
+Changes on the above files shall be committed together with the changes in ``setup.cfg``.
