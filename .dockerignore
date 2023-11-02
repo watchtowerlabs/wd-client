@@ -1,13 +1,14 @@
 *
-!constraints.txt
-!CONTRIBUTING.md
 !.git
 !.gitattributes
 !.gitignore
+!CONTRIBUTING.md
 !LICENSE
 !MANIFEST.in
-!packages.debian
 !README.md
+!constraints.txt
+!packages.debian
+!pyproject.toml
 !requirements.txt
 !satnogsclient
 !setup.cfg
