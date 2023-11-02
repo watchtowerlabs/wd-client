@@ -49,7 +49,7 @@ fi
 # Create virtualenv
 virtualenv "$VIRTUALENV_DIR"
 
-if [ -f setup.py ]; then
+if [ -s setup.py ]; then
 	# Install package with dependencies
 	"$PIP_COMMAND" install --no-cache-dir --force-reinstall .
 
@@ -93,14 +93,19 @@ EOF
 	fi
 else
 	# Install requirements
-	"$PIP_COMMAND" install --no-cache-dir --force-reinstall -r requirements.txt
+	if [ -f requirements-dev.txt ]; then
+		"$PIP_COMMAND" install --no-cache-dir --force-reinstall -r requirements.txt -r requirements-dev.txt
+	else
+		"$PIP_COMMAND" install --no-cache-dir --force-reinstall -r requirements.txt
+	fi
 
 	# Create file header warning
 	cat << EOF > constraints.txt
 # This is a generated file; DO NOT EDIT!
 #
-# Please edit 'requirements.txt' and run './contrib/refresh-requirements.sh'
-# to regenerate this file
+# Please edit 'requirements.txt' or/and 'requirements-dev.txt'
+# and run './contrib/refresh-requirements.sh' to regenerate
+# this file
 
 EOF
 	# Create constraints file from installed dependencies
