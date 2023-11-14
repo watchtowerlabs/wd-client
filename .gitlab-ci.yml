@@ -61,10 +61,11 @@ docs:
     - echo "$GITLAB_CI_APT_REPOSITORY" > /etc/apt/sources.list.d/${GITLAB_CI_OBS_PROJECT}.list
     - apt-key adv --fetch-keys "$GITLAB_CI_APT_KEY_URL"
     - apt-get -q update
-    - apt-get -y install $GITLAB_CI_APT_PACKAGES
+    - apt-get -y install $GITLAB_CI_APT_PACKAGES python3
     - xargs -r -a packages.debian apt-get -y install
   script:
     - rm -rf docs/_build
+    - ./contrib/generate-env-docs.py
     - tox -e "docs"
   artifacts:
     expire_in: 1 week

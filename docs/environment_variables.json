@@ -1,0 +1,386 @@
+{
+  "SATNOGS_API_TOKEN": {
+    "type": "string",
+    "default": "None",
+    "required": true,
+    "description": "SatNOGS Network API token associated with an account in SatNOGS Network.\nThis token is secret.\nIt can be found in SatNOGS Network user page."
+  },
+  "SATNOGS_PRE_OBSERVATION_SCRIPT": {
+    "type": "path",
+    "default": "None",
+    "required": false,
+    "description": "A path to an executable to be executed before an observation job is started.\nExecution of this script blocks the observation job."
+  },
+  "SATNOGS_POST_OBSERVATION_SCRIPT": {
+    "type": "path",
+    "default": "None",
+    "required": false,
+    "description": "A path to an executable to be executed after an observation job has finished.\nExecution of this script blocks the completion of an observation job."
+  },
+  "SATNOGS_STATION_ID": {
+    "type": "integer",
+    "default": "None",
+    "required": true,
+    "description": "The ID of the SatNOGS Network station this client will act as.\nThe station must be owned by the user with the defined API token."
+  },
+  "SATNOGS_STATION_LAT": {
+    "type": "float",
+    "default": "None",
+    "required": true,
+    "description": "Latitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+  },
+  "SATNOGS_STATION_LON": {
+    "type": "float",
+    "default": "None",
+    "required": true,
+    "description": "Longitude of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+  },
+  "SATNOGS_STATION_ELEV": {
+    "type": "integer",
+    "default": "None",
+    "required": true,
+    "description": "Elevation of the station location.\nHigher precision of this value increases accuracy of Doppler correction while lower precision increases station location privacy."
+  },
+  "SATNOGS_GPSD_CLIENT_ENABLED": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Enable SatNOGS Client to connect to a GPSd daemon to pull positional information.\nThe position is queried once, during SatNOGS Client startup."
+  },
+  "SATNOGS_GPSD_HOST": {
+    "type": "host",
+    "default": "127.0.0.1",
+    "required": false,
+    "description": "Hostname or IP address of GPSd to connect to for pulling positional information."
+  },
+  "SATNOGS_GPSD_PORT": {
+    "type": "port",
+    "default": "2947",
+    "required": false,
+    "description": "Port of GPSd to connect to for pulling positional information."
+  },
+  "SATNOGS_GPSD_TIMEOUT": {
+    "type": "integer",
+    "default": "0",
+    "required": false,
+    "description": "Time to wait until GPSd returns positional information.\nA value of 0 means to wait indefinitely."
+  },
+  "SATNOGS_APP_PATH": {
+    "type": "path",
+    "default": "/tmp/.satnogs",
+    "required": false,
+    "description": "Base path for storing output files."
+  },
+  "SATNOGS_OUTPUT_PATH": {
+    "type": "path",
+    "default": "/tmp/.satnogs/data",
+    "required": false,
+    "description": "Path for storing \"output files\". Output files are:\n\n  * Audio recordings (``satnogs_{obs_id}_{timestamp}.ogg``)\n  * Waterfall Images (``waterfall_{obs_id}_{timestamp}.png``)\n  * Decoded frames (``data_{obs_id}``), either raw, json-encoded\n\n    or png image data from the APT demodulator\n\nTemporary (potentially incomplete) files are:\n\n  * incomplete audio recordings (``receiving_satnogs_{obs_id}_{timestamp}.ogg``)\n  * incomplete APT images (``receiving_data_{]obs_id}_{timestamp}.png``)\n  * Waterfall data files (``receiving_waterfall_{]obs_id}_{timestamp}.dat``)\n\nSatNOGS Artifacts are handled seperately."
+  },
+  "SATNOGS_COMPLETE_OUTPUT_PATH": {
+    "type": "path",
+    "default": "",
+    "required": false,
+    "description": "Path to move output files once they are completed.\nIf set to empty, output files are deleted (default).\nMake sure to have enough storage available as the selected folder will\ncontinuously grow (about 30MB for a 5 minute observation)."
+  },
+  "SATNOGS_INCOMPLETE_OUTPUT_PATH": {
+    "type": "path",
+    "default": "/tmp/.satnogs/data/incomplete",
+    "required": false,
+    "description": "Path for moving incomplete output files."
+  },
+  "SATNOGS_REMOVE_RAW_FILES": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Remove raw data files used for generating waterfalls."
+  },
+  "SATNOGS_KEEP_ARTIFACTS": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Do not remove artifact files after successfully uploading them."
+  },
+  "SATNOGS_ARTIFACTS_OUTPUT_PATH": {
+    "type": "path",
+    "default": "/tmp/.satnogs/artifacts",
+    "required": false,
+    "description": "Path for storing artifact files."
+  },
+  "SATNOGS_VERIFY_SSL": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Verify SSL certificates for HTTPS requests."
+  },
+  "SATNOGS_NETWORK_API_URL": {
+    "type": "url",
+    "default": "https://network.satnogs.org/api/",
+    "required": false,
+    "description": "URL pointing to API of SatNOGS Network."
+  },
+  "SATNOGS_NETWORK_API_QUERY_INTERVAL": {
+    "type": "integer",
+    "default": "60",
+    "required": false,
+    "description": "Interval (in seconds) for pulling jobs form SatNOGS Network API."
+  },
+  "SATNOGS_NETWORK_API_POST_INTERVAL": {
+    "type": "integer",
+    "default": "180",
+    "required": false,
+    "description": "Interval (in seconds) for posting observation data to SatNOGS Network API."
+  },
+  "SATNOGS_ROT_ENABLED": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Enable SatNOGS Client to connect to an antenna rotator using the Hamlib library."
+  },
+  "SATNOGS_ROT_MODEL": {
+    "type": "string",
+    "default": "ROT_MODEL_DUMMY",
+    "required": false,
+    "description": "Rotator model to control.\nThis value must be the model string of a Hamlib rotator."
+  },
+  "SATNOGS_ROT_BAUD": {
+    "type": "integer",
+    "default": "19200",
+    "required": false,
+    "description": "Hamlib rotator serial interface baud rate."
+  },
+  "SATNOGS_ROT_PORT": {
+    "type": "path",
+    "default": "/dev/ttyUSB0",
+    "required": false,
+    "description": "Path to Hamlib rotator serial port device.\nThe device must be accessible to the user which SatNOGS Client is running."
+  },
+  "SATNOGS_ROT_THRESHOLD": {
+    "type": "integer",
+    "default": "4",
+    "required": false,
+    "description": "Azimuth/elevation threshold for moving the rotator.\nPosition changes below this threshold will not cause the rotator to move."
+  },
+  "SATNOGS_ROT_FLIP": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Enable rotator flipping during high elevation passes."
+  },
+  "SATNOGS_ROT_FLIP_ANGLE": {
+    "type": "integer",
+    "default": "75",
+    "required": false,
+    "description": "Elevation angle above which the rotator will flip."
+  },
+  "SATNOGS_RIG_IP": {
+    "type": "host",
+    "default": "127.0.0.1",
+    "required": false,
+    "description": "Hostname or IP address of Hamlib rotctld."
+  },
+  "SATNOGS_RIG_PORT": {
+    "type": "integer",
+    "default": "4532",
+    "required": false,
+    "description": "Hamlib rigctld TCP port."
+  },
+  "SATNOGS_SOAPY_RX_DEVICE": {
+    "type": "string",
+    "default": "None",
+    "required": true,
+    "description": "SoapySDR device driver to use for RX.\nThis setting must be defined in the form ``driver=<name>`` where ``<name>`` is the name of the SoapySDR device driver to use.\n\nIt also allows setting different devices for specific frequency ranges.\n\nThe format for multiple devices is a space delimited list of frequency range -- device pairs:\n\n``<min. freq.>-<max. freq>:driver=<name> <min. freq.>-<max. freq.>:driver=<name> ...``\n\nWhere frequencies are in MHz and ``<name>`` is the name of the SoapySDR device driver to use for the specified frequency\nrange.\n\nExample: two RTL-SDR receivers: one for VHF (135..148 MHz), another for UHF (430..470 MHz).\n\n``135-148:driver=rtlsdr,serial=1 430-470:driver=rtlsdr,serial=2``"
+  },
+  "SATNOGS_RX_SAMP_RATE": {
+    "type": "integer",
+    "default": "None",
+    "required": true,
+    "description": "SoapySDR device sample rate.\nValid sample rates for attached devices can be queried using ``SoapySDRUtil --probe``."
+  },
+  "SATNOGS_RX_BANDWIDTH": {
+    "type": "integer",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device RF bandwidth.\nThis setting configures the RF filter on devices that support it."
+  },
+  "SATNOGS_DOPPLER_CORR_PER_SEC": {
+    "type": "integer",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "Number of Doppler corrections per second requested by SatNOGS Radio."
+  },
+  "SATNOGS_LO_OFFSET": {
+    "type": "integer",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device local oscillator offset to apply.\nThis setting is used to shift the carrier away from the DC spike."
+  },
+  "SATNOGS_PPM_ERROR": {
+    "type": "float",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device oscillator frequency error correction to apply.\nThis setting is defined in parts per million."
+  },
+  "SATNOGS_GAIN_MODE": {
+    "type": "string",
+    "default": "Overall",
+    "required": false,
+    "description": "SoapySDR device gain mode.\nValid values are: ``Overall``, ``Specific``, ``Settings Field``."
+  },
+  "SATNOGS_RF_GAIN": {
+    "type": "float",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device overall gain, in dB.\nDevice drivers set individual, device specific gains to approximate linearity on the overall gain."
+  },
+  "SATNOGS_ANTENNA": {
+    "type": "string",
+    "default": "None",
+    "required": true,
+    "description": "SoapySDR device antenna to use for RX.\nValid antennas for attached devices can be queried using ``SoapySDRUtil --probe``."
+  },
+  "SATNOGS_DEV_ARGS": {
+    "type": "string",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device arguments.\nValid device arguments for attached devices can be queried using ``SoapySDRUtil --probe``."
+  },
+  "SATNOGS_STREAM_ARGS": {
+    "type": "string",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR stream arguments.\nValid stream arguments for attached devices can be queried using ``SoapySDRUtil --probe``."
+  },
+  "SATNOGS_TUNE_ARGS": {
+    "type": "string",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR channel tune arguments."
+  },
+  "SATNOGS_OTHER_SETTINGS": {
+    "type": "string",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR channel other settings."
+  },
+  "SATNOGS_DC_REMOVAL": {
+    "type": "boolean",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device automatic DC offset suppression."
+  },
+  "SATNOGS_BB_FREQ": {
+    "type": "string",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "SoapySDR device baseband CORDIC frequency for devices that support it."
+  },
+  "ENABLE_IQ_DUMP": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Create I/Q data dumps for every observation.\nUse this feature with caution.\nEnabling this setting will store large amount of data on the filesystem."
+  },
+  "IQ_DUMP_FILENAME": {
+    "type": "path",
+    "default": "None",
+    "required": false,
+    "description": "Path to file for storing I/Q data dumps."
+  },
+  "DISABLE_DECODED_DATA": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Disable output of decoded data."
+  },
+  "UDP_DUMP_HOST": {
+    "type": "host",
+    "default": "Flowgraph-defined",
+    "required": false,
+    "description": "IP destination of UDP data with Doppler corrected I/Q."
+  },
+  "UDP_DUMP_PORT": {
+    "type": "port",
+    "default": "57356",
+    "required": false,
+    "description": "Port for UDP data with Doppler corrected I/Q."
+  },
+  "SATNOGS_UPLOAD_AUDIO_FILES": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Enable/Disable uploading audio files to SatNOGS network."
+  },
+  "SATNOGS_UPLOAD_WATERFALL_FILES": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Enable/Disable uploading waterfalls to SatNOGS network."
+  },
+  "SATNOGS_WATERFALL_AUTORANGE": {
+    "type": "boolean",
+    "default": "True",
+    "required": false,
+    "description": "Automatically set power level range of waterfall images."
+  },
+  "SATNOGS_WATERFALL_MIN_VALUE": {
+    "type": "integer",
+    "default": "-100",
+    "required": false,
+    "description": "Minimum power level of waterfall images."
+  },
+  "SATNOGS_WATERFALL_MAX_VALUE": {
+    "type": "integer",
+    "default": "-50",
+    "required": false,
+    "description": "Maximum power level of waterfall images."
+  },
+  "SATNOGS_ARTIFACTS_ENABLED": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Enable generation and uploading of HDF5 artifacts files to SatNOGS DB."
+  },
+  "SATNOGS_ARTIFACTS_API_URL": {
+    "type": "url",
+    "default": "https://db.satnogs.org/api/",
+    "required": false,
+    "description": "URL pointing to API of SatNOGS DB for uploading artifacts."
+  },
+  "SATNOGS_ARTIFACTS_API_POST_INTERVAL": {
+    "type": "integer",
+    "default": "180",
+    "required": false,
+    "description": "Interval (in seconds) for posting artifacts to SatNOGS DB."
+  },
+  "SATNOGS_ARTIFACTS_API_TOKEN": {
+    "type": "string",
+    "default": "None",
+    "required": false,
+    "description": "SatNOGS DB API token associated with an account in SatNOGS DB.\nThis token is secret.\nIt is used to upload artifacts to SatNOGS DB.\nIt can be found in SatNOGS DB user page."
+  },
+  "SATNOGS_LOG_LEVEL": {
+    "type": "string",
+    "default": "WARNING",
+    "required": false,
+    "description": "SatNOGS Client logging level.\nValid values are:\n\n  * ``CRITICAL``\n  * ``ERROR``\n  * ``WARNING``\n  * ``INFO``\n  * ``DEBUG``"
+  },
+  "SATNOGS_SCHEDULER_LOG_LEVEL": {
+    "type": "string",
+    "default": "WARNING",
+    "required": false,
+    "description": "SatNOGS Client scheduler logging level.\nValid values are:\n\n  * ``CRITICAL``\n  * ``ERROR``\n  * ``WARNING``\n  * ``INFO``\n  * ``DEBUG``"
+  },
+  "SENTRY_DSN": {
+    "type": "string",
+    "default": "d50342fb75aa8f3945e2f846b77a0cdb7c7d2275",
+    "required": false,
+    "description": "Sentry Data Source Name used for sending events to application monitoring and error tracking server."
+  },
+  "SENTRY_ENABLED": {
+    "type": "boolean",
+    "default": "False",
+    "required": false,
+    "description": "Enable sending events to Sentry application monitoring and error tracking server."
+  }
+}
