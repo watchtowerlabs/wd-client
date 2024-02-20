@@ -2,7 +2,7 @@
 #
 # Script to refresh requirement files using a Docker container
 #
-# Copyright (C) 2022 Libre Space Foundation <https://libre.space/>
+# Copyright (C) 2022-2023 Libre Space Foundation <https://libre.space/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -38,14 +38,25 @@ fi
 
 {
 	cat << EOF
+command -v apt-get >/dev/null && {
 apt-get -y update
 apt-get -qy install virtualenv git
 [ -f /projectdir/packages.debian ] && xargs -r -a /projectdir/packages.debian apt-get -qy install
+}
+EOF
+	cat << EOF
+command -v apk >/dev/null && {
+apk add -qU py3-virtualenv git
+[ -f /projectdir/packages.alpine ] && xargs -r -a /projectdir/packages.alpine apk add -qU
+}
+EOF
+	cat << EOF
 umask $(umask)
 cd /projectdir
 EOF
 	cat "$(dirname "$0")/refresh-requirements.sh"
 	cat << EOF
-chown "$(id -u):$(id -g)" constraints.txt requirements.txt requirements-dev.txt
+chown "$(id -u):$(id -g)" constraints.txt requirements.txt
+[ -f requirements-dev.txt ] && chown "$(id -u):$(id -g)" requirements-dev.txt
 EOF
 } | docker run -i --rm -v "$(pwd):/projectdir" "$DOCKER_IMAGE" /bin/sh -e -s
