@@ -1,6 +1,6 @@
 # SatNOGS Client image
 #
-# Copyright (C) 2022-2023 Libre Space Foundation <https://libre.space/>
+# Copyright (C) 2022-2024 Libre Space Foundation <https://libre.space/>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Affero General Public License as
@@ -32,7 +32,7 @@ RUN groupadd -r -g ${SATNOGS_CLIENT_UID} satnogs-client \
 		satnogs-client
 
 # Create application varstate directory
-RUN install -d -o ${SATNOGS_CLIENT_UID} -g ${SATNOGS_CLIENT_UID} ${SATNOGS_CLIENT_VARSTATEDIR}
+RUN install -d -m 1777 -o ${SATNOGS_CLIENT_UID} -g ${SATNOGS_CLIENT_UID} ${SATNOGS_CLIENT_VARSTATEDIR}
 
 # Copy source code
 COPY . /usr/local/src/satnogs-client/
