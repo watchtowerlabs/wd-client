@@ -26,7 +26,7 @@ def _read_waterfall(datafile_path):
     :return: Waterfall data
     :rtype: dict
     """
-    LOGGER.info('Reading waterfall file')
+    LOGGER.debug('Reading waterfall file')
 
     datafile = open(datafile_path, mode='rb')
 

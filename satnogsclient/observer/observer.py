@@ -247,11 +247,11 @@ class Observer(object):
                 self.observation_receiving_decoded_data
 
         if settings.SATNOGS_ROT_ENABLED:
-            LOGGER.info('Start rotctrl thread.')
+            LOGGER.debug('Start rotctrl thread.')
             self.run_rot()
 
         # start thread for rigctl
-        LOGGER.info('Start rigctrl thread.')
+        LOGGER.debug('Start rigctrl thread.')
         self.run_rig()
         sleep(1)
         LOGGER.info('Start gnuradio thread.')
@@ -268,7 +268,7 @@ class Observer(object):
         # Rename files and create waterfall
         self.rename_ogg_file()
         self.rename_data_file()
-        LOGGER.info('Creating waterfall plot.')
+        LOGGER.debug('Creating waterfall plot.')
         waterfall = None
         try:
             waterfall = Waterfall(self.observation_waterfall_file)
@@ -355,12 +355,12 @@ class Observer(object):
         while flowgraph.enabled and datetime.now(pytz.utc) <= self.observation_end:
             sleep(1)
         flowgraph.enabled = False
-        LOGGER.info('Tracking stopped.')
+        LOGGER.debug('Tracking stopped.')
         self.tracker_freq.trackstop()
         self.tracker_rot.trackstop()
         LOGGER.info('Observation Finished')
-        LOGGER.info('Executing post-observation script.')
         if settings.SATNOGS_POST_OBSERVATION_SCRIPT is not None:
+            LOGGER.info('Executing post-observation script.')
 
             script_name = flowgraphs.SATNOGS_FLOWGRAPH_MODES[
                 flowgraphs.SATNOGS_FLOWGRAPH_MODE_DEFAULT]['script_name']
@@ -391,14 +391,14 @@ class Observer(object):
         observation_raw_file_path = Path(self.observation_raw_file)
         if observation_raw_file_path.exists():
             observation_raw_file_path.rename(Path(self.observation_ogg_file))
-            LOGGER.info('Rename encoded file for uploading finished')
+            LOGGER.debug('Rename encoded file for uploading finished')
 
     def rename_data_file(self):
         observation_receiving_decoded_data_path = Path(self.observation_receiving_decoded_data)
         if observation_receiving_decoded_data_path.exists():
             observation_receiving_decoded_data_path.rename(Path(
                 self.observation_done_decoded_data))
-            LOGGER.info('Rename data file for uploading finished')
+            LOGGER.debug('Rename data file for uploading finished')
 
     def plot_waterfall(self, waterfall):
         vmin = None

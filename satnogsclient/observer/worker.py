@@ -69,7 +69,7 @@ class Worker(object):
         Stops by calling trackstop()
         """
         self.is_alive = True
-        LOGGER.info('Tracking initiated')
+        LOGGER.debug('Tracking initiated')
         if not all([self.observer_dict, self.satellite_dict]):
             raise ValueError('Satellite or observer dictionary not defined.')
 
@@ -90,7 +90,7 @@ class Worker(object):
         """Sets object flag to false and stops the tracking thread."""
         self.is_alive = False
         self.track.join()
-        LOGGER.info('Tracking stopped.')
+        LOGGER.debug('Tracking stopped.')
 
 
 class WorkerTrack(Worker):
@@ -183,7 +183,7 @@ class WorkerTrack(Worker):
         if settings.SATNOGS_ROT_FLIP and settings.SATNOGS_ROT_FLIP_ANGLE:
             self._midpoint = WorkerTrack.find_midpoint(self.observer_dict, self.satellite_dict,
                                                        datetime.now(pytz.utc))
-            LOGGER.info('Antenna midpoint: AZ%.2f EL%.2f %s', *self._midpoint)
+            LOGGER.debug('Antenna midpoint: AZ%.2f EL%.2f %s', *self._midpoint)
             self._flip = (self._midpoint[1] >= settings.SATNOGS_ROT_FLIP_ANGLE)
             LOGGER.info('Antenna flip: %s', self._flip)
 

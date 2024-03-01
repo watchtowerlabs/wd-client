@@ -30,10 +30,10 @@ class Locator(object):
         if (settings.SATNOGS_STATION_LAT is None or settings.SATNOGS_STATION_LON is None
                 or settings.SATNOGS_STATION_ELEV is None):
             no_timeout = True
-            LOGGER.info('No default coordinates, GPS timeout disabled')
+            LOGGER.warning('No default coordinates, GPS timeout disabled')
         else:
-            LOGGER.info('Last coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
-                        settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
+            LOGGER.debug('Last coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
+                         settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
         end_time = time.time() + self.timeout
 
         try:
@@ -42,12 +42,12 @@ class Locator(object):
             gpsd = gps.gps(mode=gps.WATCH_ENABLE,
                            host=settings.SATNOGS_GPSD_HOST,
                            port=settings.SATNOGS_GPSD_PORT)
-            LOGGER.info('Waiting for GPS (timeout %ds)', self.timeout)
+            LOGGER.debug('Waiting for GPS (timeout %ds)', self.timeout)
             while gpsd.read() == 0 and gpsd.fix.mode not in [gps.MODE_2D, gps.MODE_3D] \
                     and (time.time() < end_time or no_timeout):
                 self.show_location(gpsd)
         except StopIteration:
-            LOGGER.info('GPSD connection failed')
+            LOGGER.error('GPSD connection failed')
             return
         if gpsd.fix.mode in [gps.MODE_2D, gps.MODE_3D]\
                 and gps.isfinite(gpsd.fix.latitude) \
@@ -59,7 +59,7 @@ class Locator(object):
                 settings.SATNOGS_STATION_ELEV = gpsd.fix.altitude
             elif settings.SATNOGS_STATION_ELEV is None:
                 settings.SATNOGS_STATION_ELEV = 0
-            LOGGER.info('Updating coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
-                        settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
+            LOGGER.debug('Updating coordinates %f %f %d', settings.SATNOGS_STATION_LAT,
+                         settings.SATNOGS_STATION_LON, settings.SATNOGS_STATION_ELEV)
         else:
-            LOGGER.info('GPS data invalid, using last known coordinates')
+            LOGGER.warning('GPS data invalid, using last known coordinates')

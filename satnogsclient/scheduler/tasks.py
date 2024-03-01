@@ -49,7 +49,7 @@ def spawn_observer(**kwargs):
     LOGGER.debug('Observer args: %s', setup_kwargs)
 
     if observer.setup(**setup_kwargs):
-        LOGGER.info('Spawning observer worker.')
+        LOGGER.debug('Spawning observer worker.')
         timeout_timedelta = end - datetime.now(pytz.utc)
         if timeout_timedelta.total_seconds() <= 0:
             timeout_timedelta = timedelta()
@@ -78,7 +78,7 @@ def keep_or_remove_file(filename):
 
 def post_data():
     """PUT observation data back to Network API."""
-    LOGGER.info('Post data started')
+    LOGGER.debug('Post data started')
 
     for fil in next(os.walk(settings.SATNOGS_OUTPUT_PATH))[2]:
         file_path = os.path.join(*[settings.SATNOGS_OUTPUT_PATH, fil])
@@ -128,7 +128,7 @@ def upload_observation_data(observation_id, observation, fil):
     base_url = urljoin(settings.SATNOGS_NETWORK_API_URL, 'observations/')
     headers = {'Authorization': 'Token {0}'.format(settings.SATNOGS_API_TOKEN)}
 
-    LOGGER.info('Trying to PUT observation data for id: %s', observation_id)
+    LOGGER.debug('Trying to PUT observation data for id: %s', observation_id)
     url = urljoin(base_url, observation_id)
     if not url.endswith('/'):
         url += '/'
@@ -185,7 +185,7 @@ def get_jobs():
     LOGGER.debug('URL: %s', url)
     LOGGER.debug('Params: %s', params)
     LOGGER.debug('Headers: %s', headers)
-    LOGGER.info('Trying to GET observation jobs from the network')
+    LOGGER.debug('Trying to GET observation jobs from the network')
     try:
         response = requests.get(url,
                                 params=params,
@@ -210,7 +210,7 @@ def get_jobs():
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
-        LOGGER.debug('Adding new job: %s', job_id)
+        LOGGER.info('Adding new job: %s', job_id)
         LOGGER.debug('Observation obj: %s', obj)
         SCHEDULER.add_job(spawn_observer,
                           'date',
@@ -221,7 +221,7 @@ def get_jobs():
 
 
 def status_listener():
-    LOGGER.info('Starting scheduler...')
+    LOGGER.debug('Starting scheduler...')
     SCHEDULER.start()
     SCHEDULER.remove_all_jobs()
     LOGGER.info('Registering `get_jobs` periodic task (%d sec. interval)',
