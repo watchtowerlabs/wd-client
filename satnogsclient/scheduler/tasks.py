@@ -200,17 +200,28 @@ def get_jobs():
         LOGGER.error(http_error)
         return
 
-    latest_jobs = [str(job['id']) for job in response.json()]
-    for job in SCHEDULER.get_jobs():
-        if job.name == spawn_observer.__name__:
-            if job.id not in latest_jobs:
-                job.remove()
+    latest_jobs = {job['id']: job for job in response.json()}
+    existing_jobs = {
+        int(job.id): job
+        for job in SCHEDULER.get_jobs() if job.name == spawn_observer.__name__
+    }
 
-    for obj in response.json():
+    dropped_job_ids = set(existing_jobs) - set(latest_jobs)
+    new_job_ids = set(latest_jobs) - set(existing_jobs)
+
+    LOGGER.debug('Fetched jobs from network, received %d future observations.', len(latest_jobs))
+
+    for observation_id in dropped_job_ids:
+        LOGGER.info('Drop planned observation %d (reason: deleted in network).', observation_id)
+        existing_jobs[observation_id].remove()
+
+    for observation_id in new_job_ids:
+        obj = latest_jobs[observation_id]
         start = parser.parse(obj['start'])
         job_id = str(obj['id'])
         kwargs = {'obj': obj}
-        LOGGER.info('Adding new job: %s', job_id)
+
+        LOGGER.info('Received job for observation %s, starting at %s', job_id, start.isoformat())
         LOGGER.debug('Observation obj: %s', obj)
         SCHEDULER.add_job(spawn_observer,
                           'date',
