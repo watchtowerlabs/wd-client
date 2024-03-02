@@ -35,6 +35,6 @@ def main():
     gps_locator = locator.Locator()
     gps_locator.update_location()
     status_listener()
-    LOGGER.info('Press Ctrl+C to exit SatNOGS poller')
+    LOGGER.info('Configuration valid, satnogs-client started successfully.')
     while True:
         time.sleep(10)

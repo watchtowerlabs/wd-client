@@ -84,7 +84,7 @@ def post_and_save_artifacts(artifacts_file, observation_id):
             timeout=settings.ARTIFACTS_API_TIMEOUT)
         response.raise_for_status()
 
-        LOGGER.info('Artifacts upload successful.')
+        LOGGER.info('Artifacts upload for observation %d successful.', observation_id)
         artifacts_file.close()
 
     except requests.exceptions.Timeout:
@@ -240,6 +240,7 @@ class Observer(object):
                     OSError) as err:
                 LOGGER.error('pre-observation script: %s', err)
 
+        LOGGER.info('Begin observation %d ...', self.observation_id)
         # if it is APT we want to save with a prefix until the observation
         # is complete, then rename.
         if self.mode == 'APT':
@@ -358,7 +359,7 @@ class Observer(object):
         LOGGER.debug('Tracking stopped.')
         self.tracker_freq.trackstop()
         self.tracker_rot.trackstop()
-        LOGGER.info('Observation Finished')
+        LOGGER.info('Observation %d finished.', self.observation_id)
         if settings.SATNOGS_POST_OBSERVATION_SCRIPT is not None:
             LOGGER.info('Executing post-observation script.')
 
