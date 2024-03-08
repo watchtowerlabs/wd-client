@@ -28,22 +28,20 @@ def _read_waterfall(datafile_path):
     """
     LOGGER.debug('Reading waterfall file')
 
-    datafile = open(datafile_path, mode='rb')
+    with open(datafile_path, mode='rb') as datafile:
+        waterfall = {
+            'timestamp': np.fromfile(datafile, dtype='|S32', count=1)[0],
+            'nchan': np.fromfile(datafile, dtype='>i4', count=1)[0],
+            'samp_rate': np.fromfile(datafile, dtype='>i4', count=1)[0],
+            'nfft_per_row': np.fromfile(datafile, dtype='>i4', count=1)[0],
+            'center_freq': np.fromfile(datafile, dtype='>f4', count=1)[0],
+            'endianess': np.fromfile(datafile, dtype='>i4', count=1)[0]
+        }
+        data_dtypes = np.dtype([('tabs', 'int64'), ('spec', 'float32', (waterfall['nchan'], ))])
+        waterfall['data'] = np.fromfile(datafile, dtype=data_dtypes)
 
-    waterfall = {
-        'timestamp': np.fromfile(datafile, dtype='|S32', count=1)[0],
-        'nchan': np.fromfile(datafile, dtype='>i4', count=1)[0],
-        'samp_rate': np.fromfile(datafile, dtype='>i4', count=1)[0],
-        'nfft_per_row': np.fromfile(datafile, dtype='>i4', count=1)[0],
-        'center_freq': np.fromfile(datafile, dtype='>f4', count=1)[0],
-        'endianess': np.fromfile(datafile, dtype='>i4', count=1)[0]
-    }
-    data_dtypes = np.dtype([('tabs', 'int64'), ('spec', 'float32', (waterfall['nchan'], ))])
-    waterfall['data'] = np.fromfile(datafile, dtype=data_dtypes)
-    if not waterfall['data'].size:
-        raise EmptyArrayError
-
-    datafile.close()
+        if not waterfall['data'].size:
+            raise EmptyArrayError
 
     return waterfall
 
