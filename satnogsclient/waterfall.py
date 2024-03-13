@@ -23,6 +23,9 @@ def _read_waterfall(datafile_path):
     :param datafile_path: Path to data file
     :type datafile_path: str
     :raises EmptyArrayError: Empty waterfall data
+    :raises IndexError: Invalid waterfall data
+    :raises FileNotFoundError: No waterfall data file found
+    :raises OSError: Could not open waterfall data file
     :return: Waterfall data
     :rtype: dict
     """
