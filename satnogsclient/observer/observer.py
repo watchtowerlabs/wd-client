@@ -280,6 +280,8 @@ class Observer(object):
             LOGGER.error('No waterfall data file found')
         except EmptyArrayError:
             LOGGER.error('Waterfall data array is empty')
+        except IndexError:
+            LOGGER.error('Waterfall data array is invalid')
 
         # PUT client version and metadata
         base_url = urljoin(settings.SATNOGS_NETWORK_API_URL, 'observations/')
