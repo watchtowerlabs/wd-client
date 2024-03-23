@@ -173,7 +173,7 @@ def get_jobs():
     """Query SatNOGS Network API to GET jobs."""
     gps_locator = locator.Locator()
     gps_locator.update_location()
-    LOGGER.debug('Get jobs started')
+
     url = urljoin(settings.SATNOGS_NETWORK_API_URL, 'jobs/')
     params = {
         'ground_station': settings.SATNOGS_STATION_ID,
@@ -182,10 +182,8 @@ def get_jobs():
         'alt': int(settings.SATNOGS_STATION_ELEV)
     }
     headers = {'Authorization': 'Token {0}'.format(settings.SATNOGS_API_TOKEN)}
-    LOGGER.debug('URL: %s', url)
-    LOGGER.debug('Params: %s', params)
-    LOGGER.debug('Headers: %s', headers)
-    LOGGER.debug('Trying to GET observation jobs from the network')
+
+    LOGGER.debug('Fetching jobs from network...')
     try:
         response = requests.get(url,
                                 params=params,
