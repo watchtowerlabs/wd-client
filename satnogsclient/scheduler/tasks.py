@@ -191,11 +191,9 @@ def get_jobs():
                                 verify=settings.SATNOGS_VERIFY_SSL,
                                 timeout=45)
         response.raise_for_status()
-    except (requests.ConnectionError, requests.Timeout, requests.TooManyRedirects):
-        LOGGER.exception('An error occurred trying to GET observation jobs from network')
-        return
-    except requests.exceptions.HTTPError as http_error:
-        LOGGER.error(http_error)
+    except (requests.exceptions.HTTPError, requests.exceptions.RequestException) as err:
+        LOGGER.error('%s', err)
+        LOGGER.error('Fetching jobs from network failed.')
         return
 
     latest_jobs = {job['id']: job for job in response.json()}
