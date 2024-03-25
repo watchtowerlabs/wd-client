@@ -16,7 +16,9 @@ __author__ = config.AUTHOR
 __email__ = config.EMAIL
 __version__ = config.VERSION
 
-logging.basicConfig(format=settings.LOG_FORMAT, level=getattr(logging, settings.LOG_LEVEL))
+logging.basicConfig(format=settings.LOG_FORMAT,
+                    level=getattr(logging, settings.LOG_LEVEL),
+                    style='{')
 LOGGER = logging.getLogger(__name__)
 
 if settings.SENTRY_ENABLED:
