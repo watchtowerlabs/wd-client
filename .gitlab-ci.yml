@@ -27,7 +27,6 @@ include:
   - template: 'Security/Dependency-Scanning.gitlab-ci.yml'
   - template: 'Security/SAST.gitlab-ci.yml'
   - template: 'Security/Secret-Detection.gitlab-ci.yml'
-  - template: 'Security/License-Scanning.gitlab-ci.yml'
   - template: 'Security/Container-Scanning.gitlab-ci.yml'
   - project: 'librespacefoundation/templates/gitlab-ci'
     ref: '2fe58fc924c5b36218193dc2428d702065334b58'
@@ -174,9 +173,6 @@ sast:
   stage: security
   needs: []
 secret_detection:
-  stage: security
-  needs: []
-license_scanning:
   stage: security
   needs: []
 container_scanning:
