@@ -3,10 +3,6 @@ version: '2'
 formats:
   - 'epub'
   - 'pdf'
-python:
-  system_packages: true
-  install:
-    - path: '.'
 build:
   os: 'ubuntu-22.04'
   tools:
@@ -18,7 +14,7 @@ build:
     - 'python3-hamlib'
   jobs:
     post_install:
-      - 'python -m pip install --exists-action=w --no-cache-dir -c constraints.txt -r requirements.txt -r docs/requirements.txt'
+      - 'python -m pip install --exists-action=w --no-cache-dir -c constraints.txt -r requirements.txt -r docs/requirements.txt .'
 sphinx:
   builder: 'html'
   fail_on_warning: true
