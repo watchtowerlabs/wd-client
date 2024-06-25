@@ -129,6 +129,8 @@ deploy:
 
 docker:
   stage: deploy
+  needs:
+    - test
   variables:
     GNURADIO_IMAGE_TAG: 'satnogs'
     GITLAB_CI_DOCKER_IMAGE_VERSION: '${CI_COMMIT_REF_NAME}'
