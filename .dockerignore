@@ -4,7 +4,6 @@
 !.gitignore
 !CONTRIBUTING.md
 !LICENSE
-!MANIFEST.in
 !README.md
 !constraints.txt
 !packages.debian
