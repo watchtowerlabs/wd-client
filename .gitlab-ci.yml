@@ -40,10 +40,10 @@ include:
 
 .default_before_script: &default_before_script
   - apt-get -y update
-  - apt-get -qy install gnupg libcurl4 wget
+  - apt-get -qy install curl
   - echo "$GITLAB_CI_APT_REPOSITORY" > /etc/apt/sources.list.d/${GITLAB_CI_OBS_PROJECT}.list
   - mkdir -p /etc/apt/keyrings/
-  - wget -O- "$GITLAB_CI_APT_KEY_URL" | gpg --dearmor | tee /etc/apt/keyrings/satnogs.gpg > /dev/null
+  - curl -fsL -o /etc/apt/keyrings/satnogs.asc "$GITLAB_CI_APT_KEY_URL"
   - apt-get -q update
   - apt-get -y install $GITLAB_CI_APT_PACKAGES
   - xargs -r -a packages.debian apt-get -qy install
