@@ -106,6 +106,7 @@ test:
 deploy:
   stage: deploy
   image: ${GITLAB_CI_IMAGE_GNURADIO}
+  dependencies: []
   before_script:
     - *default_before_script
   script:
@@ -120,8 +121,7 @@ deploy:
 
 docker:
   stage: deploy
-  needs:
-    - test
+  dependencies: []
   variables:
     GNURADIO_IMAGE_TAG: '3.8.2.0-satnogs'
     GITLAB_CI_DOCKER_IMAGE_VERSION: '${CI_COMMIT_REF_NAME}'
