@@ -26,13 +26,13 @@ include:
   - template: 'Security/Secret-Detection.gitlab-ci.yml'
   - template: 'Security/Container-Scanning.gitlab-ci.yml'
   - project: 'librespacefoundation/templates/gitlab-ci'
-    ref: '2fe58fc924c5b36218193dc2428d702065334b58'
+    ref: '49bc98ac14e67d048eb7d39120b0504a8afddda5'
     file: '.gitlab-ci-sign-off.yml'
   - project: 'librespacefoundation/templates/gitlab-ci'
-    ref: '2fe58fc924c5b36218193dc2428d702065334b58'
+    ref: '49bc98ac14e67d048eb7d39120b0504a8afddda5'
     file: '.gitlab-ci-docs.yml'
   - project: 'librespacefoundation/templates/gitlab-ci'
-    ref: '2fe58fc924c5b36218193dc2428d702065334b58'
+    ref: '49bc98ac14e67d048eb7d39120b0504a8afddda5'
     file: '.gitlab-ci-docker.yml'
 
 .default_before_script: &default_before_script
