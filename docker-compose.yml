@@ -14,7 +14,7 @@ services:
     build:
       context: .
       args:
-        GNURADIO_IMAGE_TAG: '${GNURADIO_IMAGE_TAG:-satnogs}'
+        GNURADIO_IMAGE_TAG: '${GNURADIO_IMAGE_TAG:-satnogs-3.8.2.0}'
     image: 'satnogs-client'
     user: '999'
     read_only: true
