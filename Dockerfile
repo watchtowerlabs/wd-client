@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU Affero General Public License
 # along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
-ARG GNURADIO_IMAGE_TAG=satnogs
+ARG GNURADIO_IMAGE_TAG=3.8.2.0-satnogs
 FROM librespace/gnuradio:${GNURADIO_IMAGE_TAG}
 LABEL org.opencontainers.image.authors='SatNOGS project <dev@satnogs.org>'
 
