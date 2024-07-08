@@ -1,7 +1,13 @@
+#!/usr/bin/env python3
+
 import logging
+from argparse import ArgumentParser
+from datetime import datetime, timedelta
 
 import matplotlib
-import numpy as np
+import matplotlib.dates as mdates  # isort: skip
+import numpy as np  # isort: skip
+from matplotlib.dates import date2num
 
 matplotlib.use('Agg')
 
@@ -113,6 +119,10 @@ class Waterfall():  # pylint: disable=R0903
         tmax = np.max(self.data['data']['tabs'] / 1000000.0)
         fmin = np.min(self.data['freq'] / 1000.0)
         fmax = np.max(self.data['freq'] / 1000.0)
+        timefmt = '%Y-%m-%dT%H:%M:%S.%fZ'
+        t_ref = datetime.strptime(self.data['timestamp'].decode('utf-8'), timefmt)
+        dt_min = t_ref + timedelta(seconds=tmin)
+        dt_max = t_ref + timedelta(seconds=tmax)
         if vmin is None or vmax is None:
             vmin = -100
             vmax = -50
@@ -127,13 +137,34 @@ class Waterfall():  # pylint: disable=R0903
                    origin='lower',
                    aspect='auto',
                    interpolation='None',
-                   extent=[fmin, fmax, tmin, tmax],
+                   extent=[fmin, fmax, date2num(dt_min),
+                           date2num(dt_max)],
                    vmin=vmin,
                    vmax=vmax,
                    cmap='viridis')
+        axis = plt.gca()
+        axis.yaxis_date()
+        axis.yaxis.set_major_locator(mdates.MinuteLocator(interval=1))
+        axis.yaxis.set_major_formatter(mdates.DateFormatter('%H:%M'))
+        axis2 = axis.twinx()
+        axis2.set_ylim(tmin, tmax)
         plt.xlabel('Frequency (kHz)')
-        plt.ylabel('Time (seconds)')
-        fig = plt.colorbar(aspect=50)
+        axis.set_ylabel('Time (UTC)')
+        axis2.set_ylabel('Time (seconds)')
+        fig = plt.colorbar(aspect=50, pad=0.1)
         fig.set_label('Power (dB)')
         plt.savefig(figure_path, bbox_inches='tight')
         plt.close()
+
+
+def main():
+    parser = ArgumentParser(description='Make a waterfall plot')
+    parser.add_argument('data_path', help='Data path (dat file)')
+    parser.add_argument('png_path', help='Output path (png file)')
+    args = parser.parse_args()
+    waterfall = Waterfall(args.data_path)
+    waterfall.plot(args.png_path)
+
+
+if __name__ == '__main__':
+    main()
