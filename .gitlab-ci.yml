@@ -63,6 +63,17 @@ static:
   script:
     - tox run-parallel -e "flake8,isort,yapf,pylint,robot-lint"
 
+static_config_schema:
+  stage: static
+  needs: []
+  image: ${GITLAB_CI_IMAGE_DEBIAN}
+  before_script:
+    - apt-get -y update
+    - apt-get -qy install python3-jsonschema
+  script:
+    - jsonschema --instance config/example.json config/specs/development.json
+    - jsonschema --instance config/example_all.json config/specs/development.json
+
 # 'build' stage
 docs:
   stage: build

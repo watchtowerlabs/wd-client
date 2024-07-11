@@ -1,0 +1,8 @@
+{
+  "satnogs_network_api_url": "https://network.satnogs.org/api/",
+  "satnogs_network_api_query_interval": 60,
+  "satnogs_network_api_post_interval": 180,
+  "satnogs_verify_ssl": true,
+  "satnogs_rig_ip": "127.0.0.1",
+  "satnogs_rig_port": 4532
+}

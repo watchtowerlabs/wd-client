@@ -1,3 +1,9 @@
+..
+   This is a generated file; DO NOT EDIT!
+
+   Please edit 'config/menu.json' to modify the list of variables and run
+   './contrib/refresh-docs.sh' to regenerate this file
+
 Environment variables
 ^^^^^^^^^^^^^^^^^^^^^
 

@@ -46,6 +46,25 @@ The following code quality assurance tools are used in this project:
 Testing
 -------
 
+
+Updating dependencies
+---------------------
+
+To update the list of dependencies the following script can be run::
+
+  $ ./contrib/refresh-requirements-docker.sh
+
+This will populate some files with updated content which then must be committed.
+
+Updating documentation
+----------------------
+
+To update the documentation the following script can be run::
+
+  $ ./contrib/refresh-docs.py
+
+This will generate the file ``docs/environment_variables.rst`` based on ``config/menu.json``.
+
 System testing
 ^^^^^^^^^^^^^^
 
